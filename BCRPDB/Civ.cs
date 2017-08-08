@@ -55,7 +55,7 @@ namespace BCRPDB
             string name = str.Contains("|a") ? GetVal(dataVals, "a") : null;
             string plate = str.Contains("|b") ? GetVal(dataVals, "b") : null;
             List<string> weps = str.Contains("|c") ? GetVal(dataVals, "c").Split(',').ToList() : null;
-            List<KeyValuePair<string, string>> tickets = str.Contains("|d") ? GetVal(dataVals, "c").Split(',').Select(x => new KeyValuePair<string, string>(x.Split('~')[0], x.Split('~')[1])).ToList() : null;
+            List<KeyValuePair<string, string>> tickets = str.Contains("|d") ? GetVal(dataVals, "d").Split(',').Select(x => new KeyValuePair<string, string>(x.Split('~')[0], x.Split('~')[1])).ToList() : null;
             string business = str.Contains("|e") ? GetVal(dataVals, "e") : null;
             uint businessCooldown;
 

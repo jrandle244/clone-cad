@@ -185,6 +185,7 @@ namespace BCRPDBServer
                         }
 
                         civ.Tickets.Add(new KeyValuePair<string, string>(vars[1], vars[2]));
+                        socket.Send(new byte[] { 0 });
                         Log.WriteLine("Ticketed civ #" + vars[0] + ".", ip);
                         break;
 

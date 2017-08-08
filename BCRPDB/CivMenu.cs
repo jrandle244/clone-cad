@@ -29,11 +29,9 @@ namespace BCRPDB
         public bool closed = false;
         bool downloaded = false;
         byte downloadedTimeout = 0;
-        Config cfg;
 
         public CivMenu(ushort ID)
         {
-            cfg = new Config("settings.ini");
 
             client = new Socket(SocketType.Stream, ProtocolType.Tcp);
             this.ID = ID;
@@ -67,7 +65,7 @@ namespace BCRPDB
         {
             try
             {
-                client.Connect(cfg.IP, cfg.Port);
+                client.Connect(Main.cfg.IP, Main.cfg.Port);
             }
             catch (SocketException)
             {
@@ -105,7 +103,7 @@ namespace BCRPDB
         {
             try
             {
-                client.Connect(cfg.IP, cfg.Port);
+                client.Connect(Main.cfg.IP, Main.cfg.Port);
             }
             catch (SocketException)
             {
@@ -259,7 +257,7 @@ namespace BCRPDB
         {
             try
             {
-                client.Connect(cfg.IP, cfg.Port);
+                client.Connect(Main.cfg.IP, Main.cfg.Port);
             }
             catch (SocketException)
             {

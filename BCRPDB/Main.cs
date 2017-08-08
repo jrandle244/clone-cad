@@ -19,8 +19,14 @@ namespace BCRPDB
 {
     public partial class Main : MaterialForm
     {
-        public Main() =>
+        public static Config cfg;
+
+        public Main()
+        {
+            cfg = new Config("settings.ini");
+
             InitializeComponent();
+        }
 
         private void launch_Click(object sender, EventArgs e)
         {
@@ -52,7 +58,16 @@ namespace BCRPDB
                 PopoMenu popo = new PopoMenu();
                 popo.FormClosed += new FormClosedEventHandler(delegate (Object o, FormClosedEventArgs a) { Visible = true; });
 
-                popo.ShowDialog();
+                popo.Show(this);
+
+                new Thread(new ThreadStart(() =>
+                {
+                    while (!popo.closed)
+                        Thread.Sleep(10);
+
+                    if (close.Checked)
+                        Invoke((MethodInvoker)delegate { Close(); });
+                })).Start();
             }
             else
             {

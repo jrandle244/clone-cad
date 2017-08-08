@@ -122,7 +122,8 @@
             this.ticketList.Name = "ticketList";
             this.ticketList.OwnerDraw = true;
             this.ticketList.Size = new System.Drawing.Size(369, 257);
-            this.ticketList.TabIndex = 3;
+            this.ticketList.Sorting = System.Windows.Forms.SortOrder.Ascending;
+            this.ticketList.TabIndex = 8;
             this.ticketList.UseCompatibleStateImageBehavior = false;
             this.ticketList.View = System.Windows.Forms.View.Details;
             // 
@@ -147,7 +148,7 @@
             this.syncBtn.Name = "syncBtn";
             this.syncBtn.Primary = true;
             this.syncBtn.Size = new System.Drawing.Size(56, 36);
-            this.syncBtn.TabIndex = 4;
+            this.syncBtn.TabIndex = 3;
             this.syncBtn.Text = "Sync";
             this.syncBtn.UseVisualStyleBackColor = true;
             this.syncBtn.Click += new System.EventHandler(this.syncBtn_Click);
@@ -168,7 +169,7 @@
             this.regWepList.OwnerDraw = true;
             this.regWepList.Size = new System.Drawing.Size(226, 201);
             this.regWepList.Sorting = System.Windows.Forms.SortOrder.Ascending;
-            this.regWepList.TabIndex = 5;
+            this.regWepList.TabIndex = 6;
             this.regWepList.UseCompatibleStateImageBehavior = false;
             this.regWepList.View = System.Windows.Forms.View.Details;
             // 
@@ -210,7 +211,7 @@
             this.addWep.Name = "addWep";
             this.addWep.Primary = true;
             this.addWep.Size = new System.Drawing.Size(48, 36);
-            this.addWep.TabIndex = 8;
+            this.addWep.TabIndex = 5;
             this.addWep.Text = "Add";
             this.addWep.UseVisualStyleBackColor = true;
             this.addWep.Click += new System.EventHandler(this.addWep_Click);
@@ -226,7 +227,7 @@
             this.remWep.Name = "remWep";
             this.remWep.Primary = true;
             this.remWep.Size = new System.Drawing.Size(75, 36);
-            this.remWep.TabIndex = 9;
+            this.remWep.TabIndex = 7;
             this.remWep.Text = "Remove";
             this.remWep.UseVisualStyleBackColor = true;
             this.remWep.Click += new System.EventHandler(this.remWep_Click);
@@ -289,7 +290,7 @@
             this.sync.Name = "sync";
             this.sync.Ripple = true;
             this.sync.Size = new System.Drawing.Size(75, 30);
-            this.sync.TabIndex = 14;
+            this.sync.TabIndex = 9;
             this.sync.Text = "Synced";
             this.sync.UseVisualStyleBackColor = true;
             // 
@@ -304,7 +305,7 @@
             this.delete.Name = "delete";
             this.delete.Primary = true;
             this.delete.Size = new System.Drawing.Size(69, 36);
-            this.delete.TabIndex = 15;
+            this.delete.TabIndex = 4;
             this.delete.Text = "Delete";
             this.delete.UseVisualStyleBackColor = true;
             this.delete.Click += new System.EventHandler(this.delete_Click);
