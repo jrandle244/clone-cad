@@ -53,7 +53,10 @@ namespace BCRPDBServer
                         break;
 
                     case "FilteredIPs":
-                        FilteredIPs = line[1].Split(',').Select(x => x.Trim()).ToArray();
+                        if (string.IsNullOrWhiteSpace(line[1]))
+                            FilteredIPs = new string[0];
+                        else
+                            FilteredIPs = line[1].Split(',').Select(x => x.Trim()).ToArray();
                         break;
                 }
         }
