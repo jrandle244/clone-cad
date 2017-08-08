@@ -1,6 +1,6 @@
 # bcrp-db
 ## Installation
-Note: The config loader automatically trims spaces off, so use spaces wherever you want to keep your config file neat.
+Note: The config loader is very flexible. It will automatically trim spaces off, so use spaces wherever you want to keep your config file neat. It also doesnt care which order your values are in, just as long as they're there.
 
 ##### Client
 First, download it. The easiest way is to head over to [releases](https://github.com/Clone-Commando/bcrp-db/releases) and download the latest client release. Optionally, download or clone the project and build it to stay the most up-to-date.
@@ -27,11 +27,13 @@ Port = 30120
 Filter = 0
 ;IPs the filter applies to. Keep blank for none.
 FilteredIPs = 
+;Log path
+bcrpdb.log
 ```
 
 If you have multiple network adapters, change the IP to the IP that you have port forwarded to, or if you have your computer directly hooked up to WAN, set it to your public IP.
 
-If you want/need to you can change the port. The filter will automatically disconnect users as soon as they connect, so set the filter desired and then enter the IPs in the FilteredIPs value below seperated by a ','.
+If you want/need to you can change the port. The filter will automatically disconnect users as soon as they connect, so set the filter desired and then enter the IPs in the FilteredIPs value below seperated by a ','. The log path is pretty self explanitory. It will save whatever was in the console.
 ## Keeping up-to-date
 Just as a side note, I will have `(client)` or `(server)` at the end of my bug fixes in the release notes. If your version is not mentioned in the release notes then you do not have to patch the new update.
 ## About
