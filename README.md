@@ -34,5 +34,5 @@ If you have multiple network adapters, change the IP to the IP that you have por
 If you want/need to you can change the port. The filter will automatically disconnect users as soon as they connect, so set the filter desired and then enter the IPs in the FilteredIPs value below seperated by a ','.
 ## About
 A custom database for the FiveM roleplay server Blaine County Roleplay.
-[Our Discord](http://discord.gg/T7RzwVz)
-View and vote on the [roadmap](https://trello.com/b/4UpUhulH/bcrp-database)
+[Our Discord](http://discord.gg/T7RzwVz).
+View and vote on the [roadmap](https://trello.com/b/4UpUhulH/bcrp-database).
