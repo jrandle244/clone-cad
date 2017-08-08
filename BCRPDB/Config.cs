@@ -17,7 +17,7 @@ namespace BCRPDB
         {
             string[] lines = File.ReadAllLines(FilePath);
 
-            foreach (string[] line in lines.Where(x => !x.StartsWith(";")).Select(x => x.Split('=').Select(y => y.Trim())))
+            foreach (string[] line in lines.Where(x => !x.StartsWith(";")).Select(x => x.Split('=').Select(y => y.Trim()).ToArray()))
                 switch (line[0])
                 {
                     case "IP":
@@ -27,9 +27,9 @@ namespace BCRPDB
                     case "Port":
                         int _Port;
 
-                        if (int.TryParse(line[1], out _Port) || _Port < 1024 || _Port > 65536)
+                        if (!int.TryParse(line[1], out _Port) || _Port < 1024 || _Port > 65536)
                         {
-                            MessageBox.Show("The port is not valid.\nMake sure it is a positive integer above 1024 and below 65536.", "BCRPDB", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show("The port is invalid.\nMake sure it is a positive integer within 1025-65535.", "BCRPDB Server", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             Environment.Exit(0);
                         }
 

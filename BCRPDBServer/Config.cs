@@ -21,7 +21,7 @@ namespace BCRPDBServer
         {
             string[] lines = File.ReadAllLines(FilePath);
 
-            foreach (string[] line in lines.Where(x => !x.StartsWith(";")).Select(x => x.Split('=').Select(y => y.Trim())))
+            foreach (string[] line in lines.Where(x => !x.StartsWith(";")).Select(x => x.Split('=').Select(y => y.Trim()).ToArray()))
                 switch (line[0])
                 {
                     case "IP":
@@ -31,7 +31,7 @@ namespace BCRPDBServer
                     case "Port":
                         int _Port;
 
-                        if (int.TryParse(line[1], out _Port) || _Port < 1024 || _Port > 65536)
+                        if (!int.TryParse(line[1], out _Port) || _Port < 1024 || _Port > 65536)
                         {
                             MessageBox.Show("The port is invalid.\nMake sure it is a positive integer within 1025-65535.", "BCRPDB Server", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             Environment.Exit(0);
@@ -43,7 +43,7 @@ namespace BCRPDBServer
                     case "Filter":
                         int _Filter;
 
-                        if (int.TryParse(line[1], out _Filter) || _Filter < 0 || _Filter > 2)
+                        if (!int.TryParse(line[1], out _Filter) || _Filter < 0 || _Filter > 2)
                         {
                             MessageBox.Show("The filter type is invalid.\nMake sure it is within 0-2.", "BCRPDB Server", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             Environment.Exit(0);
