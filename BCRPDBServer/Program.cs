@@ -28,7 +28,7 @@ namespace BCRPDBServer
         {
             Console.Title = "BCRPDB Server";
 
-            cfg = new Config("bcrpdbserver.cfg");
+            cfg = new Config("server-settings.ini");
             list = new TcpListener(IPAddress.Parse(cfg.IP), cfg.Port);
             Civilians = new List<Civ>();
 

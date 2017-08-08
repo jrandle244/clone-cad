@@ -33,7 +33,7 @@ namespace BCRPDB
 
         public CivMenu(ushort ID)
         {
-            cfg = new Config("bcrpdb.cfg");
+            cfg = new Config("settings.ini");
 
             client = new Socket(SocketType.Stream, ProtocolType.Tcp);
             this.ID = ID;
