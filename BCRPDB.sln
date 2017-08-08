@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.16
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BCRPDB", "BCRPDB\BCRPDB.csproj", "{4790065C-4180-4D98-B30F-34EED78D7569}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BCRPDBServer", "BCRPDBServer\BCRPDBServer.csproj", "{16972081-D018-432C-8ECB-575298203A64}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4790065C-4180-4D98-B30F-34EED78D7569}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4790065C-4180-4D98-B30F-34EED78D7569}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4790065C-4180-4D98-B30F-34EED78D7569}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4790065C-4180-4D98-B30F-34EED78D7569}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16972081-D018-432C-8ECB-575298203A64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16972081-D018-432C-8ECB-575298203A64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16972081-D018-432C-8ECB-575298203A64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16972081-D018-432C-8ECB-575298203A64}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
