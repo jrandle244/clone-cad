@@ -20,6 +20,8 @@ namespace BCRPDBServer
 
             Console.WriteLine(formatted);
             writer.WriteLine(formatted);
+
+            writer.Flush();
         }
 
         public static void WriteLine(string text, string ip)
