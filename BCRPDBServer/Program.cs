@@ -68,6 +68,23 @@ namespace BCRPDBServer
             Socket socket = (Socket)socketO;
             string ip = socket.RemoteEndPoint.ToString().Split(':')[0];
 
+            if (cfg.Filter == ClientFilterType.Whitelist)
+            {
+                if (!cfg.FilteredIPs.Contains(ip))
+                {
+                    socket.Disconnect(true);
+                    return;
+                }
+            }
+            else if (cfg.Filter == ClientFilterType.Blacklist)
+            {
+                if (cfg.FilteredIPs.Contains(ip))
+                {
+                    socket.Disconnect(true);
+                    return;
+                }
+            }
+
             while (socket.Connected)
             {
                 byte[] b = new byte[1001];
