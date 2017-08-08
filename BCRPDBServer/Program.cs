@@ -115,7 +115,7 @@ namespace BCRPDBServer
                             Console.WriteLine("[" + ip + "] Reserved civ #" + civ.CivID + ".");
 
                             Civilians.Add(civ);
-                            socket.Send(civ.ToBytes());
+                            socket.Send(new byte[] { 0 }.Concat(civ.ToBytes()).ToArray());
                         }
                         else
                             try

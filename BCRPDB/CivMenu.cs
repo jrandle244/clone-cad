@@ -123,6 +123,8 @@ namespace BCRPDB
 
             if (!sync.Checked)
                 Sync(downloaded);
+            else
+                Sync(false);
         }
 
         private void name_TextChanged(object sender, EventArgs e) =>
