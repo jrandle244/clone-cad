@@ -17,6 +17,7 @@ namespace BCRPDBServer
         static TcpListener list;
         static List<Civ> Civilians;
         static Config cfg;
+        static Log log;
 
         [DllImport("Kernel32")]
         private static extern bool SetConsoleCtrlHandler(EventHandler handler, bool add);
@@ -29,6 +30,7 @@ namespace BCRPDBServer
             Console.Title = "BCRPDB Server";
 
             cfg = new Config("server-settings.ini");
+            log = new Log(cfg.Log);
             list = new TcpListener(IPAddress.Parse(cfg.IP), cfg.Port);
             Civilians = new List<Civ>();
 
@@ -49,7 +51,7 @@ namespace BCRPDBServer
                 Environment.Exit(0);
             }
 
-            Console.WriteLine("Listening for connections...");
+            Log.WriteLine("Listening for connections...");
 
             while (true)
                 ThreadPool.QueueUserWorkItem(Connect, list.AcceptSocket());
@@ -57,7 +59,7 @@ namespace BCRPDBServer
 
         private static bool Exit()
         {
-            Console.WriteLine("Saving and closing...");
+            Log.WriteLine("Saving and closing...");
             File.WriteAllLines("Civilians.db", Civilians.Select(x => x.ToString()));
 
             return true;
@@ -102,17 +104,18 @@ namespace BCRPDBServer
                 }
 
                 Civ civ;
+                ushort id;
 
                 switch (tag)
                 {
                     //Get civ
                     case 0:
-                        ushort id = BitConverter.ToUInt16(b.Take(e).ToArray(), 0);
+                        id = BitConverter.ToUInt16(b.Take(e).ToArray(), 0);
 
                         if (id == 0)
                         {
                             civ = new Civ(GetLowestID());
-                            Console.WriteLine("[" + ip + "] Reserved civ #" + civ.CivID + ".");
+                            Log.WriteLine("Reserved civ #" + civ.CivID + ".", ip);
 
                             Civilians.Add(civ);
                             socket.Send(new byte[] { 0 }.Concat(civ.ToBytes()).ToArray());
@@ -121,12 +124,12 @@ namespace BCRPDBServer
                             try
                             {
                                 socket.Send(new byte[] { 0 }.Concat(Civilians.Find(x => x.CivID == id).ToBytes()).ToArray());
-                                Console.WriteLine("[" + ip + "] Sent civ #" + id + ".");
+                                Log.WriteLine("Sent civ #" + id + ".", ip);
                             }
                             catch
                             {
                                 socket.Send(new byte[] { 1 });
-                                Console.WriteLine("[" + ip + "] Retrieving civ #" + id + " returned empty.");
+                                Log.WriteLine("Retrieving civ #" + id + " returned empty.", ip);
                             }
                         break;
 
@@ -143,12 +146,12 @@ namespace BCRPDBServer
                             Civilians[i] = civ;
                             Civilians[i].Tickets = Tickets;
 
-                            Console.WriteLine("[" + ip + "] Updated civ #" + civ.CivID + ".");
+                            Log.WriteLine("Updated civ #" + civ.CivID + ".", ip);
                         }
                         else
                         {
                             Civilians.Add(civ);
-                            Console.WriteLine("[" + ip + "] Saved civ #" + civ.CivID + ".");
+                            Log.WriteLine("Saved civ #" + civ.CivID + ".", ip);
                         }
                         break;
 
@@ -161,12 +164,12 @@ namespace BCRPDBServer
                         if (civ == null)
                         {
                             socket.Send(new byte[] { 1 });
-                            Console.WriteLine("[" + ip + "] Plate check \"" + plate + "\" returned empty.");
+                            Log.WriteLine("Plate check \"" + plate + "\" returned empty.", ip);
                             return;
                         }
 
                         socket.Send(BitConverter.GetBytes(civ.CivID));
-                        Console.WriteLine("[" + ip + "] Sent civ #" + civ.CivID + " (Plate check).");
+                        Log.WriteLine("Sent civ #" + civ.CivID + " (Plate check).", ip);
                         break;
 
                     //Add ticket
@@ -178,10 +181,33 @@ namespace BCRPDBServer
                         if (civ == null)
                         {
                             socket.Send(new byte[] { 1 });
-                            Console.WriteLine("[" + ip + "] Ticketing civ #" + vars[0] + " returned empty.");
+                            Log.WriteLine("Ticketing civ #" + vars[0] + " returned empty.", ip);
                         }
 
                         civ.Tickets.Add(new KeyValuePair<string, string>(vars[1], vars[2]));
+                        Log.WriteLine("Ticketed civ #" + vars[0] + ".", ip);
+                        break;
+
+                    //Delete records on a civ but still reserve it
+                    case 4:
+                        id = BitConverter.ToUInt16(b.Take(e).ToArray(), 0);
+
+                        civ = Civilians.Find(x => x.CivID == id);
+
+                        if (civ == null)
+                        {
+                            socket.Send(new byte[] { 1 });
+                            Log.WriteLine("Deleting civ #" + id + " returned empty.", ip);
+                        }
+
+                        Civilians.Remove(civ);
+
+                        civ = new Civ(GetLowestID());
+                        Civilians.Add(civ);
+
+                        socket.Send(new byte[] { 0 }.Concat(civ.ToBytes()).ToArray());
+
+                        Log.WriteLine("Deleted civ #" + id + " and reserved civ #" + civ.CivID, ip);
                         break;
                 }
             }

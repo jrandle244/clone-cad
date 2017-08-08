@@ -78,14 +78,17 @@ namespace BCRPDB
 
             byte[] b = new byte[1001];
             int e = client.Receive(b);
+            byte tag = b[0];
+            b = b.Skip(1).ToArray();
+            e = e - 1;
 
             client.Disconnect(true);
             client = new Socket(SocketType.Stream, ProtocolType.Tcp);
 
-            switch (b[0])
+            switch (tag)
             {
                 case 0:
-                    localCiv = Civ.ToCiv(b.Skip(1).Take(e - 1).ToArray());
+                    localCiv = Civ.ToCiv(b.Take(e).ToArray());
                     ID = localCiv.CivID;
                     break;
 
@@ -243,15 +246,48 @@ namespace BCRPDB
             });
         }
 
-        private void CivMenu_FormClosed(object sender, FormClosedEventArgs e)
-        {
+        private void CivMenu_FormClosed(object sender, FormClosedEventArgs e) =>
             closed = true;
-        }
 
         private void CivMenu_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (!sync.Checked && MessageBox.Show("Your civilian is not synced to the server.\nIf you exit your civilian will not be saved!", "BCRPDB", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1) == DialogResult.Cancel)
                 e.Cancel = true;
+        }
+
+        private void delete_Click(object sender, EventArgs ev)
+        {
+            try
+            {
+                client.Connect(cfg.IP, cfg.Port);
+            }
+            catch (SocketException)
+            {
+                return;
+            }
+
+            client.Send(new byte[] { 4 }.Concat(BitConverter.GetBytes(ID)).ToArray());
+
+            byte[] b = new byte[1001];
+            int e = client.Receive(b);
+            byte tag = b[0];
+            b = b.Skip(1).ToArray();
+            e = e - 1;
+
+            client.Disconnect(true);
+            client = new Socket(SocketType.Stream, ProtocolType.Tcp);
+
+            switch (tag)
+            {
+                case 0:
+                    localCiv = Civ.ToCiv(b.Take(e).ToArray());
+                    Sync(false);
+                    break;
+
+                case 1:
+                    MessageBox.Show("Your civilian was not able to be deleted. This is most likely an error in reserving civs.", "BCRPDB", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    break;
+            }
         }
     }
 }

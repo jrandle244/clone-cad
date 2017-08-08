@@ -12,12 +12,22 @@ namespace BCRPDBServer
 
     public class Config
     {
+        public string FilePath { get; private set; }
+
         public string IP { get; private set; }
         public int Port { get; private set; }
         public ClientFilterType Filter { get; private set; }
         public string[] FilteredIPs { get; private set; }
+        public string Log { get; private set; }
 
         public Config(string FilePath)
+        {
+            this.FilePath = FilePath;
+
+            Refresh();
+        }
+
+        public void Refresh()
         {
             string[] lines = File.ReadAllLines(FilePath);
 
@@ -57,6 +67,10 @@ namespace BCRPDBServer
                             FilteredIPs = new string[0];
                         else
                             FilteredIPs = line[1].Split(',').Select(x => x.Trim()).ToArray();
+                        break;
+
+                    case "Log":
+                        Log = line[1];
                         break;
                 }
         }
