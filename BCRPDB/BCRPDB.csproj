@@ -128,4 +128,8 @@
     <Content Include="bcrp.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>del $(TargetDir)\client.zip
+"D:\Program Files\7-Zip\7z" a $(TargetDir)\client.zip $(TargetDir)\*</PostBuildEvent>
+  </PropertyGroup>
 </Project>
