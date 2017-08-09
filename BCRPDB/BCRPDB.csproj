@@ -85,6 +85,7 @@
     <Compile Include="RegWeaponMenu.Designer.cs">
       <DependentUpon>RegWeaponMenu.cs</DependentUpon>
     </Compile>
+    <Compile Include="Ticket.cs" />
     <EmbeddedResource Include="CivMenu.resx">
       <DependentUpon>CivMenu.cs</DependentUpon>
     </EmbeddedResource>

@@ -34,7 +34,7 @@ namespace BCRPDB
             materialSkinManager.ColorScheme = new ColorScheme(Primary.LightBlue500, Primary.LightBlue900, Primary.LightBlue300, Accent.Blue100, TextShade.WHITE);
         }
 
-        private void SendTicket(ushort ID, string ticket, string context)
+        private void SendTicket(ushort ID, Ticket ticket)
         {
             try
             {
@@ -43,12 +43,12 @@ namespace BCRPDB
             catch
             {
                 if (MessageBox.Show("Couldn't connect to the server to give the client the ticket.", "BCRPDB", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error) == DialogResult.Retry)
-                    SendTicket(ID, ticket, context);
+                    SendTicket(ID, ticket);
 
                 return;
             }
 
-            client.Send(new byte[] { 3 }.Concat(Encoding.UTF8.GetBytes(ID + "|" + ticket + "|" + context)).ToArray());
+            client.Send(new byte[] { 3 }.Concat(Encoding.UTF8.GetBytes(ID + "|" + ticket)).ToArray());
 
             byte[] b = new byte[1001];
             int e = client.Receive(b);
@@ -62,7 +62,7 @@ namespace BCRPDB
             switch (tag)
             {
                 case 0:
-                    MessageBox.Show("The civilian has been giving the ticket.", "BCRPDB", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("The civilian has been given the ticket.", "BCRPDB", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     break;
 
                 case 1:
@@ -80,40 +80,26 @@ namespace BCRPDB
         private void PopoMenu_FormClosed(object sender, FormClosedEventArgs e) =>
             closed = true;
 
-        private void context_KeyDown(object sender, KeyEventArgs e)
+        private void price_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (e.KeyCode != Keys.Enter)
-                return;
-
-            ushort idS = ushort.Parse(id.Text);
-            string typeS = type.Text;
-            string contextS = context.Text;
-
-            ThreadPool.QueueUserWorkItem(x => SendTicket(idS, typeS, contextS));
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+                e.Handled = true;
         }
 
-        private void id_KeyDown(object sender, KeyEventArgs e)
+        private Ticket PrepTicket()
         {
-            if (e.KeyCode != Keys.Enter)
-                return;
+            string type = fixit.Checked ? "Fix-it" : "";
+            type = warning.Checked ? "Warning" : type;
+            type = citation.Checked ? "Citation" : type;
+            type = ticket.Checked ? "Ticket" : type;
 
-            ushort idS = ushort.Parse(id.Text);
-            string typeS = type.Text;
-            string contextS = context.Text;
-
-            ThreadPool.QueueUserWorkItem(x => SendTicket(idS, typeS, contextS));
+            return new Ticket(ushort.Parse(price.Text), type, context.Text);
         }
 
-        private void type_KeyDown(object sender, KeyEventArgs e)
+        private new void KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode != Keys.Enter)
-                return;
-
-            ushort idS = ushort.Parse(id.Text);
-            string typeS = type.Text;
-            string contextS = context.Text;
-
-            ThreadPool.QueueUserWorkItem(x => SendTicket(idS, typeS, contextS));
+            if (e.KeyCode == Keys.Enter)
+                ThreadPool.QueueUserWorkItem(x => SendTicket(ushort.Parse(id.Text), PrepTicket()));
         }
     }
 }

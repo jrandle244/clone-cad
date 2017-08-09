@@ -13,17 +13,17 @@ namespace BCRPDBServer
         public string Name { get; set; }
         public string RegisteredPlate { get; set; }
         public List<string> RegisteredWeapons { get; set; }
-        public List<KeyValuePair<string, string>> Tickets { get; set; }
+        public List<Ticket> Tickets { get; set; }
         public string AssociatedBusiness { get; set; }
         public uint BusinessCooldown { get; set; }
 
-        public Civ(ushort CivID, string Name = null, string RegisteredPlate = null, List<string> RegisteredWeapons = null, List<KeyValuePair<string, string>> Tickets = null, string AssociatedBusiness = null, uint BusinessCooldown = 0)
+        public Civ(ushort CivID, string Name = null, string RegisteredPlate = null, List<string> RegisteredWeapons = null, List<Ticket> Tickets = null, string AssociatedBusiness = null, uint BusinessCooldown = 0)
         {
             this.Name = Name;
 
             this.RegisteredPlate = RegisteredPlate;
             this.RegisteredWeapons = RegisteredWeapons ?? new List<string>();
-            this.Tickets = Tickets ?? new List<KeyValuePair<string, string>>();
+            this.Tickets = Tickets ?? new List<Ticket>();
             this.AssociatedBusiness = AssociatedBusiness ?? null;
             this.BusinessCooldown = BusinessCooldown;
             this.CivID = CivID;
@@ -34,7 +34,7 @@ namespace BCRPDBServer
             string name = string.IsNullOrWhiteSpace(Name) ? "" : "|a" + Name;
             string plate = string.IsNullOrWhiteSpace(RegisteredPlate) ? "" : "|b" + RegisteredPlate;
             string weps = RegisteredWeapons.Count == 0 ? "" : "|c" + string.Join(",", RegisteredWeapons);
-            string tickets = Tickets.Count == 0 ? "" : "|d" + string.Join(",", Tickets.Select(x => x.Key + "~" + x.Value));
+            string tickets = Tickets.Count == 0 ? "" : "|d" + string.Join(",", Tickets.Select(x => x.Price + "~" + x.Type + "~" + x.Description));
             string business = string.IsNullOrWhiteSpace(AssociatedBusiness) ? "" : "|e" + AssociatedBusiness;
             string businessCooldown = BusinessCooldown == 0 ? "" : "|f" + BusinessCooldown;
 
@@ -55,7 +55,7 @@ namespace BCRPDBServer
             string name = str.Contains("|a") ? GetVal(dataVals, "a") : null;
             string plate = str.Contains("|b") ? GetVal(dataVals, "b") : null;
             List<string> weps = str.Contains("|c") ? GetVal(dataVals, "c").Split(',').ToList() : null;
-            List<KeyValuePair<string, string>> tickets = str.Contains("|d") ? GetVal(dataVals, "d").Split(',').Select(x => new KeyValuePair<string, string>(x.Split('~')[0], x.Split('~')[1])).ToList() : null;
+            List<Ticket> tickets = str.Contains("|d") ? GetVal(dataVals, "d").Split(',').Select(x => Ticket.Parse(x)).ToList() : null;
             string business = str.Contains("|e") ? GetVal(dataVals, "e") : null;
             uint businessCooldown;
 

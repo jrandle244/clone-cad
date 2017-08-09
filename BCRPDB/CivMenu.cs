@@ -34,6 +34,7 @@ namespace BCRPDB
         {
 
             client = new Socket(SocketType.Stream, ProtocolType.Tcp);
+
             this.ID = ID;
 
             InitializeComponent();
@@ -120,11 +121,21 @@ namespace BCRPDB
 
         private void timer_Tick(object sender, EventArgs e)
         {
-            downloaded = downloaded || downloadedTimeout > 2;
+            if (!sync.Checked && downloaded)
+                Sync();
+            else if (!downloaded && downloadedTimeout == 1)
+            {
+                ID = 0;
+                Sync(false);
 
-            if (!sync.Checked)
-                Sync(downloaded);
-            else
+                downloaded = true;
+            }
+            else if (!downloaded)
+            {
+                Sync(false);
+                downloadedTimeout++;
+            }
+            else if (sync.Checked)
                 Sync(false);
         }
 
@@ -137,8 +148,16 @@ namespace BCRPDB
         private void plate_TextChanged(object sender, EventArgs e) =>
             sync.Checked = false;
 
-        private void syncBtn_Click(object sender, EventArgs e) =>
-            Sync(downloaded);
+        private void syncBtn_Click(object sender, EventArgs e)
+        {
+            if (!downloaded)
+            {
+                downloaded = true;
+                ID = 0;
+            }
+
+            Sync();
+        }
 
         public void Sync(bool update = true)
         {
@@ -225,7 +244,7 @@ namespace BCRPDB
                         }
 
                         ticketList.Items.Clear();
-                        localCiv.Tickets.ForEach(x => ticketList.Items.Add(new ListViewItem(new string[] { x.Key, x.Value })));
+                        localCiv.Tickets.ForEach(x => ticketList.Items.Add(new ListViewItem(new string[] { x.Price.ToString(), x.Type, x.Description })));
                         if (ticketList.Items.Count != 0)
                             ticketList.Items[ticketS].Selected = true;
 

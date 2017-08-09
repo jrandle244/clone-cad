@@ -49,6 +49,7 @@
             this.timer = new System.Windows.Forms.Timer(this.components);
             this.sync = new MaterialSkin.Controls.MaterialCheckBox();
             this.delete = new MaterialSkin.Controls.MaterialRaisedButton();
+            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SuspendLayout();
             // 
             // name
@@ -110,7 +111,8 @@
             this.ticketList.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.ticketList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
-            this.columnHeader2});
+            this.columnHeader2,
+            this.columnHeader4});
             this.ticketList.Depth = 0;
             this.ticketList.Font = new System.Drawing.Font("Roboto", 32F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.World);
             this.ticketList.FullRowSelect = true;
@@ -129,13 +131,13 @@
             // 
             // columnHeader1
             // 
-            this.columnHeader1.Text = "Type";
-            this.columnHeader1.Width = 73;
+            this.columnHeader1.Text = "Price";
+            this.columnHeader1.Width = 64;
             // 
             // columnHeader2
             // 
-            this.columnHeader2.Text = "Description";
-            this.columnHeader2.Width = 215;
+            this.columnHeader2.Text = "Type";
+            this.columnHeader2.Width = 89;
             // 
             // syncBtn
             // 
@@ -310,6 +312,11 @@
             this.delete.UseVisualStyleBackColor = true;
             this.delete.Click += new System.EventHandler(this.delete_Click);
             // 
+            // columnHeader4
+            // 
+            this.columnHeader4.Text = "Description";
+            this.columnHeader4.Width = 213;
+            // 
             // CivMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -362,5 +369,6 @@
         private System.Windows.Forms.Timer timer;
         private MaterialSkin.Controls.MaterialCheckBox sync;
         private MaterialSkin.Controls.MaterialRaisedButton delete;
+        private System.Windows.Forms.ColumnHeader columnHeader4;
     }
 }

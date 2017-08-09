@@ -141,7 +141,7 @@ namespace BCRPDBServer
                         if (fCiv != null)
                         {
                             int i = Civilians.IndexOf(fCiv);
-                            List<KeyValuePair<string, string>> Tickets = Civilians[i].Tickets;
+                            List<Ticket> Tickets = Civilians[i].Tickets;
 
                             Civilians[i] = civ;
                             Civilians[i].Tickets = Tickets;
@@ -184,7 +184,7 @@ namespace BCRPDBServer
                             Log.WriteLine("Ticketing civ #" + vars[0] + " returned empty.", ip);
                         }
 
-                        civ.Tickets.Add(new KeyValuePair<string, string>(vars[1], vars[2]));
+                        civ.Tickets.Add(Ticket.Parse(vars[1]));
                         socket.Send(new byte[] { 0 });
                         Log.WriteLine("Ticketed civ #" + vars[0] + ".", ip);
                         break;

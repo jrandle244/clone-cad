@@ -28,7 +28,10 @@ namespace BCRPDBServer
         {
             string formatted = "[" + DateTime.Now + "] [" + ip + "]: " + text;
 
-            WriteLine(formatted);
+            Console.WriteLine(formatted);
+            writer.WriteLine(formatted);
+
+            writer.Flush();
         }
     }
 }
