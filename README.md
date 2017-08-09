@@ -33,6 +33,8 @@ FilteredPoliceIPs =
 FilteredDispatchIPs = 
 ;Log path
 Log = bcrpdb.log
+;IP aliases for easy tracking of known users (e.g. "123.456.678.012:Bobby" w/out quotes will make the server display and log bobby instead of 123.456.678.012). Seperate by comma.
+Aliases = 
 ```
 
 You probably don't need to change the IP, but if you have multiple network adapters change the IP to the IP that you have port forwarded to.
@@ -42,8 +44,10 @@ If you want/need to you can change the port.
 The filter will deny specified users if set to blacklist and allow specified user only if set to whitelist, so set the filter desired and then enter the IPs in the menu-specific filter below seperated by a ','. 
 
 The log path is pretty self explanitory. It will save whatever was in the console.
+
+The aliases are designed to make it easy to regonize know users i.e. yourself or friends so you dont have to remember their IP they're entered as `IP:Name` and seperated by a comma. If the server would display or log the IP it'll check it will grab the first alias the IP has, otherwise it just displays the IP.
 ## Keeping up-to-date
-Just as a side note, I will have `(client)` or `(server)` at the end of my bug fixes in the release notes. If your version is not mentioned in the release notes then you do not have to patch the new update.
+Just as a side note, I will have `(client)` or `(server)` at the end of my bug fixes in the release notes. If your version is not mentioned in the release notes then you most definately do not have to patch the new update.
 ## About
 A custom database for the FiveM roleplay server Blaine County Roleplay.
 
