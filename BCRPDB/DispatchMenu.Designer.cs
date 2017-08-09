@@ -39,7 +39,7 @@
             // id
             // 
             this.id.Depth = 0;
-            this.id.Hint = "ID";
+            this.id.Hint = "Civilian ID";
             this.id.Location = new System.Drawing.Point(12, 109);
             this.id.MaxLength = 4;
             this.id.MouseState = MaterialSkin.MouseState.HOVER;
@@ -52,6 +52,8 @@
             this.id.TabIndex = 0;
             this.id.TabStop = false;
             this.id.UseSystemPasswordChar = false;
+            this.id.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyDown);
+            this.id.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.id_KeyPress);
             // 
             // materialLabel1
             // 
@@ -82,6 +84,8 @@
             this.plate.TabIndex = 1;
             this.plate.TabStop = false;
             this.plate.UseSystemPasswordChar = false;
+            this.plate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyDown);
+            this.plate.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.plate_KeyPress);
             // 
             // name
             // 
@@ -99,6 +103,8 @@
             this.name.TabIndex = 4;
             this.name.TabStop = false;
             this.name.UseSystemPasswordChar = false;
+            this.name.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyDown);
+            this.name.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.name_KeyPress);
             // 
             // launch
             // 

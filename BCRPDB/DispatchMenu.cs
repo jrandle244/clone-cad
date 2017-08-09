@@ -106,5 +106,50 @@ namespace BCRPDB
                     Thread.Sleep(10);
             });
         }
+
+        private void id_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+                e.Handled = true;
+            else if (!string.IsNullOrEmpty(name.Text) || !string.IsNullOrEmpty(plate.Text))
+            {
+                name.Text = "";
+                plate.Text = "";
+            }
+        }
+
+        private void plate_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsLetterOrDigit(e.KeyChar))
+                e.Handled = true;
+
+            if (char.IsLetter(e.KeyChar))
+            {
+                e.KeyChar = e.KeyChar.ToString().ToUpper()[0];
+
+                if (!string.IsNullOrEmpty(id.Text) || !string.IsNullOrEmpty(name.Text))
+                {
+                    id.Text = "";
+                    name.Text = "";
+                }
+            }
+        }
+
+        private void name_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsLetter(e.KeyChar) && e.KeyChar != ' ')
+                e.Handled = true;
+            else if (!string.IsNullOrEmpty(id.Text) || !string.IsNullOrEmpty(plate.Text))
+            {
+                id.Text = "";
+                plate.Text = "";
+            }
+        }
+
+        private new void KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+                Launch();
+        }
     }
 }
