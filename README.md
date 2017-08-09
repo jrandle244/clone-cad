@@ -25,15 +25,23 @@ IP = 0.0.0.0
 Port = 30120
 ;Filter type. Set 0 for none, set 1 for whitelist, set 2 for blacklist.
 Filter = 0
-;IPs the filter applies to. Keep blank for none.
-FilteredIPs = 
+;IPs the filter applies to in the civ menu. Keep blank for none.
+FilteredCivIPs = 
+;IPs the filter applies to in the police menu. Keep blank for none.
+FilteredPoliceIPs = 
+;IPs the filter applies to in the dispatch menu. Keep blank for none.
+FilteredDispatchIPs = 
 ;Log path
-bcrpdb.log
+Log = bcrpdb.log
 ```
 
-If you have multiple network adapters, change the IP to the IP that you have port forwarded to, or if you have your computer directly hooked up to WAN, set it to your public IP.
+You probably don't need to change the IP, but if you have multiple network adapters change the IP to the IP that you have port forwarded to.
 
-If you want/need to you can change the port. The filter will automatically disconnect users as soon as they connect, so set the filter desired and then enter the IPs in the FilteredIPs value below seperated by a ','. The log path is pretty self explanitory. It will save whatever was in the console.
+If you want/need to you can change the port. 
+
+The filter will deny specified users if set to blacklist and allow specified user only if set to whitelist, so set the filter desired and then enter the IPs in the menu-specific filter below seperated by a ','. 
+
+The log path is pretty self explanitory. It will save whatever was in the console.
 ## Keeping up-to-date
 Just as a side note, I will have `(client)` or `(server)` at the end of my bug fixes in the release notes. If your version is not mentioned in the release notes then you do not have to patch the new update.
 ## About
