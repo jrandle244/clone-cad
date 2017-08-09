@@ -2,7 +2,7 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="BCRPDB.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="CivID" Type="System.UInt16" Scope="User">
+    <Setting Name="CivID" Type="System.Collections.Generic.List&lt;System.UInt16&gt;" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
   </Settings>

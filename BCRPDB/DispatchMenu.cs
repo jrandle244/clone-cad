@@ -19,11 +19,11 @@ namespace BCRPDB
 {
     public partial class DispatchMenu : MaterialForm
     {
-        Socket socket;
+        Socket client;
 
         public DispatchMenu()
         {
-            socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
+            client = new Socket(SocketType.Stream, ProtocolType.Tcp);
 
             InitializeComponent();
 
@@ -32,24 +32,38 @@ namespace BCRPDB
         }
 
         private void launch_Click(object sender, EventArgs ev) =>
-            Launch();
+            ThreadPool.QueueUserWorkItem(x => Launch(id.Text, name.Text, plate.Text));
 
-        private void Launch()
+        private void Launch(string id, string name, string plate)
         {
             ushort ID = 1;
 
-            if (!string.IsNullOrWhiteSpace(id.Text))
-                ID = ushort.Parse(id.Text);
-            else if (!string.IsNullOrWhiteSpace(plate.Text))
+            if (!string.IsNullOrWhiteSpace(id))
+                ID = ushort.Parse(id);
+            else if (!string.IsNullOrWhiteSpace(plate))
             {
-                socket.Connect(Main.cfg.IP, Main.cfg.Port);
+                try
+                {
+                    client.Connect(Main.cfg.IP, Main.cfg.Port);
+                }
+                catch (SocketException)
+                {
+                    if (MessageBox.Show("Couldn't connect to the server to get the civilian ID.", "BCRPDB", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error) == DialogResult.Retry)
+                        Launch(id, name, plate);
 
-                socket.Send(new byte[] { 2 }.Concat(Encoding.UTF8.GetBytes(plate.Text)).ToArray());
+                    return;
+                }
+
+                client.Send(new byte[] { 2 }.Concat(Encoding.UTF8.GetBytes(name)).ToArray());
 
                 byte[] b = new byte[1001];
-                int e = socket.Receive(b);
+                int e = client.Receive(b);
                 byte tag = b[0];
+                b = b.Skip(1).ToArray();
                 e = e - 1;
+
+                client.Disconnect(true);
+                client = new Socket(SocketType.Stream, ProtocolType.Tcp);
 
                 switch (tag)
                 {
@@ -60,22 +74,37 @@ namespace BCRPDB
                     case 1:
                         if (MessageBox.Show("Plate was not able to be found.", "BCRPDB", MessageBoxButtons.RetryCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button2) == DialogResult.Retry)
                         {
-                            Launch();
+                            Launch(id, name, plate);
                             return;
                         }
                         break;
                 }
             }
-            else if (!string.IsNullOrWhiteSpace(name.Text))
+            else if (!string.IsNullOrWhiteSpace(name))
             {
-                socket.Connect(Main.cfg.IP, Main.cfg.Port);
+                try
+                {
+                    client.Connect(Main.cfg.IP, Main.cfg.Port);
+                }
+                catch (SocketException)
+                {
+                    if (MessageBox.Show("Couldn't connect to the server to get the civilian ID.", "BCRPDB", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error) == DialogResult.Retry)
+                        Launch(id, name, plate);
 
-                socket.Send(new byte[] { 5 }.Concat(Encoding.UTF8.GetBytes(plate.Text)).ToArray());
+                    return;
+                }
+
+                client.Send(new byte[] { 5 }.Concat(Encoding.UTF8.GetBytes(name)).ToArray());
 
                 byte[] b = new byte[1001];
-                int e = socket.Receive(b);
+                int e = client.Receive(b);
                 byte tag = b[0];
+                b = b.Skip(1).ToArray();
                 e = e - 1;
+
+                client.Disconnect(true);
+                client = new Socket(SocketType.Stream, ProtocolType.Tcp);
+
 
                 switch (tag)
                 {
@@ -85,25 +114,26 @@ namespace BCRPDB
 
                     case 1:
                         if (MessageBox.Show("Name was not able to be found.", "BCRPDB", MessageBoxButtons.RetryCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button2) == DialogResult.Retry)
-                        {
-                            Launch();
-                            return;
-                        }
-                        break;
+                            Launch(id, name, plate);
+
+                        return;
                 }
             }
             else
                 return;
 
-            CivView civ = new CivView(ID);
-
-            civ.Show();
-            civ.Sync();
-
-            ThreadPool.QueueUserWorkItem(x =>
+            Invoke((MethodInvoker)delegate
             {
-                while (!civ.closed)
-                    Thread.Sleep(10);
+                CivView civ = new CivView(ID);
+
+                civ.Show();
+                civ.Sync();
+
+                ThreadPool.QueueUserWorkItem(x =>
+                {
+                    while (!civ.closed)
+                        Thread.Sleep(10);
+                });
             });
         }
 
@@ -149,7 +179,7 @@ namespace BCRPDB
         private new void KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
-                Launch();
+                ThreadPool.QueueUserWorkItem(x => Launch(id.Text, name.Text, plate.Text));
         }
     }
 }

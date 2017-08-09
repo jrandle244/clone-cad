@@ -98,7 +98,7 @@ namespace BCRPDBServer
                         if (id == 0)
                         {
                             if (!cfg.HasPerm(ip, Permission.Civ))
-                                return;
+                                break;
 
                             civ = new Civ(GetLowestID());
                             Log.WriteLine("Reserved civ #" + civ.CivID + ".", ip);
@@ -110,7 +110,7 @@ namespace BCRPDBServer
                             try
                             {
                                 if (!cfg.HasPerm(ip, Permission.Civ) && !cfg.HasPerm(ip, Permission.Dispatch))
-                                    return;
+                                    break;
 
                                 socket.Send(new byte[] { 0 }.Concat(Civilians.Find(x => x.CivID == id).ToBytes()).ToArray());
                                 Log.WriteLine("Sent civ #" + id + ".", ip);
@@ -125,7 +125,7 @@ namespace BCRPDBServer
                     //Update civ
                     case 1:
                         if (!cfg.HasPerm(ip, Permission.Civ))
-                            return;
+                            break;
 
                         civ = Civ.ToCiv(b.Take(e).ToArray());
                         Civ fCiv = Civilians.Find(x => x.CivID == civ.CivID);
@@ -150,7 +150,7 @@ namespace BCRPDBServer
                     //Plate check
                     case 2:
                         if (!cfg.HasPerm(ip, Permission.Dispatch))
-                            return;
+                            break;
 
                         string plate = Encoding.UTF8.GetString(b.Take(e).ToArray());
 
@@ -160,7 +160,7 @@ namespace BCRPDBServer
                         {
                             socket.Send(new byte[] { 1 });
                             Log.WriteLine("Plate check \"" + plate + "\" returned empty.", ip);
-                            return;
+                            break;
                         }
 
                         socket.Send(new byte[] { 0 }.Concat(BitConverter.GetBytes(civ.CivID)).ToArray());
@@ -171,7 +171,7 @@ namespace BCRPDBServer
                     //Add ticket
                     case 3:
                         if (!cfg.HasPerm(ip, Permission.Police))
-                            return;
+                            break;
 
                         string[] vars = Encoding.UTF8.GetString(b.Take(e).ToArray()).Split('|');
                         
@@ -181,6 +181,7 @@ namespace BCRPDBServer
                         {
                             socket.Send(new byte[] { 1 });
                             Log.WriteLine("Ticketing civ #" + vars[0] + " returned empty.", ip);
+                            break;
                         }
 
                         civ.Tickets.Add(Ticket.Parse(vars[1]));
@@ -191,7 +192,7 @@ namespace BCRPDBServer
                     //Delete records on a civ but still reserve it
                     case 4:
                         if (!cfg.HasPerm(ip, Permission.Civ))
-                            return;
+                            break;
 
                         id = BitConverter.ToUInt16(b.Take(e).ToArray(), 0);
 
@@ -201,6 +202,7 @@ namespace BCRPDBServer
                         {
                             socket.Send(new byte[] { 1 });
                             Log.WriteLine("Deleting civ #" + id + " returned empty.", ip);
+                            break;
                         }
 
                         Civilians.Remove(civ);
@@ -216,7 +218,7 @@ namespace BCRPDBServer
                     //Name check
                     case 5:
                         if (!cfg.HasPerm(ip, Permission.Dispatch))
-                            return;
+                            break;
 
                         string name = Encoding.UTF8.GetString(b.Take(e).ToArray());
 
@@ -226,6 +228,7 @@ namespace BCRPDBServer
                         {
                             socket.Send(new byte[] { 1 });
                             Log.WriteLine("Name check on \"" + name + "\" returned empty.", ip);
+                            break;
                         }
 
                         socket.Send(new byte[] { 0 }.Concat(BitConverter.GetBytes(civ.CivID)).ToArray());

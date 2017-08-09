@@ -38,7 +38,7 @@ namespace BCRPDB
 
             if (civ.Checked)
             {
-                CivMenu civ = new CivMenu(Settings.Default.CivID);
+                CivMenu civ = new CivMenu(10);
                 civ.FormClosed += new FormClosedEventHandler(delegate (Object o, FormClosedEventArgs a)
                 {
                     Visible = true;
@@ -53,9 +53,6 @@ namespace BCRPDB
                 {
                     while (!civ.closed)
                         Thread.Sleep(10);
-
-                    Settings.Default.CivID = civ.ID;
-                    Settings.Default.Save();
 
                     if (close.Checked)
                         Invoke((MethodInvoker)delegate { Close(); });

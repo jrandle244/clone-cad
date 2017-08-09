@@ -26,9 +26,9 @@ namespace BCRPDB.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public ushort CivID {
+        public global::System.Collections.Generic.List<System.UInt16> CivID {
             get {
-                return ((ushort)(this["CivID"]));
+                return ((global::System.Collections.Generic.List<System.UInt16>)(this["CivID"]));
             }
             set {
                 this["CivID"] = value;

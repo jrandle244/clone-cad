@@ -65,10 +65,6 @@ namespace BCRPDB
                 case 1:
                     MessageBox.Show("Your civilian was not found.", "BCRPDB", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     break;
-
-                case 2:
-                    MessageBox.Show("You do not have permission to use the police menu.\nAsk the host to add you to the whitelist or remove you from the blacklist.", "BCRPDB", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                    break;
             }
         }
 

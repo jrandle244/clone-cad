@@ -52,6 +52,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Civ.cs" />
+    <Compile Include="CivLauncher.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CivLauncher.Designer.cs">
+      <DependentUpon>CivLauncher.cs</DependentUpon>
+    </Compile>
     <Compile Include="CivMenu.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -123,6 +129,7 @@
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </None>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
