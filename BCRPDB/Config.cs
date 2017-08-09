@@ -21,6 +21,12 @@ namespace BCRPDB
                 switch (line[0])
                 {
                     case "IP":
+                        if (line[1] == "changeme")
+                        {
+                            MessageBox.Show("Looks like you forgot to change the config.\nThe please edit your config and then come back ༼ つ ◕_◕ ༽つ", "BCRPDB", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            Environment.Exit(0);
+                        }
+
                         IP = line[1];
                         break;
 
