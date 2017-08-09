@@ -96,13 +96,16 @@ namespace BCRPDBServer
                             break;
 
                         case "Aliases":
-                            Aliases = line[1].Split(',').Select(x => x.Trim()).Select(x => Alias.Parse(x)).ToList();
+                            if (string.IsNullOrWhiteSpace(line[1]))
+                                Aliases = new List<Alias>();
+                            else
+                                Aliases = line[1].Split(',').Select(x => x.Trim()).Select(x => Alias.Parse(x)).ToList();
                             break;
                     }
                 }
                 catch
                 {
-                    MessageBox.Show("Fatal config error on key " + line[0] + ". Make sure it is properly configured", "BCRPDB Server", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Fatal config error on key " + line[0] + ". Make sure it is properly configured.", "BCRPDB Server", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
