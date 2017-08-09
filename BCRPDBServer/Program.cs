@@ -16,7 +16,7 @@ namespace BCRPDBServer
     {
         static TcpListener list;
         static List<Civ> Civilians;
-        static Config cfg;
+        public static Config cfg;
         static Log log;
 
         [DllImport("Kernel32")]
@@ -30,7 +30,7 @@ namespace BCRPDBServer
             Console.Title = "BCRPDB Server";
 
             cfg = new Config("server-settings.ini");
-            log = new Log(cfg.Log);
+            log = new Log(cfg.Log, cfg.Aliases);
             list = new TcpListener(IPAddress.Parse(cfg.IP), cfg.Port);
             Civilians = new List<Civ>();
 

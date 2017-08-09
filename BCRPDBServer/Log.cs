@@ -10,9 +10,13 @@ namespace BCRPDBServer
     public class Log
     {
         private static StreamWriter writer;
+        public static List<Alias> Aliases { get; set; }
 
-        public Log(string FileName) =>
+        public Log(string FileName, List<Alias> aliases)
+        {
+            Aliases = aliases;
             writer = new StreamWriter(FileName);
+        }
 
         public static void WriteLine(string text)
         {
@@ -26,7 +30,7 @@ namespace BCRPDBServer
 
         public static void WriteLine(string text, string ip)
         {
-            string formatted = "[" + DateTime.Now + "] [" + ip + "]: " + text;
+            string formatted = "[" + DateTime.Now + "] [" + Aliases.GetAlias(ip) + "]: " + text;
 
             Console.WriteLine(formatted);
             writer.WriteLine(formatted);

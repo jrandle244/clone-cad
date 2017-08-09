@@ -37,11 +37,9 @@ namespace BCRPDB
             this.ID = ID;
 
             InitializeComponent();
-
-            var materialSkinManager = MaterialSkinManager.Instance;
-            materialSkinManager.AddFormToManage(this);
-            materialSkinManager.Theme = MaterialSkinManager.Themes.LIGHT;
-            materialSkinManager.ColorScheme = new ColorScheme(Primary.Green500, Primary.Green900, Primary.Green300, Accent.Cyan400, TextShade.WHITE);
+            
+            SkinManager.Theme = MaterialSkinManager.Themes.LIGHT;
+            SkinManager.ColorScheme = new ColorScheme(Primary.Green500, Primary.Green700, Primary.Green300, Accent.Green700, TextShade.WHITE);
         }
 
         private void addWep_Click(object sender, EventArgs e)

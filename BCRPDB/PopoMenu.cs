@@ -27,11 +27,9 @@ namespace BCRPDB
             client = new Socket(SocketType.Stream, ProtocolType.Tcp);
 
             InitializeComponent();
-
-            var materialSkinManager = MaterialSkinManager.Instance;
-            materialSkinManager.AddFormToManage(this);
-            materialSkinManager.Theme = MaterialSkinManager.Themes.LIGHT;
-            materialSkinManager.ColorScheme = new ColorScheme(Primary.LightBlue500, Primary.LightBlue900, Primary.LightBlue300, Accent.Blue100, TextShade.WHITE);
+            
+            SkinManager.Theme = MaterialSkinManager.Themes.LIGHT;
+            SkinManager.ColorScheme = new ColorScheme(Primary.LightBlue500, Primary.LightBlue900, Primary.LightBlue300, Accent.Blue700, TextShade.WHITE);
         }
 
         private void SendTicket(ushort ID, Ticket ticket)

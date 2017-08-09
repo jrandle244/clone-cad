@@ -22,10 +22,12 @@ namespace BCRPDBServer
         public string[] FilteredPoliceIPs { get; private set; }
         public string[] FilteredDispatchIPs { get; private set; }
         public string Log { get; private set; }
+        public List<Alias> Aliases;
 
         public Config(string FilePath)
         {
             this.FilePath = FilePath;
+            Aliases = new List<Alias>();
 
             Refresh();
         }
@@ -35,61 +37,74 @@ namespace BCRPDBServer
             string[] lines = File.ReadAllLines(FilePath);
 
             foreach (string[] line in lines.Where(x => !x.StartsWith(";")).Select(x => x.Split('=').Select(y => y.Trim()).ToArray()))
-                switch (line[0])
+            {
+                try
                 {
-                    case "IP":
-                        IP = line[1];
-                        break;
+                    switch (line[0])
+                    {
+                        case "IP":
+                            IP = line[1];
+                            break;
 
-                    case "Port":
-                        int _Port;
+                        case "Port":
+                            int _Port;
 
-                        if (!int.TryParse(line[1], out _Port) || _Port < 1024 || _Port > 65536)
-                        {
-                            MessageBox.Show("The port is invalid.\nMake sure it is a positive integer within 1025-65535.", "BCRPDB Server", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            Environment.Exit(0);
-                        }
+                            if (!int.TryParse(line[1], out _Port) || _Port < 1024 || _Port > 65536)
+                            {
+                                MessageBox.Show("The port is invalid.\nMake sure it is a positive integer within 1025-65535.", "BCRPDB Server", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                Environment.Exit(0);
+                            }
 
-                        Port = _Port;
-                        break;
+                            Port = _Port;
+                            break;
 
-                    case "Filter":
-                        int _Filter;
+                        case "Filter":
+                            int _Filter;
 
-                        if (!int.TryParse(line[1], out _Filter) || _Filter < 0 || _Filter > 2)
-                        {
-                            MessageBox.Show("The filter type is invalid.\nMake sure it is within 0-2.", "BCRPDB Server", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            Environment.Exit(0);
-                        }
+                            if (!int.TryParse(line[1], out _Filter) || _Filter < 0 || _Filter > 2)
+                            {
+                                MessageBox.Show("The filter type is invalid.\nMake sure it is within 0-2.", "BCRPDB Server", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                Environment.Exit(0);
+                            }
 
-                        Filter = (FilterType)_Filter;
-                        break;
+                            Filter = (FilterType)_Filter;
+                            break;
 
-                    case "FilteredCivIPs":
-                        if (string.IsNullOrWhiteSpace(line[1]))
-                            FilteredCivIPs = new string[0];
-                        else
-                            FilteredCivIPs = line[1].Split(',').Select(x => x.Trim()).ToArray();
-                        break;
+                        case "FilteredCivIPs":
+                            if (string.IsNullOrWhiteSpace(line[1]))
+                                FilteredCivIPs = new string[0];
+                            else
+                                FilteredCivIPs = line[1].Split(',').Select(x => x.Trim()).ToArray();
+                            break;
 
-                    case "FilteredPoliceIPs":
-                        if (string.IsNullOrWhiteSpace(line[1]))
-                            FilteredPoliceIPs = new string[0];
-                        else
-                            FilteredPoliceIPs = line[1].Split(',').Select(x => x.Trim()).ToArray();
-                        break;
+                        case "FilteredPoliceIPs":
+                            if (string.IsNullOrWhiteSpace(line[1]))
+                                FilteredPoliceIPs = new string[0];
+                            else
+                                FilteredPoliceIPs = line[1].Split(',').Select(x => x.Trim()).ToArray();
+                            break;
 
-                    case "FilteredDispatchIPs":
-                        if (string.IsNullOrWhiteSpace(line[1]))
-                            FilteredDispatchIPs = new string[0];
-                        else
-                            FilteredDispatchIPs = line[1].Split(',').Select(x => x.Trim()).ToArray();
-                        break;
+                        case "FilteredDispatchIPs":
+                            if (string.IsNullOrWhiteSpace(line[1]))
+                                FilteredDispatchIPs = new string[0];
+                            else
+                                FilteredDispatchIPs = line[1].Split(',').Select(x => x.Trim()).ToArray();
+                            break;
 
-                    case "Log":
-                        Log = line[1];
-                        break;
+                        case "Log":
+                            Log = line[1];
+                            break;
+
+                        case "Aliases":
+                            Aliases = line[1].Split(',').Select(x => x.Trim()).Select(x => Alias.Parse(x)).ToList();
+                            break;
+                    }
                 }
+                catch
+                {
+                    MessageBox.Show("Fatal config error on key " + line[0] + ". Make sure it is properly configured", "BCRPDB Server", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
 
         public bool HasPerm(string ip, Permission perm)

@@ -20,10 +20,14 @@ namespace BCRPDB
     public partial class Main : MaterialForm
     {
         public static Config cfg;
+        public ColorScheme scheme;
+        public MaterialSkinManager.Themes theme;
 
         public Main()
         {
             cfg = new Config("settings.ini");
+            scheme = SkinManager.ColorScheme;
+            theme = SkinManager.Theme;
 
             InitializeComponent();
         }
@@ -35,7 +39,12 @@ namespace BCRPDB
             if (civ.Checked)
             {
                 CivMenu civ = new CivMenu(Settings.Default.CivID);
-                civ.FormClosed += new FormClosedEventHandler(delegate (Object o, FormClosedEventArgs a) { Visible = true; });
+                civ.FormClosed += new FormClosedEventHandler(delegate (Object o, FormClosedEventArgs a) 
+                {
+                    Visible = true;
+                    SkinManager.ColorScheme = scheme;
+                    SkinManager.Theme = theme;
+                });
 
                 civ.Show(this);
                 civ.Sync(false);
@@ -45,18 +54,22 @@ namespace BCRPDB
                     while (!civ.closed)
                         Thread.Sleep(10);
 
+                    Settings.Default.CivID = civ.ID;
+                    Settings.Default.Save();
+
                     if (close.Checked)
-                        {
-                            Settings.Default.CivID = civ.ID;
-                            Settings.Default.Save();
-                            Invoke((MethodInvoker)delegate { Close(); });
-                        }
+                        Invoke((MethodInvoker)delegate { Close(); });
                 })).Start();
             }
             else if (popo.Checked)
             {
                 PopoMenu popo = new PopoMenu();
-                popo.FormClosed += new FormClosedEventHandler(delegate (Object o, FormClosedEventArgs a) { Visible = true; });
+                popo.FormClosed += new FormClosedEventHandler(delegate (Object o, FormClosedEventArgs a) 
+                {
+                    Visible = true;
+                    SkinManager.ColorScheme = scheme;
+                    SkinManager.Theme = theme;
+                });
 
                 popo.Show(this);
 
@@ -66,13 +79,23 @@ namespace BCRPDB
                         Thread.Sleep(10);
 
                     if (close.Checked)
-                        Invoke((MethodInvoker)delegate { Close(); });
+                        Invoke((MethodInvoker)delegate 
+                        {
+                            Close();
+                            SkinManager.ColorScheme = scheme;
+                            SkinManager.Theme = theme;
+                        });
                 })).Start();
             }
             else
             {
                 DispatchMenu dis = new DispatchMenu();
-                dis.FormClosed += new FormClosedEventHandler(delegate (Object o, FormClosedEventArgs a) { Visible = true; });
+                dis.FormClosed += new FormClosedEventHandler(delegate (Object o, FormClosedEventArgs a) 
+                {
+                    Visible = true;
+                    SkinManager.ColorScheme = scheme;
+                    SkinManager.Theme = theme;
+                });
 
                 dis.ShowDialog();
             }
