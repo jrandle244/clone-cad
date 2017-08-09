@@ -32,7 +32,6 @@ namespace BCRPDB
 
         public CivMenu(ushort ID)
         {
-
             client = new Socket(SocketType.Stream, ProtocolType.Tcp);
 
             this.ID = ID;

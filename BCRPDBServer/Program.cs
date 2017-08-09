@@ -70,23 +70,6 @@ namespace BCRPDBServer
             Socket socket = (Socket)socketO;
             string ip = socket.RemoteEndPoint.ToString().Split(':')[0];
 
-            if (cfg.Filter == ClientFilterType.Whitelist)
-            {
-                if (!cfg.FilteredIPs.Contains(ip))
-                {
-                    socket.Disconnect(true);
-                    return;
-                }
-            }
-            else if (cfg.Filter == ClientFilterType.Blacklist)
-            {
-                if (cfg.FilteredIPs.Contains(ip))
-                {
-                    socket.Disconnect(true);
-                    return;
-                }
-            }
-
             while (socket.Connected)
             {
                 byte[] b = new byte[1001];
@@ -114,6 +97,9 @@ namespace BCRPDBServer
 
                         if (id == 0)
                         {
+                            if (!cfg.HasPerm(ip, Permission.Civ))
+                                return;
+
                             civ = new Civ(GetLowestID());
                             Log.WriteLine("Reserved civ #" + civ.CivID + ".", ip);
 
@@ -123,6 +109,9 @@ namespace BCRPDBServer
                         else
                             try
                             {
+                                if (!cfg.HasPerm(ip, Permission.Civ) || !cfg.HasPerm(ip, Permission.Dispatch))
+                                    return;
+
                                 socket.Send(new byte[] { 0 }.Concat(Civilians.Find(x => x.CivID == id).ToBytes()).ToArray());
                                 Log.WriteLine("Sent civ #" + id + ".", ip);
                             }
@@ -135,6 +124,9 @@ namespace BCRPDBServer
 
                     //Update civ
                     case 1:
+                        if (!cfg.HasPerm(ip, Permission.Civ))
+                            return;
+
                         civ = Civ.ToCiv(b.Take(e).ToArray());
                         Civ fCiv = Civilians.Find(x => x.CivID == civ.CivID);
 
@@ -157,6 +149,9 @@ namespace BCRPDBServer
 
                     //Plate check
                     case 2:
+                        if (!cfg.HasPerm(ip, Permission.Dispatch))
+                            return;
+
                         string plate = Encoding.UTF8.GetString(b.Take(e).ToArray());
 
                         civ = Civilians.Find(x => x.RegisteredPlate == plate);
@@ -174,6 +169,9 @@ namespace BCRPDBServer
 
                     //Add ticket
                     case 3:
+                        if (!cfg.HasPerm(ip, Permission.Police))
+                            return;
+
                         string[] vars = Encoding.UTF8.GetString(b.Take(e).ToArray()).Split('|');
                         
                         civ = Civilians.Find(x => x.CivID == ushort.Parse(vars[0]));
@@ -191,6 +189,9 @@ namespace BCRPDBServer
 
                     //Delete records on a civ but still reserve it
                     case 4:
+                        if (!cfg.HasPerm(ip, Permission.Civ))
+                            return;
+
                         id = BitConverter.ToUInt16(b.Take(e).ToArray(), 0);
 
                         civ = Civilians.Find(x => x.CivID == id);

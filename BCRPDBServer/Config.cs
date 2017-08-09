@@ -8,7 +8,8 @@ using System.Windows.Forms;
 
 namespace BCRPDBServer
 {
-    public enum ClientFilterType { None, Whitelist, Blacklist }
+    public enum FilterType { None, Whitelist, Blacklist }
+    public enum Permission { Civ, Police, Dispatch }
 
     public class Config
     {
@@ -16,8 +17,10 @@ namespace BCRPDBServer
 
         public string IP { get; private set; }
         public int Port { get; private set; }
-        public ClientFilterType Filter { get; private set; }
-        public string[] FilteredIPs { get; private set; }
+        public FilterType Filter { get; private set; }
+        public string[] FilteredCivIPs { get; private set; }
+        public string[] FilteredPoliceIPs { get; private set; }
+        public string[] FilteredDispatchIPs { get; private set; }
         public string Log { get; private set; }
 
         public Config(string FilePath)
@@ -59,20 +62,66 @@ namespace BCRPDBServer
                             Environment.Exit(0);
                         }
 
-                        Filter = (ClientFilterType)_Filter;
+                        Filter = (FilterType)_Filter;
                         break;
 
-                    case "FilteredIPs":
+                    case "FilteredCivIPs":
                         if (string.IsNullOrWhiteSpace(line[1]))
-                            FilteredIPs = new string[0];
+                            FilteredCivIPs = new string[0];
                         else
-                            FilteredIPs = line[1].Split(',').Select(x => x.Trim()).ToArray();
+                            FilteredCivIPs = line[1].Split(',').Select(x => x.Trim()).ToArray();
+                        break;
+
+                    case "FilteredPoliceIPs":
+                        if (string.IsNullOrWhiteSpace(line[1]))
+                            FilteredPoliceIPs = new string[0];
+                        else
+                            FilteredPoliceIPs = line[1].Split(',').Select(x => x.Trim()).ToArray();
+                        break;
+
+                    case "FilteredDispatchIPs":
+                        if (string.IsNullOrWhiteSpace(line[1]))
+                            FilteredDispatchIPs = new string[0];
+                        else
+                            FilteredDispatchIPs = line[1].Split(',').Select(x => x.Trim()).ToArray();
                         break;
 
                     case "Log":
                         Log = line[1];
                         break;
                 }
+        }
+
+        public bool HasPerm(string ip, Permission perm)
+        {
+            if (Filter == FilterType.None)
+                return true;
+
+            if (Filter == FilterType.Blacklist)
+            {
+                if (perm == Permission.Civ && !FilteredCivIPs.Contains(ip))
+                    return true;
+
+                if (perm == Permission.Police && !FilteredPoliceIPs.Contains(ip))
+                    return true;
+
+                if (perm == Permission.Dispatch && !FilteredDispatchIPs.Contains(ip))
+                    return true;
+            }
+            
+            if (Filter == FilterType.Whitelist)
+            {
+                if (perm == Permission.Civ && FilteredCivIPs.Contains(ip))
+                    return true;
+
+                if (perm == Permission.Police && FilteredPoliceIPs.Contains(ip))
+                    return true;
+
+                if (perm == Permission.Dispatch && FilteredDispatchIPs.Contains(ip))
+                    return true;
+            }
+
+            return false;
         }
     }
 }
