@@ -20,7 +20,6 @@ namespace BCRPDB
     public partial class PopoMenu : MaterialForm
     {
         Socket client;
-        public bool closed = false;
 
         public PopoMenu()
         {
@@ -79,9 +78,6 @@ namespace BCRPDB
                 e.Handled = true;
         }
 
-        private void PopoMenu_FormClosed(object sender, FormClosedEventArgs e) =>
-            closed = true;
-
         private void price_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
@@ -103,5 +99,8 @@ namespace BCRPDB
             if (e.KeyCode == Keys.Enter)
                 ThreadPool.QueueUserWorkItem(x => SendTicket(ushort.Parse(id.Text), PrepTicket()));
         }
+
+        private void giveTicket_Click(object sender, EventArgs e) =>
+            ThreadPool.QueueUserWorkItem(x => SendTicket(ushort.Parse(id.Text), PrepTicket()));
     }
 }

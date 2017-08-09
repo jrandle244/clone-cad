@@ -36,6 +36,7 @@
             this.ticketList = new MaterialSkin.Controls.MaterialListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.syncBtn = new MaterialSkin.Controls.MaterialRaisedButton();
             this.regWepList = new MaterialSkin.Controls.MaterialListView();
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -49,7 +50,6 @@
             this.timer = new System.Windows.Forms.Timer(this.components);
             this.sync = new MaterialSkin.Controls.MaterialCheckBox();
             this.delete = new MaterialSkin.Controls.MaterialRaisedButton();
-            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SuspendLayout();
             // 
             // name
@@ -57,7 +57,7 @@
             this.name.Depth = 0;
             this.name.Hint = "Full Name";
             this.name.Location = new System.Drawing.Point(12, 75);
-            this.name.MaxLength = 50;
+            this.name.MaxLength = 30;
             this.name.MouseState = MaterialSkin.MouseState.HOVER;
             this.name.Name = "name";
             this.name.PasswordChar = '\0';
@@ -68,6 +68,7 @@
             this.name.TabIndex = 0;
             this.name.TabStop = false;
             this.name.UseSystemPasswordChar = false;
+            this.name.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.name_KeyPress);
             this.name.TextChanged += new System.EventHandler(this.name_TextChanged);
             // 
             // business
@@ -104,6 +105,7 @@
             this.plate.TabIndex = 2;
             this.plate.TabStop = false;
             this.plate.UseSystemPasswordChar = false;
+            this.plate.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.plate_KeyPress);
             this.plate.TextChanged += new System.EventHandler(this.plate_TextChanged);
             // 
             // ticketList
@@ -138,6 +140,11 @@
             // 
             this.columnHeader2.Text = "Type";
             this.columnHeader2.Width = 89;
+            // 
+            // columnHeader4
+            // 
+            this.columnHeader4.Text = "Description";
+            this.columnHeader4.Width = 213;
             // 
             // syncBtn
             // 
@@ -311,11 +318,6 @@
             this.delete.Text = "Delete";
             this.delete.UseVisualStyleBackColor = true;
             this.delete.Click += new System.EventHandler(this.delete_Click);
-            // 
-            // columnHeader4
-            // 
-            this.columnHeader4.Text = "Description";
-            this.columnHeader4.Width = 213;
             // 
             // CivMenu
             // 

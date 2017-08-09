@@ -58,6 +58,12 @@
     <Compile Include="CivMenu.Designer.cs">
       <DependentUpon>CivMenu.cs</DependentUpon>
     </Compile>
+    <Compile Include="CivView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CivView.Designer.cs">
+      <DependentUpon>CivView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Config.cs" />
     <Compile Include="DispatchMenu.cs">
       <SubType>Form</SubType>
@@ -88,6 +94,9 @@
     <Compile Include="Ticket.cs" />
     <EmbeddedResource Include="CivMenu.resx">
       <DependentUpon>CivMenu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CivView.resx">
+      <DependentUpon>CivView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DispatchMenu.resx">
       <DependentUpon>DispatchMenu.cs</DependentUpon>

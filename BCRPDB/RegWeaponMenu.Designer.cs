@@ -57,6 +57,7 @@
             this.ClientSize = new System.Drawing.Size(299, 118);
             this.Controls.Add(this.WeaponName);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
             this.Name = "RegWeaponMenu";
             this.Text = "Register Weapon";
             this.ResumeLayout(false);

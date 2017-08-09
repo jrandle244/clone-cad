@@ -36,6 +36,7 @@
             this.ticket = new MaterialSkin.Controls.MaterialRadioButton();
             this.citation = new MaterialSkin.Controls.MaterialRadioButton();
             this.fixit = new MaterialSkin.Controls.MaterialRadioButton();
+            this.giveTicket = new MaterialSkin.Controls.MaterialRaisedButton();
             this.SuspendLayout();
             // 
             // price
@@ -80,7 +81,7 @@
             this.id.Depth = 0;
             this.id.Hint = "Civilian ID";
             this.id.Location = new System.Drawing.Point(12, 154);
-            this.id.MaxLength = 5;
+            this.id.MaxLength = 4;
             this.id.MouseState = MaterialSkin.MouseState.HOVER;
             this.id.Name = "id";
             this.id.PasswordChar = '\0';
@@ -160,11 +161,28 @@
             this.fixit.Text = "Fix-it";
             this.fixit.UseVisualStyleBackColor = true;
             // 
+            // giveTicket
+            // 
+            this.giveTicket.AutoSize = true;
+            this.giveTicket.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.giveTicket.Depth = 0;
+            this.giveTicket.Icon = null;
+            this.giveTicket.Location = new System.Drawing.Point(12, 212);
+            this.giveTicket.MouseState = MaterialSkin.MouseState.HOVER;
+            this.giveTicket.Name = "giveTicket";
+            this.giveTicket.Primary = true;
+            this.giveTicket.Size = new System.Drawing.Size(100, 36);
+            this.giveTicket.TabIndex = 7;
+            this.giveTicket.Text = "Give ticket";
+            this.giveTicket.UseVisualStyleBackColor = true;
+            this.giveTicket.Click += new System.EventHandler(this.giveTicket_Click);
+            // 
             // PopoMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(250, 218);
+            this.ClientSize = new System.Drawing.Size(250, 260);
+            this.Controls.Add(this.giveTicket);
             this.Controls.Add(this.fixit);
             this.Controls.Add(this.citation);
             this.Controls.Add(this.ticket);
@@ -176,7 +194,6 @@
             this.MaximizeBox = false;
             this.Name = "PopoMenu";
             this.Text = "Police";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.PopoMenu_FormClosed);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -191,5 +208,6 @@
         private MaterialSkin.Controls.MaterialRadioButton ticket;
         private MaterialSkin.Controls.MaterialRadioButton citation;
         private MaterialSkin.Controls.MaterialRadioButton fixit;
+        private MaterialSkin.Controls.MaterialRaisedButton giveTicket;
     }
 }

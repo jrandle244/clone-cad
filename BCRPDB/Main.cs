@@ -39,7 +39,7 @@ namespace BCRPDB
             if (civ.Checked)
             {
                 CivMenu civ = new CivMenu(Settings.Default.CivID);
-                civ.FormClosed += new FormClosedEventHandler(delegate (Object o, FormClosedEventArgs a) 
+                civ.FormClosed += new FormClosedEventHandler(delegate (Object o, FormClosedEventArgs a)
                 {
                     Visible = true;
                     SkinManager.ColorScheme = scheme;
@@ -64,33 +64,22 @@ namespace BCRPDB
             else if (popo.Checked)
             {
                 PopoMenu popo = new PopoMenu();
-                popo.FormClosed += new FormClosedEventHandler(delegate (Object o, FormClosedEventArgs a) 
+                popo.FormClosed += new FormClosedEventHandler(delegate (Object o, FormClosedEventArgs a)
                 {
                     Visible = true;
                     SkinManager.ColorScheme = scheme;
                     SkinManager.Theme = theme;
                 });
 
-                popo.Show(this);
+                popo.ShowDialog();
 
-                new Thread(new ThreadStart(() =>
-                {
-                    while (!popo.closed)
-                        Thread.Sleep(10);
-
-                    if (close.Checked)
-                        Invoke((MethodInvoker)delegate 
-                        {
-                            Close();
-                            SkinManager.ColorScheme = scheme;
-                            SkinManager.Theme = theme;
-                        });
-                })).Start();
+                if (close.Checked)
+                    Close();
             }
-            else
+            else if (dispatch.Checked)
             {
                 DispatchMenu dis = new DispatchMenu();
-                dis.FormClosed += new FormClosedEventHandler(delegate (Object o, FormClosedEventArgs a) 
+                dis.FormClosed += new FormClosedEventHandler(delegate (Object o, FormClosedEventArgs a)
                 {
                     Visible = true;
                     SkinManager.ColorScheme = scheme;

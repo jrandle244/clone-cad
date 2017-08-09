@@ -109,7 +109,7 @@ namespace BCRPDBServer
                         else
                             try
                             {
-                                if (!cfg.HasPerm(ip, Permission.Civ) || !cfg.HasPerm(ip, Permission.Dispatch))
+                                if (!cfg.HasPerm(ip, Permission.Civ) && !cfg.HasPerm(ip, Permission.Dispatch))
                                     return;
 
                                 socket.Send(new byte[] { 0 }.Concat(Civilians.Find(x => x.CivID == id).ToBytes()).ToArray());
@@ -163,8 +163,9 @@ namespace BCRPDBServer
                             return;
                         }
 
-                        socket.Send(BitConverter.GetBytes(civ.CivID));
-                        Log.WriteLine("Sent civ #" + civ.CivID + " (Plate check).", ip);
+                        socket.Send(new byte[] { 0 }.Concat(BitConverter.GetBytes(civ.CivID)).ToArray());
+
+                        Log.WriteLine("Plate checked \"" + plate + "\".", ip);
                         break;
 
                     //Add ticket
@@ -210,6 +211,26 @@ namespace BCRPDBServer
                         socket.Send(new byte[] { 0 }.Concat(civ.ToBytes()).ToArray());
 
                         Log.WriteLine("Deleted civ #" + id + " and reserved civ #" + civ.CivID, ip);
+                        break;
+                    
+                    //Name check
+                    case 5:
+                        if (!cfg.HasPerm(ip, Permission.Dispatch))
+                            return;
+
+                        string name = Encoding.UTF8.GetString(b.Take(e).ToArray());
+
+                        civ = Civilians.Find(x => x.Name == name);
+
+                        if (civ == null)
+                        {
+                            socket.Send(new byte[] { 1 });
+                            Log.WriteLine("Name check on \"" + name + "\" returned empty.", ip);
+                        }
+
+                        socket.Send(new byte[] { 0 }.Concat(BitConverter.GetBytes(civ.CivID)).ToArray());
+
+                        Log.WriteLine("Name checked \"" + name + "\".");
                         break;
                 }
             }

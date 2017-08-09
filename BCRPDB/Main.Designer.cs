@@ -132,6 +132,7 @@
             this.Controls.Add(this.popo);
             this.Controls.Add(this.civ);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
             this.Name = "Main";
             this.Text = "BCRP Menu";
             this.ResumeLayout(false);
