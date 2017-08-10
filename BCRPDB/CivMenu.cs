@@ -266,41 +266,6 @@ namespace BCRPDB
                 e.Cancel = true;
         }
 
-        private void delete_Click(object sender, EventArgs ev)
-        {
-            try
-            {
-                client.Connect(Main.cfg.IP, Main.cfg.Port);
-            }
-            catch (SocketException)
-            {
-                return;
-            }
-
-            client.Send(new byte[] { 4 }.Concat(BitConverter.GetBytes(ID)).ToArray());
-
-            byte[] b = new byte[1001];
-            int e = client.Receive(b);
-            byte tag = b[0];
-            b = b.Skip(1).ToArray();
-            e = e - 1;
-
-            client.Disconnect(true);
-            client = new Socket(SocketType.Stream, ProtocolType.Tcp);
-
-            switch (tag)
-            {
-                case 0:
-                    ID = 0;
-                    Sync(false);
-                    break;
-
-                case 1:
-                    MessageBox.Show("Your civilian was not able to be deleted. This is most likely an error in reserving civs.", "BCRPDB", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    break;
-            }
-        }
-
         private void plate_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!char.IsControl(e.KeyChar) && !char.IsLetterOrDigit(e.KeyChar))

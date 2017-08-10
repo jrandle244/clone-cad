@@ -49,7 +49,6 @@
             this.materialLabel2 = new MaterialSkin.Controls.MaterialLabel();
             this.timer = new System.Windows.Forms.Timer(this.components);
             this.sync = new MaterialSkin.Controls.MaterialCheckBox();
-            this.delete = new MaterialSkin.Controls.MaterialRaisedButton();
             this.SuspendLayout();
             // 
             // name
@@ -303,28 +302,11 @@
             this.sync.Text = "Synced";
             this.sync.UseVisualStyleBackColor = true;
             // 
-            // delete
-            // 
-            this.delete.AutoSize = true;
-            this.delete.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.delete.Depth = 0;
-            this.delete.Icon = null;
-            this.delete.Location = new System.Drawing.Point(75, 318);
-            this.delete.MouseState = MaterialSkin.MouseState.HOVER;
-            this.delete.Name = "delete";
-            this.delete.Primary = true;
-            this.delete.Size = new System.Drawing.Size(69, 36);
-            this.delete.TabIndex = 4;
-            this.delete.Text = "Delete";
-            this.delete.UseVisualStyleBackColor = true;
-            this.delete.Click += new System.EventHandler(this.delete_Click);
-            // 
             // CivMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(955, 366);
-            this.Controls.Add(this.delete);
             this.Controls.Add(this.sync);
             this.Controls.Add(this.materialLabel2);
             this.Controls.Add(this.materialLabel1);
@@ -370,7 +352,6 @@
         private MaterialSkin.Controls.MaterialLabel materialLabel2;
         private System.Windows.Forms.Timer timer;
         private MaterialSkin.Controls.MaterialCheckBox sync;
-        private MaterialSkin.Controls.MaterialRaisedButton delete;
         private System.Windows.Forms.ColumnHeader columnHeader4;
     }
 }
