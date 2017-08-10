@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -38,7 +39,7 @@ namespace BCRPDB
 
             if (civ.Checked)
             {
-                CivMenu civ = new CivMenu(10);
+                CivLauncher civ = new CivLauncher();
                 civ.FormClosed += new FormClosedEventHandler(delegate (Object o, FormClosedEventArgs a)
                 {
                     Visible = true;
@@ -46,17 +47,21 @@ namespace BCRPDB
                     SkinManager.Theme = theme;
                 });
 
-                civ.Show(this);
-                civ.Sync(false);
+                civ.Show();
+                if (File.Exists("ids.cfg") && !string.IsNullOrWhiteSpace(File.ReadAllText("ids.cfg")))
+                    civ.Sync(File.ReadAllText("ids.cfg").Split(',').Select(x => ushort.Parse(x.Trim())).ToArray());
 
-                new Thread(new ThreadStart(() =>
+                ThreadPool.QueueUserWorkItem(x =>
                 {
                     while (!civ.closed)
                         Thread.Sleep(10);
 
-                    if (close.Checked)
-                        Invoke((MethodInvoker)delegate { Close(); });
-                })).Start();
+                    Invoke((MethodInvoker)delegate
+                    {
+                        if (close.Checked)
+                            Close();
+                    });
+                });
             }
             else if (popo.Checked)
             {
@@ -84,6 +89,9 @@ namespace BCRPDB
                 });
 
                 dis.ShowDialog();
+
+                if (close.Checked)
+                    Close();
             }
         }
     }

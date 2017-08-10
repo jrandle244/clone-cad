@@ -22,7 +22,6 @@ namespace BCRPDB
         Socket client;
         Civ localCiv;
         ushort ID;
-        public bool closed = false;
 
         public CivView(ushort ID)
         {
@@ -175,7 +174,9 @@ namespace BCRPDB
         private void timer_Tick(object sender, EventArgs e) =>
             Sync();
 
-        private void CivView_FormClosed(object sender, FormClosedEventArgs e) =>
-            closed = true;
+        private void CivView_FormClosed(object sender, FormClosedEventArgs e)
+        {
+
+        }
     }
 }

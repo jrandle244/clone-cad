@@ -24,7 +24,7 @@ namespace BCRPDB
     public partial class CivMenu : MaterialForm
     {
         Socket client;
-        Civ localCiv;
+        public Civ localCiv;
         public ushort ID = 0;
         public bool closed = false;
         bool downloaded = false;
@@ -37,9 +37,6 @@ namespace BCRPDB
             this.ID = ID;
 
             InitializeComponent();
-            
-            SkinManager.Theme = MaterialSkinManager.Themes.LIGHT;
-            SkinManager.ColorScheme = new ColorScheme(Primary.Green500, Primary.Green700, Primary.Green300, Accent.Green700, TextShade.WHITE);
         }
 
         private void addWep_Click(object sender, EventArgs e)
@@ -294,7 +291,7 @@ namespace BCRPDB
             switch (tag)
             {
                 case 0:
-                    localCiv = Civ.ToCiv(b.Take(e).ToArray());
+                    ID = 0;
                     Sync(false);
                     break;
 

@@ -207,12 +207,9 @@ namespace BCRPDBServer
 
                         Civilians.Remove(civ);
 
-                        civ = new Civ(GetLowestID());
-                        Civilians.Add(civ);
+                        socket.Send(new byte[] { 0 });
 
-                        socket.Send(new byte[] { 0 }.Concat(civ.ToBytes()).ToArray());
-
-                        Log.WriteLine("Deleted civ #" + id + " and reserved civ #" + civ.CivID, ip);
+                        Log.WriteLine("Deleted civ #" + id, ip);
                         break;
                     
                     //Name check

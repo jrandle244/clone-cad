@@ -128,12 +128,6 @@ namespace BCRPDB
 
                 civ.Show();
                 civ.Sync();
-
-                ThreadPool.QueueUserWorkItem(x =>
-                {
-                    while (!civ.closed)
-                        Thread.Sleep(10);
-                });
             });
         }
 

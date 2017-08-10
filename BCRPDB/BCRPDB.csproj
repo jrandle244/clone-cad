@@ -98,6 +98,9 @@
       <DependentUpon>RegWeaponMenu.cs</DependentUpon>
     </Compile>
     <Compile Include="Ticket.cs" />
+    <EmbeddedResource Include="CivLauncher.resx">
+      <DependentUpon>CivLauncher.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CivMenu.resx">
       <DependentUpon>CivMenu.cs</DependentUpon>
     </EmbeddedResource>
@@ -125,6 +128,7 @@
     <EmbeddedResource Include="RegWeaponMenu.resx">
       <DependentUpon>RegWeaponMenu.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="App.config" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -136,9 +140,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="bcrp.ico" />
