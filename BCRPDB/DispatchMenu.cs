@@ -54,7 +54,7 @@ namespace BCRPDB
                     return;
                 }
 
-                client.Send(new byte[] { 2 }.Concat(Encoding.UTF8.GetBytes(name)).ToArray());
+                client.Send(new byte[] { 2 }.Concat(Encoding.UTF8.GetBytes(plate)).ToArray());
 
                 byte[] b = new byte[1001];
                 int e = client.Receive(b);
