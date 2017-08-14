@@ -22,6 +22,7 @@ namespace BCRPDBServer
         public string[] FilteredPoliceIPs { get; private set; }
         public string[] FilteredDispatchIPs { get; private set; }
         public string Log { get; private set; }
+        public string Database { get; private set; }
         public List<Alias> Aliases;
 
         public Config(string FilePath)
@@ -35,6 +36,7 @@ namespace BCRPDBServer
         public void Refresh()
         {
             string[] lines = File.ReadAllLines(FilePath);
+            Database = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "server-settings.ini");
 
             foreach (string[] line in lines.Where(x => !x.StartsWith(";")).Select(x => x.Split('=').Select(y => y.Trim()).ToArray()))
             {
