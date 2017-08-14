@@ -36,7 +36,7 @@ namespace BCRPDBServer
         public void Refresh()
         {
             string[] lines = File.ReadAllLines(FilePath);
-            Database = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "server-settings.ini");
+            Database = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Civilians.db");
 
             foreach (string[] line in lines.Where(x => !x.StartsWith(";")).Select(x => x.Split('=').Select(y => y.Trim()).ToArray()))
             {

@@ -27,7 +27,7 @@ namespace BCRPDBServer
             if (args.Length == 0)
                 Environment.Exit(0);
 
-            cfg = new Config(args[0]);
+            cfg = new Config(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "server-settings.ini"));
             log = new Log(cfg.Log, cfg.Aliases);
             list = new TcpListener(IPAddress.Parse(cfg.IP), cfg.Port);
             Civilians = new List<Civ>();
