@@ -27,15 +27,15 @@ namespace BCRPDBServer
         {
             if (args.Length == 2)
             {
-                Settings.Default.settings = args[0];
-                Settings.Default.db = args[1];
+                Settings.Default.settings = args[0].Substring(1);
+                Settings.Default.db = args[1].Substring(1);
                 Settings.Default.Save();
             }
 
             if (string.IsNullOrWhiteSpace(Settings.Default.settings) || string.IsNullOrWhiteSpace(Settings.Default.db))
                 Environment.Exit(0);
 
-            cfg = new Config(args[0]);
+            cfg = new Config(Settings.Default.settings);
             log = new Log(cfg.Log, cfg.Aliases);
             list = new TcpListener(IPAddress.Parse(cfg.IP), cfg.Port);
             Civilians = new List<Civ>();
@@ -56,8 +56,11 @@ namespace BCRPDBServer
 
             Log.WriteLine("Listening for connections...");
 
-            while (true)
-                ThreadPool.QueueUserWorkItem(Connect, list.AcceptSocket());
+            ThreadPool.QueueUserWorkItem(x =>
+            {
+                while (true)
+                    ThreadPool.QueueUserWorkItem(Connect, list.AcceptSocket());
+            });
         }
 
         protected override void OnStop()
