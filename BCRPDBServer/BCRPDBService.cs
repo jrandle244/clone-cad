@@ -25,7 +25,7 @@ namespace BCRPDBServer
 
         protected override void OnStart(string[] args)
         {
-            if (args.Length == 2)
+            if (args.Length == 1)
             {
                 Settings.Default.settings = args[0].Substring(1);
                 Settings.Default.Save();
