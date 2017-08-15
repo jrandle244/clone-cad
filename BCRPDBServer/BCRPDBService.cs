@@ -28,21 +28,26 @@ namespace BCRPDBServer
             if (args.Length == 2)
             {
                 Settings.Default.settings = args[0].Substring(1);
-                Settings.Default.db = args[1].Substring(1);
                 Settings.Default.Save();
+
+                MessageBox.Show("The config path has been set.", "BCRPDB Server", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Environment.Exit(0);
             }
 
-            if (string.IsNullOrWhiteSpace(Settings.Default.settings) || string.IsNullOrWhiteSpace(Settings.Default.db))
+            if (string.IsNullOrWhiteSpace(Settings.Default.settings))
+            {
+                MessageBox.Show("The config path is invalid. View the readme and make sure your save paths are correct.", "BCRPDB Server", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Environment.Exit(0);
+            }
 
             cfg = new Config(Settings.Default.settings);
             log = new Log(cfg.Log, cfg.Aliases);
             list = new TcpListener(IPAddress.Parse(cfg.IP), cfg.Port);
             Civilians = new List<Civ>();
 
-            if (File.Exists(Settings.Default.db))
-                foreach (string line in File.ReadLines(Settings.Default.db))
-                    Civilians.Add(Civ.Parse(line, File.GetLastWriteTime(Settings.Default.db)));
+            if (File.Exists(cfg.Database))
+                foreach (string line in File.ReadLines(cfg.Database))
+                    Civilians.Add(Civ.Parse(line, File.GetLastWriteTime(cfg.Database)));
 
             try
             {
@@ -66,7 +71,7 @@ namespace BCRPDBServer
         protected override void OnStop()
         {
             Log.WriteLine("Saving and closing...");
-            File.WriteAllLines(Settings.Default.db, Civilians.Select(x => x.ToString()));
+            File.WriteAllLines(cfg.Database, Civilians.Select(x => x.ToString()));
         }
 
         static TcpListener list;

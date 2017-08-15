@@ -34,17 +34,5 @@ namespace BCRPDBServer.Properties {
                 this["settings"] = value;
             }
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string db {
-            get {
-                return ((string)(this["db"]));
-            }
-            set {
-                this["db"] = value;
-            }
-        }
     }
 }
