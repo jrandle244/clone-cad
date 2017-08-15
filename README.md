@@ -17,7 +17,7 @@ Change the IP to the host's IP, and if he has the port changed change it as well
 ##### Server
 Like before, go to the [releases](https://github.com/Clone-Commando/bcrp-db/releases) and download the latest server release or build it yourself. Put this in a folder that you know you wont accidentally delete.
 
-Open or create server-settings.ini and make sure it has this in it:
+Open or create a config file (name and extension dont matter) and make sure it has this in it:
 ```
 ;The hosting IP of the server.
 IP = 0.0.0.0
@@ -54,10 +54,13 @@ After all that, open command prompt in administrator mode. Opening in admin is r
 In file explorer, navigate to `C:\Windows\Microsoft.NET`. If your computer is 64 bit, open Framework64, otherwise open Framework. Then open the newest version you see. The newest one I see is `v4.0.30319`, but it may differ. Just make sure it starts with `v4`. Then, copy the path of the folder you're in, and paste it in command prompt by right clicking command prompt. Add `\installutil.exe` to the end of the path. Type put a space inbetween, and then type `BCRPDBServer.exe`. Press enter. Here's what my command line would look like (this will not look exactly like yours):
 `E:\Users\luke0\Desktop\BCRPDB>C:\Windows\Microsoft.NET\Framework64\v4.0.30319\installutil.exe BCRPDBServer.exe`
 
+If you see it say `rollback` anywhere it means it was unsuccessful and you didn't follow the steps properly.
+
+Then go to Services and double click on BCRP Database. Get the path of your settings file, and copy it. Then go to start parameters and press hyphen and the path. The hyphen before the path is very important. This sets your settings file so the database remembers where it is. If all goes well, the database should start shortly after booting up and stop when shutting down. Just make sure that you have your ethernet plugged in or wifi set to auto connect on startup.
+
 To uninstall follow these steps but use `installutil.exe /u BCRPDBServer.exe`. Here's an example:
 `E:\Users\luke0\Desktop\BCRPDB>C:\Windows\Microsoft.NET\Framework64\v4.0.30319\installutil.exe /u BCRPDBServer.exe`
-
-If you see it say `rollback` anywhere it means it was unsuccessful and you didn't follow the steps properly.
+Then delete all the files associated with the database (exes, database file, config, etc).
 ## Keeping up-to-date
 Just as a side note, I will have `(client)` or `(server)` at the end of my bug fixes in the release notes. If your version is not mentioned in the release notes then you most definately do not have to patch the new update.
 ## About
