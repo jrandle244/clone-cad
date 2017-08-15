@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BCRPDBServer.Properties;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -24,17 +25,24 @@ namespace BCRPDBServer
 
         protected override void OnStart(string[] args)
         {
-            if (args.Length == 0)
+            if (args.Length == 2)
+            {
+                Settings.Default.settings = args[0];
+                Settings.Default.db = args[1];
+                Settings.Default.Save();
+            }
+
+            if (string.IsNullOrWhiteSpace(Settings.Default.settings) || string.IsNullOrWhiteSpace(Settings.Default.db))
                 Environment.Exit(0);
 
-            cfg = new Config(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "server-settings.ini"));
+            cfg = new Config(args[0]);
             log = new Log(cfg.Log, cfg.Aliases);
             list = new TcpListener(IPAddress.Parse(cfg.IP), cfg.Port);
             Civilians = new List<Civ>();
 
-            if (File.Exists(cfg.Database))
-                foreach (string line in File.ReadLines(cfg.Database))
-                    Civilians.Add(Civ.Parse(line, File.GetLastWriteTime(cfg.Database)));
+            if (File.Exists(Settings.Default.db))
+                foreach (string line in File.ReadLines(Settings.Default.db))
+                    Civilians.Add(Civ.Parse(line, File.GetLastWriteTime(Settings.Default.db)));
 
             try
             {
@@ -55,7 +63,7 @@ namespace BCRPDBServer
         protected override void OnStop()
         {
             Log.WriteLine("Saving and closing...");
-            File.WriteAllLines(cfg.Database, Civilians.Select(x => x.ToString()));
+            File.WriteAllLines(Settings.Default.db, Civilians.Select(x => x.ToString()));
         }
 
         static TcpListener list;
