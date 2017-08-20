@@ -250,13 +250,23 @@ namespace BCRPDBServer
             }
         }
 
-        static ushort GetLowestID()
+        static ushort GetUnusedID()
         {
             List<ushort> civIDs = Civilians.Select(x => x.CivID).ToList();
+            Random rng = new Random();
 
-            for (ushort i = 1; i < ushort.MaxValue; i++)
-                if (!civIDs.Contains(i))
-                    return i;
+            bool used = true;
+            ushort id;
+
+            while (used)
+            {
+                byte[] b = new byte[2];
+                rng.NextBytes(b);
+                id = BitConverter.ToUInt16(b, 0);
+
+                if (!civIDs.Contains(id))
+                    return id;
+            }
 
             return ushort.MaxValue;
         }

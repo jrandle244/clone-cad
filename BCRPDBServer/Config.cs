@@ -23,7 +23,6 @@ namespace BCRPDBServer
         public string[] FilteredDispatchIPs { get; private set; }
         public string Log { get; private set; }
         public List<Alias> Aliases;
-        public string Database { get; private set; }
 
         public Config(string FilePath)
         {
@@ -101,10 +100,6 @@ namespace BCRPDBServer
                                 Aliases = new List<Alias>();
                             else
                                 Aliases = line[1].Split(',').Select(x => x.Trim()).Select(x => Alias.Parse(x)).ToList();
-                            break;
-
-                        case "Database":
-                            Database = line[1];
                             break;
                     }
                 }

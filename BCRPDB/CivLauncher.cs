@@ -124,9 +124,7 @@ namespace BCRPDB
                 Invoke((MethodInvoker)delegate
                 {
                     Civs.Add(civ.localCiv);
-#pragma warning disable CS1690 // Accessing a member on a field of a marshal-by-reference class may cause a runtime exception
                     civs.Items.Add(new ListViewItem(new string[] { civ.ID.ToString(), "" }));
-#pragma warning restore CS1690 // Accessing a member on a field of a marshal-by-reference class may cause a runtime exception
 
                     File.WriteAllText("ids.cfg", string.Join(",", Civs.Select(y => y.CivID.ToString()).ToArray()));
                 });

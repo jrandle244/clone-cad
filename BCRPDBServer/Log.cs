@@ -21,7 +21,8 @@ namespace BCRPDBServer
         public static void WriteLine(string text)
         {
             string formatted = "[" + DateTime.Now + "]: " + text;
-            
+
+            Console.WriteLine(formatted);
             writer.WriteLine(formatted);
 
             writer.Flush();
@@ -30,7 +31,8 @@ namespace BCRPDBServer
         public static void WriteLine(string text, string ip)
         {
             string formatted = "[" + DateTime.Now + "] [" + Aliases.GetAlias(ip) + "]: " + text;
-            
+
+            Console.WriteLine(formatted);
             writer.WriteLine(formatted);
 
             writer.Flush();
