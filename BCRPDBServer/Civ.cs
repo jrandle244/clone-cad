@@ -15,9 +15,8 @@ namespace BCRPDBServer
         public List<string> RegisteredWeapons { get; set; }
         public List<Ticket> Tickets { get; set; }
         public string AssociatedBusiness { get; set; }
-        public uint BusinessCooldown { get; set; }
 
-        public Civ(ushort CivID, string Name = null, string RegisteredPlate = null, List<string> RegisteredWeapons = null, List<Ticket> Tickets = null, string AssociatedBusiness = null, uint BusinessCooldown = 0)
+        public Civ(ushort CivID, string Name = null, string RegisteredPlate = null, List<string> RegisteredWeapons = null, List<Ticket> Tickets = null, string AssociatedBusiness = null)
         {
             this.Name = Name;
 
@@ -25,7 +24,6 @@ namespace BCRPDBServer
             this.RegisteredWeapons = RegisteredWeapons ?? new List<string>();
             this.Tickets = Tickets ?? new List<Ticket>();
             this.AssociatedBusiness = AssociatedBusiness ?? null;
-            this.BusinessCooldown = BusinessCooldown;
             this.CivID = CivID;
         }
 
@@ -36,18 +34,17 @@ namespace BCRPDBServer
             string weps = RegisteredWeapons.Count == 0 ? "" : "|c" + string.Join(",", RegisteredWeapons);
             string tickets = Tickets.Count == 0 ? "" : "|d" + string.Join(",", Tickets.Select(x => x.Price + "~" + x.Type + "~" + x.Description));
             string business = string.IsNullOrWhiteSpace(AssociatedBusiness) ? "" : "|e" + AssociatedBusiness;
-            string businessCooldown = BusinessCooldown == 0 ? "" : "|f" + BusinessCooldown;
 
-            return CivID + name + plate + weps + tickets + business + businessCooldown;
+            return CivID + name + plate + weps + tickets + business;
         }
 
         public byte[] ToBytes() =>
             Encoding.UTF8.GetBytes(ToString());
 
         public static Civ ToCiv(byte[] bytes) =>
-            Parse(Encoding.UTF8.GetString(bytes), DateTime.Now);
+            Parse(Encoding.UTF8.GetString(bytes));
 
-        public static Civ Parse(string str, DateTime writeDate)
+        public static Civ Parse(string str)
         {
             List<string> vals = str.Split('|').ToList();
             List<string> dataVals = vals.Skip(1).ToList();
@@ -57,17 +54,13 @@ namespace BCRPDBServer
             List<string> weps = str.Contains("|c") ? GetVal(dataVals, "c").Split(',').ToList() : null;
             List<Ticket> tickets = str.Contains("|d") ? GetVal(dataVals, "d").Split(',').Select(x => Ticket.Parse(x)).ToList() : null;
             string business = str.Contains("|e") ? GetVal(dataVals, "e") : null;
-            uint businessCooldown;
 
-            try { businessCooldown = str.Contains("|f") ? SubtractNoOverflow(uint.Parse(GetVal(dataVals, "f")), (uint)DateTime.Now.Subtract(writeDate).TotalSeconds) : 0; }
-            catch { businessCooldown = 0; }
-
-            return new Civ(ushort.Parse(vals[0]), name, plate, weps, tickets, business, businessCooldown);
+            return new Civ(ushort.Parse(vals[0]), name, plate, weps, tickets, business);
         }
 
         public static bool TryParse(string str, DateTime writeDate, out Civ Civ)
         {
-            try { Civ = Parse(str, writeDate); return true; } catch { Civ = new Civ(0); return false; }
+            try { Civ = Parse(str); return true; } catch { Civ = new Civ(0); return false; }
         }
 
         private static string GetVal(List<string> vals, string key) =>

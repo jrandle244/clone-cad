@@ -18,12 +18,7 @@ namespace BCRPDBServer
         static List<Civ> Civilians;
         public static Config cfg;
         static Log log;
-
-        [DllImport("Kernel32")]
-        private static extern bool SetConsoleCtrlHandler(EventHandler handler, bool add);
-
-        private delegate bool EventHandler();
-        static EventHandler _handler;
+        static System.Windows.Forms.Timer timer;
 
         static void Main(string[] args)
         {
@@ -33,13 +28,15 @@ namespace BCRPDBServer
             log = new Log(cfg.Log, cfg.Aliases);
             list = new TcpListener(IPAddress.Parse(cfg.IP), cfg.Port);
             Civilians = new List<Civ>();
-
-            _handler += new EventHandler(Exit);
-            SetConsoleCtrlHandler(Exit, true);
+            timer = new System.Windows.Forms.Timer()
+            {
+                Interval = 5000,
+                Enabled = true
+            };
 
             if (File.Exists("Civilians.db"))
                 foreach (string line in File.ReadLines("Civilians.db"))
-                    Civilians.Add(Civ.Parse(line, File.GetLastWriteTime("Civilians.db")));
+                    Civilians.Add(Civ.Parse(line));
 
             try
             {
@@ -51,18 +48,18 @@ namespace BCRPDBServer
                 Environment.Exit(0);
             }
 
+            timer.Tick += Timer_Tick;
+
             Log.WriteLine("Listening for connections...");
 
             while (true)
                 ThreadPool.QueueUserWorkItem(Connect, list.AcceptSocket());
         }
 
-        private static bool Exit()
+        private static void Timer_Tick(object sender, EventArgs e)
         {
-            Log.WriteLine("Saving and closing...");
+            Log.WriteLine("Saving...");
             File.WriteAllLines("Civilians.db", Civilians.Select(x => x.ToString()));
-
-            return true;
         }
 
         static void Connect(object socketO)
