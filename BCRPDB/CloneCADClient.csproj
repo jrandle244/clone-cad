@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{4790065C-4180-4D98-B30F-34EED78D7569}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>BCRPDB</RootNamespace>
-    <AssemblyName>BCRPDB</AssemblyName>
+    <RootNamespace>CloneCAD</RootNamespace>
+    <AssemblyName>CloneCAD</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -32,7 +32,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>bcrp.ico</ApplicationIcon>
+    <ApplicationIcon>clonecad.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MaterialSkin, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -124,6 +124,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <EmbeddedResource Include="RegWeaponMenu.resx">
       <DependentUpon>RegWeaponMenu.cs</DependentUpon>
@@ -142,7 +143,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="bcrp.ico" />
+    <Content Include="clonecad.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -1,4 +1,4 @@
-﻿using BCRPDB.Properties;
+﻿using CloneCAD.Properties;
 using MaterialSkin;
 using MaterialSkin.Controls;
 
@@ -17,7 +17,7 @@ using System.Windows.Forms;
 
 #pragma warning disable IDE1006
 
-namespace BCRPDB
+namespace CloneCAD
 {
     public partial class CivLauncher : MaterialForm
     {
@@ -124,7 +124,9 @@ namespace BCRPDB
                 Invoke((MethodInvoker)delegate
                 {
                     Civs.Add(civ.localCiv);
-                    civs.Items.Add(new ListViewItem(new string[] { civ.ID.ToString(), "" }));
+                    #pragma warning disable CS1690 //Gets rid of "Acessing a member on 'CivMenu.ID' may cause a runtime exception because it is a field of a marshal-by-reference class
+                    civs.Items.Add(new ListViewItem(new[] { civ.ID.ToString(), "" }));
+                    #pragma warning restore CS1690 //Restors warning just in case
 
                     File.WriteAllText("ids.cfg", string.Join(",", Civs.Select(y => y.CivID.ToString()).ToArray()));
                 });
@@ -168,7 +170,7 @@ namespace BCRPDB
                     break;
 
                 case 1:
-                    MessageBox.Show("Your civilian was not able to be deleted. This is most likely an error in reserving civs.", "BCRPDB", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Your civilian was not able to be deleted. This is most likely an error in reserving civs.", "CloneCAD", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     break;
             }
 

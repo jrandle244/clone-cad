@@ -1,4 +1,4 @@
-﻿using BCRPDB.Properties;
+﻿using CloneCAD.Properties;
 using MaterialSkin;
 using MaterialSkin.Controls;
 
@@ -19,7 +19,7 @@ using System.Windows.Forms;
 
 #pragma warning disable IDE1006
 
-namespace BCRPDB
+namespace CloneCAD
 {
     public partial class CivMenu : MaterialForm
     {
@@ -262,7 +262,7 @@ namespace BCRPDB
 
         private void CivMenu_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (!sync.Checked && MessageBox.Show("Your civilian is not synced to the server.\nIf you exit your civilian will not be saved!", "BCRPDB", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1) == DialogResult.Cancel)
+            if (!sync.Checked && MessageBox.Show("Your civilian is not synced to the server.\nIf you exit your civilian will not be saved!", "CloneCAD", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1) == DialogResult.Cancel)
                 e.Cancel = true;
         }
 

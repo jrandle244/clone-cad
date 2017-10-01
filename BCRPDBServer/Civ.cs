@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BCRPDBServer
+namespace CloneCADServer
 {
     public class Civ
     {
@@ -65,15 +65,5 @@ namespace BCRPDBServer
 
         private static string GetVal(List<string> vals, string key) =>
             vals.Find(x => x.StartsWith(key)).Substring(key.Length);
-
-        private static uint SubtractNoOverflow(uint uint1, uint uint2)
-        {
-            uint returnVal;
-
-            if ((returnVal = uint1 - uint2) > uint1)
-                returnVal = 0;
-
-            return returnVal;
-        }
     }
 }

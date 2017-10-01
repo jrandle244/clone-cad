@@ -1,4 +1,4 @@
-﻿using BCRPDB.Properties;
+﻿using CloneCAD.Properties;
 using MaterialSkin;
 using MaterialSkin.Controls;
 
@@ -16,7 +16,7 @@ using System.Windows.Forms;
 
 #pragma warning disable IDE1006
 
-namespace BCRPDB
+namespace CloneCAD
 {
     public partial class Main : MaterialForm
     {

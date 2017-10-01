@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BCRPDBServer
+namespace CloneCADServer
 {
     public static class Extensions
     {

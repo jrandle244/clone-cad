@@ -4,9 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
-namespace BCRPDBServer
+namespace CloneCADServer
 {
     public enum FilterType { None, Whitelist, Blacklist }
     public enum Permission { Civ, Police, Dispatch }
@@ -51,7 +50,7 @@ namespace BCRPDBServer
 
                             if (!int.TryParse(line[1], out _Port) || _Port < 1024 || _Port > 65536)
                             {
-                                MessageBox.Show("The port is invalid.\nMake sure it is a positive integer within 1025-65535.", "BCRPDB Server", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                Console.WriteLine("The port is invalid.\nMake sure it is a positive integer within 1025-65535.");
                                 Environment.Exit(0);
                             }
 
@@ -63,7 +62,7 @@ namespace BCRPDBServer
 
                             if (!int.TryParse(line[1], out _Filter) || _Filter < 0 || _Filter > 2)
                             {
-                                MessageBox.Show("The filter type is invalid.\nMake sure it is within 0-2.", "BCRPDB Server", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                Console.WriteLine("The filter type is invalid.\nMake sure it is within 0-2.");
                                 Environment.Exit(0);
                             }
 
@@ -105,7 +104,7 @@ namespace BCRPDBServer
                 }
                 catch
                 {
-                    MessageBox.Show("Fatal config error on key " + line[0] + ". Make sure it is properly configured.", "BCRPDB Server", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Console.WriteLine("Fatal config error on key " + line[0] + ". Make sure it is properly configured.");
                 }
             }
         }

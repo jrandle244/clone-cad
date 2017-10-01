@@ -1,4 +1,4 @@
-﻿namespace BCRPDB
+﻿namespace CloneCAD
 {
     partial class RegWeaponMenu
     {
@@ -37,7 +37,7 @@
             this.WeaponName.Depth = 0;
             this.WeaponName.Hint = "Weapon Name";
             this.WeaponName.Location = new System.Drawing.Point(12, 80);
-            this.WeaponName.MaxLength = 32767;
+            this.WeaponName.MaxLength = 50;
             this.WeaponName.MouseState = MaterialSkin.MouseState.HOVER;
             this.WeaponName.Name = "WeaponName";
             this.WeaponName.PasswordChar = '\0';

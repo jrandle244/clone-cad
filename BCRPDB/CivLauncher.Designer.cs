@@ -1,4 +1,4 @@
-﻿namespace BCRPDB
+﻿namespace CloneCAD
 {
     partial class CivLauncher
     {
@@ -110,7 +110,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "CivLauncher";
-            this.Text = "CivLauncher";
+            this.Text = "Civilian Selector";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.CivLauncher_FormClosed);
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BCRPDBServer
+namespace CloneCADServer
 {
     public class Log
     {
@@ -15,7 +15,16 @@ namespace BCRPDBServer
         public Log(string FileName, List<Alias> aliases)
         {
             Aliases = aliases;
-            writer = new StreamWriter(FileName);
+            try
+            {
+                writer = new StreamWriter(FileName);
+            }
+            catch (IOException)
+            {
+                Console.WriteLine("A program is hogging the log file! Please exit the program and start the server again.");
+                Console.ReadKey();
+                Environment.Exit(1);
+            }
         }
 
         public static void WriteLine(string text)

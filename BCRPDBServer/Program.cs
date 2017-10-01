@@ -10,45 +10,50 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace BCRPDBServer
+namespace CloneCADServer
 {
     static class Program
     {
-        static TcpListener list;
-        static List<Civ> Civilians;
+        private static TcpListener list;
+        private static CivilianDictionary Civilians;
         public static Config cfg;
-        static Log log;
-        static System.Windows.Forms.Timer timer;
+        private static Log log;
+        private static bool saving;
 
         static void Main(string[] args)
         {
-            Console.Title = "BCRPDB Server";
+            Console.Title = "CloneCAD Server";
 
-            cfg = new Config("server-settings.ini");
+            if (File.Exists("server-settings.ini"))
+                cfg = new Config("server-settings.ini");
+            else
+            {
+                Console.WriteLine("No \"server-settings.ini\" file exists. Check the README.md on GitHub to get a default \"server-settings.ini\".");
+                Console.ReadKey();
+                Environment.Exit(1);
+            }
             log = new Log(cfg.Log, cfg.Aliases);
             list = new TcpListener(IPAddress.Parse(cfg.IP), cfg.Port);
-            Civilians = new List<Civ>();
-            timer = new System.Windows.Forms.Timer()
-            {
-                Interval = 5000,
-                Enabled = true
-            };
+            Civilians = new CivilianDictionary();
+            saving = false;
 
             if (File.Exists("Civilians.db"))
                 foreach (string line in File.ReadLines("Civilians.db"))
-                    Civilians.Add(Civ.Parse(line));
+                {
+                    Civ civ = Civ.Parse(line);
+                    Civilians.Add(civ);
+                }
 
-            try
-            {
+            //try
+            //{
                 list.Start();
-            }
-            catch
-            {
-                MessageBox.Show("The specified port (" + cfg.Port + ") is already in use.", "BCRPDB Server", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //}
+            //catch
+            /*{
+                Console.WriteLine("The specified port (" + cfg.Port + ") is already in use.");
+                Console.ReadKey();
                 Environment.Exit(0);
-            }
-
-            timer.Tick += Timer_Tick;
+            }*/
 
             Log.WriteLine("Listening for connections...");
 
@@ -58,8 +63,13 @@ namespace BCRPDBServer
 
         private static void Timer_Tick(object sender, EventArgs e)
         {
+            if (saving)
+                return;
+
+            saving = true;
             Log.WriteLine("Saving...");
             File.WriteAllLines("Civilians.db", Civilians.Select(x => x.ToString()));
+            saving = false;
         }
 
         static void Connect(object socketO)
@@ -109,7 +119,7 @@ namespace BCRPDBServer
                                 if (!cfg.HasPerm(ip, Permission.Civ) && !cfg.HasPerm(ip, Permission.Dispatch))
                                     break;
 
-                                socket.Send(new byte[] { 0 }.Concat(Civilians.Find(x => x.CivID == id).ToBytes()).ToArray());
+                                socket.Send(new byte[] { 0 }.Concat(Civilians[id].ToBytes()).ToArray());
                                 Log.WriteLine("Sent civ #" + id + ".", ip);
                             }
                             catch
@@ -125,15 +135,13 @@ namespace BCRPDBServer
                             break;
 
                         civ = Civ.ToCiv(b.Take(e).ToArray());
-                        Civ fCiv = Civilians.Find(x => x.CivID == civ.CivID);
 
-                        if (fCiv != null)
+                        if (Civilians.ContainsID(civ.CivID))
                         {
-                            int i = Civilians.IndexOf(fCiv);
-                            List<Ticket> Tickets = Civilians[i].Tickets;
+                            List<Ticket> Tickets = Civilians[civ.CivID].Tickets;
 
-                            Civilians[i] = civ;
-                            Civilians[i].Tickets = Tickets;
+                            Civilians[civ.CivID] = civ;
+                            Civilians[civ.CivID].Tickets = Tickets;
 
                             Log.WriteLine("Updated civ #" + civ.CivID + ".", ip);
                         }
@@ -151,7 +159,7 @@ namespace BCRPDBServer
 
                         string plate = Encoding.UTF8.GetString(b.Take(e).ToArray());
 
-                        civ = Civilians.Find(x => x.RegisteredPlate == plate);
+                        civ = Civilians.GetFromPlate(plate);
 
                         if (civ == null)
                         {
@@ -172,7 +180,7 @@ namespace BCRPDBServer
 
                         string[] vars = Encoding.UTF8.GetString(b.Take(e).ToArray()).Split('|');
                         
-                        civ = Civilians.Find(x => x.CivID == ushort.Parse(vars[0]));
+                        civ = Civilians[ushort.Parse(vars[0])];
                         
                         if (civ == null)
                         {
@@ -193,7 +201,7 @@ namespace BCRPDBServer
 
                         id = BitConverter.ToUInt16(b.Take(e).ToArray(), 0);
 
-                        civ = Civilians.Find(x => x.CivID == id);
+                        civ = Civilians[id];
 
                         if (civ == null)
                         {
@@ -216,7 +224,7 @@ namespace BCRPDBServer
 
                         string name = Encoding.UTF8.GetString(b.Take(e).ToArray());
 
-                        civ = Civilians.Find(x => x.Name == name);
+                        civ = Civilians[name];
 
                         if (civ == null)
                         {

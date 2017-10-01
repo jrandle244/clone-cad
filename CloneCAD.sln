@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.16
+VisualStudioVersion = 15.0.26730.12
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BCRPDB", "BCRPDB\BCRPDB.csproj", "{4790065C-4180-4D98-B30F-34EED78D7569}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloneCADClient", "BCRPDB\CloneCADClient.csproj", "{4790065C-4180-4D98-B30F-34EED78D7569}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BCRPDBServer", "BCRPDBServer\BCRPDBServer.csproj", "{16972081-D018-432C-8ECB-575298203A64}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloneCADServer", "BCRPDBServer\CloneCADServer.csproj", "{16972081-D018-432C-8ECB-575298203A64}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,5 +24,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B96C0FFE-BD3D-4FCB-890C-F1867001454A}
 	EndGlobalSection
 EndGlobal

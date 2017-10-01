@@ -1,4 +1,4 @@
-﻿namespace BCRPDB
+﻿namespace CloneCAD
 {
     partial class CivMenu
     {
@@ -291,7 +291,7 @@
             this.sync.Depth = 0;
             this.sync.Enabled = false;
             this.sync.Font = new System.Drawing.Font("Roboto", 10F);
-            this.sync.Location = new System.Drawing.Point(147, 324);
+            this.sync.Location = new System.Drawing.Point(201, 327);
             this.sync.Margin = new System.Windows.Forms.Padding(0);
             this.sync.MouseLocation = new System.Drawing.Point(-1, -1);
             this.sync.MouseState = MaterialSkin.MouseState.HOVER;
@@ -324,7 +324,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "CivMenu";
-            this.Text = "Civilian";
+            this.Text = "Civilian Record";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.CivMenu_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.CivMenu_FormClosed);
             this.ResumeLayout(false);

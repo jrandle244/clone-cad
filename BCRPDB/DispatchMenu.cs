@@ -15,7 +15,7 @@ using System.Windows.Forms;
 
 #pragma warning disable IDE1006
 
-namespace BCRPDB
+namespace CloneCAD
 {
     public partial class DispatchMenu : MaterialForm
     {
@@ -48,7 +48,7 @@ namespace BCRPDB
                 }
                 catch (SocketException)
                 {
-                    if (MessageBox.Show("Couldn't connect to the server to get the civilian ID.", "BCRPDB", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error) == DialogResult.Retry)
+                    if (MessageBox.Show("Couldn't connect to the server to get the civilian ID.", "CloneCAD", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error) == DialogResult.Retry)
                         Launch(id, name, plate);
 
                     return;
@@ -72,7 +72,7 @@ namespace BCRPDB
                         break;
 
                     case 1:
-                        if (MessageBox.Show("Plate was not able to be found.", "BCRPDB", MessageBoxButtons.RetryCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button2) == DialogResult.Retry)
+                        if (MessageBox.Show("Plate was not able to be found.", "CloneCAD", MessageBoxButtons.RetryCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button2) == DialogResult.Retry)
                         {
                             Launch(id, name, plate);
                             return;
@@ -88,7 +88,7 @@ namespace BCRPDB
                 }
                 catch (SocketException)
                 {
-                    if (MessageBox.Show("Couldn't connect to the server to get the civilian ID.", "BCRPDB", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error) == DialogResult.Retry)
+                    if (MessageBox.Show("Couldn't connect to the server to get the civilian ID.", "CloneCAD", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error) == DialogResult.Retry)
                         Launch(id, name, plate);
 
                     return;
@@ -113,7 +113,7 @@ namespace BCRPDB
                         break;
 
                     case 1:
-                        if (MessageBox.Show("Name was not able to be found.", "BCRPDB", MessageBoxButtons.RetryCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button2) == DialogResult.Retry)
+                        if (MessageBox.Show("Name was not able to be found.", "CloneCAD", MessageBoxButtons.RetryCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button2) == DialogResult.Retry)
                             Launch(id, name, plate);
 
                         return;

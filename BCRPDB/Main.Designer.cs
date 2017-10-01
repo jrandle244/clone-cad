@@ -1,4 +1,4 @@
-﻿namespace BCRPDB
+﻿namespace CloneCAD
 {
     partial class Main
     {
@@ -134,7 +134,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "Main";
-            this.Text = "BCRP Menu";
+            this.Text = "Main Menu";
             this.ResumeLayout(false);
             this.PerformLayout();
 

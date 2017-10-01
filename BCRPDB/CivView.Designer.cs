@@ -1,4 +1,4 @@
-﻿namespace BCRPDB
+﻿namespace CloneCAD
 {
     partial class CivView
     {
@@ -54,7 +54,7 @@
             this.sync.Depth = 0;
             this.sync.Enabled = false;
             this.sync.Font = new System.Drawing.Font("Roboto", 10F);
-            this.sync.Location = new System.Drawing.Point(71, 324);
+            this.sync.Location = new System.Drawing.Point(201, 327);
             this.sync.Margin = new System.Windows.Forms.Padding(0);
             this.sync.MouseLocation = new System.Drawing.Point(-1, -1);
             this.sync.MouseState = MaterialSkin.MouseState.HOVER;
@@ -284,7 +284,7 @@
             this.Controls.Add(this.name);
             this.MaximizeBox = false;
             this.Name = "CivView";
-            this.Text = "Civilian Record";
+            this.Text = "Civilian Record (read-only)";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.CivView_FormClosed);
             this.ResumeLayout(false);
             this.PerformLayout();
