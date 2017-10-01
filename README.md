@@ -1,6 +1,8 @@
 # bcrp-db
-## Installation
-Note: The config loader is very flexible. It will automatically trim spaces off, so use spaces wherever you want to keep your config file neat. It also doesnt care which order your values are in, just as long as they're there.
+## 
+Both the client and server require .Net v4.6.1, if you're computer doesn't have it the program will say you need it or will not launch (don't really know myself as only 1 person I've met has had this error). If you want to host on Linux use wine or mono, I personally am more familiar with the latter. I cannot promise this will work with mono, as the server uses paths and I believe that doesn't work on Linux due to the change in file structure.
+
+Another note: The config loader is very flexible. It will automatically trim spaces off, so use spaces wherever you want to keep your config file neat. It also doesnt care which order your values are in, just as long as they're there. If you want to add comments, you must add comments as a whole line and starting with a `;`. If you append to a line it will read that comment as if its part of the line.
 
 ##### Client
 First, download it. The easiest way is to head over to [releases](https://github.com/Clone-Commando/bcrp-db/releases) and download the latest client release. Optionally, download or clone the project and build it to stay the most up-to-date.
@@ -45,13 +47,7 @@ The filter will deny specified users if set to blacklist and allow specified use
 
 The log path is pretty self explanitory. The database path is where the database gets saved/loaded from. I'd recommend changing the paths as right now they are at the root of the C drive, but that's up to you.
 
-The aliases are designed to make it easy to regonize know users i.e. yourself or friends so you dont have to remember their IP they're entered as `IP:Name` and seperated by a comma. If the server would display or log the IP it'll check it will grab the first alias the IP has, otherwise it just displays the IP.
+The aliases are designed to make it easy to recognize known users i.e. yourself or friends so you dont have to remember their IP. They're entered as `IP:Name` and seperated by a comma. If the server would display or log the IP it'll will grab the first alias the IP has, otherwise it just displays the IP.
 
 ## Keeping up-to-date
 Just as a side note, I will have `(client)` or `(server)` at the end of my bug fixes in the release notes. If your version is not mentioned in the release notes then you most definately do not have to patch the new update.
-## About
-A custom database for the FiveM roleplay server Blaine County Roleplay.
-
-[Our Discord](http://discord.gg/T7RzwVz).
-
-View and vote on the [roadmap](https://trello.com/b/4UpUhulH/bcrp-database).
