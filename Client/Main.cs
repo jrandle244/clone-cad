@@ -1,4 +1,4 @@
-﻿using CloneCAD.Properties;
+﻿using Client.Properties;
 using MaterialSkin;
 using MaterialSkin.Controls;
 
@@ -16,7 +16,7 @@ using System.Windows.Forms;
 
 #pragma warning disable IDE1006
 
-namespace CloneCAD
+namespace Client
 {
     public partial class Main : MaterialForm
     {

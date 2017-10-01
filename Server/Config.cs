@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CloneCADServer
+namespace Server
 {
     public enum FilterType { None, Whitelist, Blacklist }
     public enum Permission { Civ, Police, Dispatch }

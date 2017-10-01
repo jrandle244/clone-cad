@@ -1,4 +1,4 @@
-﻿namespace CloneCAD
+﻿namespace Client
 {
     partial class CivView
     {

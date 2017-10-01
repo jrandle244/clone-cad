@@ -15,7 +15,7 @@ using System.Windows.Forms;
 
 #pragma warning disable IDE1006
 
-namespace CloneCAD
+namespace Client
 {
     public partial class PopoMenu : MaterialForm
     {
@@ -39,7 +39,7 @@ namespace CloneCAD
             }
             catch
             {
-                if (MessageBox.Show("Couldn't connect to the server to give the client the ticket.", "CloneCAD", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error) == DialogResult.Retry)
+                if (MessageBox.Show("Couldn't connect to the server to give the client the ticket.", "Client", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error) == DialogResult.Retry)
                     SendTicket(ID, ticket);
 
                 return;
@@ -59,11 +59,11 @@ namespace CloneCAD
             switch (tag)
             {
                 case 0:
-                    MessageBox.Show("The civilian has been given the ticket.", "CloneCAD", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("The civilian has been given the ticket.", "Client", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     break;
 
                 case 1:
-                    MessageBox.Show("Your civilian was not found.", "CloneCAD", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Your civilian was not found.", "Client", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     break;
             }
         }

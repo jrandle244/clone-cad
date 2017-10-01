@@ -10,7 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace CloneCADServer
+namespace Server
 {
     static class Program
     {
@@ -22,7 +22,7 @@ namespace CloneCADServer
 
         static void Main(string[] args)
         {
-            Console.Title = "CloneCAD Server";
+            Console.Title = "Client Server";
 
             if (File.Exists("server-settings.ini"))
                 cfg = new Config("server-settings.ini");

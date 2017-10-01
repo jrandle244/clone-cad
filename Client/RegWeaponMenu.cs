@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace CloneCAD
+namespace Client
 {
     public partial class RegWeaponMenu : MaterialForm
     {

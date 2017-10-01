@@ -1,4 +1,4 @@
-﻿using CloneCAD.Properties;
+﻿using Client.Properties;
 using MaterialSkin;
 using MaterialSkin.Controls;
 
@@ -17,7 +17,7 @@ using System.Windows.Forms;
 
 #pragma warning disable IDE1006
 
-namespace CloneCAD
+namespace Client
 {
     public partial class CivLauncher : MaterialForm
     {
@@ -170,7 +170,7 @@ namespace CloneCAD
                     break;
 
                 case 1:
-                    MessageBox.Show("Your civilian was not able to be deleted. This is most likely an error in reserving civs.", "CloneCAD", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Your civilian was not able to be deleted. This is most likely an error in reserving civs.", "Client", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     break;
             }
 

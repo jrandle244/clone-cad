@@ -6,7 +6,7 @@ using System.Runtime.Remoting;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CloneCADServer
+namespace Server
 {
     public class CivilianDictionary
     {

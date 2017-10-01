@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace CloneCAD
+namespace Client
 {
     public class Config
     {
@@ -23,7 +23,7 @@ namespace CloneCAD
                     case "IP":
                         if (line[1] == "changeme")
                         {
-                            MessageBox.Show("Looks like you forgot to change the config.\nPlease edit your config and then come back ༼ つ ◕_◕ ༽つ", "CloneCAD", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show("Looks like you forgot to change the config.\nPlease edit your config and then come back ༼ つ ◕_◕ ༽つ", "Client", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             Environment.Exit(0);
                         }
 
@@ -35,7 +35,7 @@ namespace CloneCAD
 
                         if (!int.TryParse(line[1], out _Port) || _Port < 1024 || _Port > 65536)
                         {
-                            MessageBox.Show("The port is invalid.\nMake sure it is a positive integer within 1025-65535.", "CloneCAD Server", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show("The port is invalid.\nMake sure it is a positive integer within 1025-65535.", "Client Server", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             Environment.Exit(0);
                         }
 
