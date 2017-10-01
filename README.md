@@ -1,4 +1,4 @@
-# bcrp-db
+# clone-cad
 ## Installation
 ##### Notes
 Both the client and server require .Net v4.6.1, if you're computer doesn't have it the program will say you need it or will not launch (don't really know myself as only 1 person I've met has had this error). If you want to host on Linux use wine or mono, I personally am more familiar with the latter. I cannot promise this will work with mono, as the server uses paths and I believe that doesn't work on Linux due to the change in file structure.
