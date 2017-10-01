@@ -1,5 +1,6 @@
 # bcrp-db
-## 
+## Installation
+##### Notes
 Both the client and server require .Net v4.6.1, if you're computer doesn't have it the program will say you need it or will not launch (don't really know myself as only 1 person I've met has had this error). If you want to host on Linux use wine or mono, I personally am more familiar with the latter. I cannot promise this will work with mono, as the server uses paths and I believe that doesn't work on Linux due to the change in file structure.
 
 Another note: The config loader is very flexible. It will automatically trim spaces off, so use spaces wherever you want to keep your config file neat. It also doesnt care which order your values are in, just as long as they're there. If you want to add comments, you must add comments as a whole line and starting with a `;`. If you append to a line it will read that comment as if its part of the line.
