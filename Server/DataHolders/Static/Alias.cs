@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Server
+﻿namespace Server.DataHolders.Static
 {
     public class Alias
     {
-        public string IP { get; private set; }
-        public string Name { get; private set; }
+        public string IP { get; }
+        public string Name { get; }
 
         public Alias(string IP, string Name)
         {

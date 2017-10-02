@@ -1,17 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Client
+namespace Client.DataHolders.Dynamic
 {
     public class Config
     {
-        public string IP { get; private set; }
-        public int Port { get; private set; }
+        public string IP { get; }
+        public int Port { get; }
 
         public Config(string FilePath)
         {

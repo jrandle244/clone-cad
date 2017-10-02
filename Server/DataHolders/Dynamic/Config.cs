@@ -2,17 +2,16 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Server.DataHolders.Static;
 
-namespace Server
+namespace Server.DataHolders.Dynamic
 {
     public enum FilterType { None, Whitelist, Blacklist }
     public enum Permission { Civ, Police, Dispatch }
 
     public class Config
     {
-        public string FilePath { get; private set; }
+        public string FilePath { get; }
 
         public string IP { get; private set; }
         public int Port { get; private set; }

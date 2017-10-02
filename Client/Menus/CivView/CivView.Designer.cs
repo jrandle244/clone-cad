@@ -1,4 +1,4 @@
-﻿namespace Client
+﻿namespace Client.Menus
 {
     partial class CivView
     {
@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CivView));
             this.sync = new MaterialSkin.Controls.MaterialCheckBox();
             this.materialLabel2 = new MaterialSkin.Controls.MaterialLabel();
             this.materialLabel1 = new MaterialSkin.Controls.MaterialLabel();
@@ -282,6 +283,7 @@
             this.Controls.Add(this.plate);
             this.Controls.Add(this.business);
             this.Controls.Add(this.name);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "CivView";
             this.Text = "Civilian Record (read-only)";

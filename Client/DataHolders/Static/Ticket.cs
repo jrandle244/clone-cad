@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Client
+﻿namespace Client.DataHolders.Static
 {
     public class Ticket
     {
-        public ushort Price { get; private set; }
-        public string Type { get; private set; }
-        public string Description { get; private set; }
+        public ushort Price { get; }
+        public string Type { get; }
+        public string Description { get; }
 
         public Ticket(ushort Price, string Type, string Description)
         {

@@ -51,70 +51,73 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Civ.cs" />
-    <Compile Include="CivLauncher.cs">
+    <Compile Include="DataHolders\Dynamic\Config.cs" />
+    <Compile Include="DataHolders\Static\Civ.cs" />
+    <Compile Include="DataHolders\Static\Ticket.cs" />
+    <Compile Include="Menus\CivLauncher\CivLauncher.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CivLauncher.Designer.cs">
+    <Compile Include="Menus\CivLauncher\CivLauncher.Designer.cs">
       <DependentUpon>CivLauncher.cs</DependentUpon>
     </Compile>
-    <Compile Include="CivMenu.cs">
+    <Compile Include="Menus\CivMenu\CivMenu.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CivMenu.Designer.cs">
+    <Compile Include="Menus\CivMenu\CivMenu.Designer.cs">
       <DependentUpon>CivMenu.cs</DependentUpon>
     </Compile>
-    <Compile Include="CivView.cs">
+    <Compile Include="Menus\CivView\CivView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CivView.Designer.cs">
+    <Compile Include="Menus\CivView\CivView.Designer.cs">
       <DependentUpon>CivView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Config.cs" />
-    <Compile Include="DispatchMenu.cs">
+    <Compile Include="Menus\DispatchMenu\DispatchMenu.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DispatchMenu.Designer.cs">
+    <Compile Include="Menus\DispatchMenu\DispatchMenu.Designer.cs">
       <DependentUpon>DispatchMenu.cs</DependentUpon>
     </Compile>
-    <Compile Include="Main.cs">
+    <Compile Include="Menus\Main\Main.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Main.Designer.cs">
+    <Compile Include="Menus\Main\Main.Designer.cs">
       <DependentUpon>Main.cs</DependentUpon>
     </Compile>
-    <Compile Include="PopoMenu.cs">
+    <Compile Include="Menus\PopoMenu\PopoMenu.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PopoMenu.Designer.cs">
+    <Compile Include="Menus\PopoMenu\PopoMenu.Designer.cs">
       <DependentUpon>PopoMenu.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Menus\RegWeaponMenu\RegWeaponMenu.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Menus\RegWeaponMenu\RegWeaponMenu.Designer.cs">
+      <DependentUpon>RegWeaponMenu.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RegWeaponMenu.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="RegWeaponMenu.Designer.cs">
-      <DependentUpon>RegWeaponMenu.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Ticket.cs" />
-    <EmbeddedResource Include="CivLauncher.resx">
+    <EmbeddedResource Include="Menus\CivLauncher\CivLauncher.resx">
       <DependentUpon>CivLauncher.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CivMenu.resx">
+    <EmbeddedResource Include="Menus\CivMenu\CivMenu.resx">
       <DependentUpon>CivMenu.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CivView.resx">
+    <EmbeddedResource Include="Menus\CivView\CivView.resx">
       <DependentUpon>CivView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DispatchMenu.resx">
+    <EmbeddedResource Include="Menus\DispatchMenu\DispatchMenu.resx">
       <DependentUpon>DispatchMenu.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Main.resx">
+    <EmbeddedResource Include="Menus\Main\Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PopoMenu.resx">
+    <EmbeddedResource Include="Menus\PopoMenu\PopoMenu.resx">
       <DependentUpon>PopoMenu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Menus\RegWeaponMenu\RegWeaponMenu.resx">
+      <DependentUpon>RegWeaponMenu.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -126,9 +129,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="RegWeaponMenu.resx">
-      <DependentUpon>RegWeaponMenu.cs</DependentUpon>
-    </EmbeddedResource>
     <None Include="App.config" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

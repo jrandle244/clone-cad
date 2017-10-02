@@ -1,5 +1,4 @@
-﻿using Client.Properties;
-using MaterialSkin;
+﻿using MaterialSkin;
 using MaterialSkin.Controls;
 
 using System;
@@ -7,53 +6,30 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Net.Sockets;
-using System.Runtime.InteropServices;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Client.DataHolders.Static;
 
 #pragma warning disable IDE1006
 
-namespace Client
+namespace Client.Menus
 {
-    public partial class CivMenu : MaterialForm
+    public partial class CivView : MaterialForm
     {
         Socket client;
-        public Civ localCiv;
-        public ushort ID = 0;
-        public bool closed = false;
-        bool downloaded = false;
-        byte downloadedTimeout = 0;
+        Civ localCiv;
+        ushort ID;
 
-        public CivMenu(ushort ID)
+        public CivView(ushort ID)
         {
+            this.ID = ID;
             client = new Socket(SocketType.Stream, ProtocolType.Tcp);
 
-            this.ID = ID;
-
             InitializeComponent();
-        }
-
-        private void addWep_Click(object sender, EventArgs e)
-        {
-            RegWeaponMenu menu = new RegWeaponMenu();
-
-            menu.ShowDialog();
-
-            regWepList.Items.Add(menu.WeaponName.Text);
-        }
-
-        private void remWep_Click(object sender, EventArgs e)
-        {
-            foreach (ListViewItem item in regWepList.SelectedItems)
-                item.Remove();
-
-            sync.Checked = false;
         }
 
         private bool RefreshCiv()
@@ -82,78 +58,19 @@ namespace Client
             {
                 case 0:
                     localCiv = Civ.ToCiv(b.Take(e).ToArray());
-                    ID = localCiv.CivID;
                     break;
 
                 case 1:
-                    if (!downloaded)
-                        downloadedTimeout++;
                     return false;
             }
 
             return true;
         }
 
-        private bool UpdateCiv()
-        {
-            try
-            {
-                client.Connect(Main.cfg.IP, Main.cfg.Port);
-            }
-            catch (SocketException)
-            {
-                return false;
-            }
-
-            client.Send(new byte[] { 1 }.Concat(localCiv.ToBytes()).ToArray());
-
-            client.Disconnect(true);
-            client = new Socket(SocketType.Stream, ProtocolType.Tcp);
-
-            return true;
-        }
-
-        private void timer_Tick(object sender, EventArgs e)
-        {
-            if (!sync.Checked && downloaded)
-                Sync();
-            else if (!downloaded && downloadedTimeout == 1)
-            {
-                ID = 0;
-                Sync(false);
-
-                downloaded = true;
-            }
-            else if (!downloaded)
-            {
-                Sync(false);
-                downloadedTimeout++;
-            }
-            else if (sync.Checked)
-                Sync(false);
-        }
-
-        private void name_TextChanged(object sender, EventArgs e) =>
-            sync.Checked = false;
-
-        private void business_TextChanged(object sender, EventArgs e) =>
-            sync.Checked = false;
-
-        private void plate_TextChanged(object sender, EventArgs e) =>
-            sync.Checked = false;
-
-        private void syncBtn_Click(object sender, EventArgs e)
-        {
-            if (!downloaded)
-            {
-                downloaded = true;
-                ID = 0;
-            }
-
+        private void syncBtn_Click(object sender, EventArgs e) =>
             Sync();
-        }
 
-        public void Sync(bool update = true)
+        public void Sync()
         {
             ThreadPool.QueueUserWorkItem(z =>
             {
@@ -186,7 +103,7 @@ namespace Client
                         localCiv.RegisteredPlate = plate.Text;
                         plateS[0] = plate.SelectionStart;
                         plateS[1] = plate.SelectionLength;
-                        
+
                         localCiv.AssociatedBusiness = business.Text;
                         businessS[0] = business.SelectionStart;
                         businessS[1] = business.SelectionLength;
@@ -204,10 +121,7 @@ namespace Client
                     });
                 }
                 catch { return; }
-                
-                if (update)
-                    if (!UpdateCiv())
-                        return;
+
                 if (!RefreshCiv())
                     return;
 
@@ -215,7 +129,7 @@ namespace Client
                 {
                     Invoke((MethodInvoker)delegate
                     {
-                        idDisp.Text = "Your civilian ID: " + localCiv.CivID.ToString();
+                        idDisp.Text = "Civilian ID: " + localCiv.CivID.ToString();
                         name.Text = localCiv.Name;
                         if (name.Text.Length != 0)
                         {
@@ -252,33 +166,18 @@ namespace Client
                     });
                 }
                 catch { }
-
-                downloaded = true;
             });
         }
 
-        private void CivMenu_FormClosed(object sender, FormClosedEventArgs e) =>
-            closed = true;
+        private new void KeyPress(object sender, KeyPressEventArgs e) =>
+            e.Handled = true;
 
-        private void CivMenu_FormClosing(object sender, FormClosingEventArgs e)
+        private void timer_Tick(object sender, EventArgs e) =>
+            Sync();
+
+        private void CivView_FormClosed(object sender, FormClosedEventArgs e)
         {
-            if (!sync.Checked && MessageBox.Show("Your civilian is not synced to the server.\nIf you exit your civilian will not be saved!", "Client", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1) == DialogResult.Cancel)
-                e.Cancel = true;
-        }
 
-        private void plate_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (!char.IsControl(e.KeyChar) && !char.IsLetterOrDigit(e.KeyChar))
-                e.Handled = true;
-
-            if (char.IsLetter(e.KeyChar))
-                e.KeyChar = e.KeyChar.ToString().ToUpper()[0];
-        }
-
-        private void name_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (!char.IsControl(e.KeyChar) && !char.IsLetter(e.KeyChar) && e.KeyChar != ' ')
-                e.Handled = true;
         }
     }
 }

@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Server.DataHolders.Static;
 
-namespace Server
+namespace Server.DataHolders.Dynamic
 {
     public class Log
     {

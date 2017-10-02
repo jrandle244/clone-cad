@@ -13,10 +13,12 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Client.DataHolders.Dynamic;
+using Client.Menus;
 
 #pragma warning disable IDE1006
 
-namespace Client
+namespace Client.Menus
 {
     public partial class Main : MaterialForm
     {

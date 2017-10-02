@@ -46,15 +46,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Alias.cs" />
-    <Compile Include="Civ.cs" />
-    <Compile Include="CivilianDictionary.cs" />
-    <Compile Include="Config.cs" />
+    <Compile Include="DataHolders\Dynamic\Config.cs" />
+    <Compile Include="DataHolders\Dynamic\Log.cs" />
+    <Compile Include="DataHolders\Static\Alias.cs" />
+    <Compile Include="DataHolders\Static\Civ.cs" />
+    <Compile Include="DataHolders\Static\CivilianDictionary.cs" />
+    <Compile Include="DataHolders\Static\Ticket.cs" />
     <Compile Include="Extensions.cs" />
-    <Compile Include="Log.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Ticket.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

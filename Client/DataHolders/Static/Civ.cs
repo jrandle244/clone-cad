@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace Server
+namespace Client.DataHolders.Static
 {
     public class Civ
     {
@@ -32,10 +30,10 @@ namespace Server
             string name = string.IsNullOrWhiteSpace(Name) ? "" : "|a" + Name;
             string plate = string.IsNullOrWhiteSpace(RegisteredPlate) ? "" : "|b" + RegisteredPlate;
             string weps = RegisteredWeapons.Count == 0 ? "" : "|c" + string.Join(",", RegisteredWeapons);
-            string tickets = Tickets.Count == 0 ? "" : "|d" + string.Join(",", Tickets.Select(x => x.Price + "~" + x.Type + "~" + x.Description));
+            string tickets = Tickets.Count == 0 ? "" : "|d" + string.Join(",", Tickets.Select(x => x.Price + "," + x.Type + "," + x.Description));
             string business = string.IsNullOrWhiteSpace(AssociatedBusiness) ? "" : "|e" + AssociatedBusiness;
 
-            return CivID + name + plate + weps + tickets + business;
+            return CivID + name + plate + weps + business;
         }
 
         public byte[] ToBytes() =>
@@ -58,12 +56,22 @@ namespace Server
             return new Civ(ushort.Parse(vals[0]), name, plate, weps, tickets, business);
         }
 
-        public static bool TryParse(string str, DateTime writeDate, out Civ Civ)
+        public static bool TryParse(string str, out Civ Civ)
         {
             try { Civ = Parse(str); return true; } catch { Civ = new Civ(0); return false; }
         }
 
         private static string GetVal(List<string> vals, string key) =>
             vals.Find(x => x.StartsWith(key)).Substring(key.Length);
+
+        private static uint SubtractNoOverflow(uint uint1, uint uint2)
+        {
+            uint returnVal;
+
+            if ((returnVal = uint1 - uint2) > uint1)
+                returnVal = 0;
+
+            return returnVal;
+        }
     }
 }
