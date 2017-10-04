@@ -1,4 +1,4 @@
-﻿namespace Client.Menus
+﻿namespace CloneCAD.Client.Menus
 {
     partial class CivMenu
     {

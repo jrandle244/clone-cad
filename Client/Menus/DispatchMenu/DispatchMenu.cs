@@ -1,29 +1,26 @@
 ﻿using MaterialSkin;
 using MaterialSkin.Controls;
+using CloneCAD.Client.DataHolders;
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Client.Menus;
 
 #pragma warning disable IDE1006
 
-namespace Client.Menus
+namespace CloneCAD.Client.Menus
 {
     public partial class DispatchMenu : MaterialForm
     {
-        Socket client;
+        private readonly Config cfg;
+        private Socket client;
 
-        public DispatchMenu()
+        public DispatchMenu(Config Config)
         {
+            cfg = Config;
             client = new Socket(SocketType.Stream, ProtocolType.Tcp);
 
             InitializeComponent();
@@ -45,11 +42,11 @@ namespace Client.Menus
             {
                 try
                 {
-                    client.Connect(Main.cfg.IP, Main.cfg.Port);
+                    client.Connect(cfg.IP, cfg.Port);
                 }
                 catch (SocketException)
                 {
-                    if (MessageBox.Show("Couldn't connect to the server to get the civilian ID.", "Client", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error) == DialogResult.Retry)
+                    if (MessageBox.Show("Couldn't connect to the server to get the civilian ID.", "CloneCAD", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error) == DialogResult.Retry)
                         Launch(id, name, plate);
 
                     return;
@@ -73,7 +70,7 @@ namespace Client.Menus
                         break;
 
                     case 1:
-                        if (MessageBox.Show("Plate was not able to be found.", "Client", MessageBoxButtons.RetryCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button2) == DialogResult.Retry)
+                        if (MessageBox.Show("Plate was not able to be found.", "CloneCAD", MessageBoxButtons.RetryCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button2) == DialogResult.Retry)
                         {
                             Launch(id, name, plate);
                             return;
@@ -85,11 +82,11 @@ namespace Client.Menus
             {
                 try
                 {
-                    client.Connect(Main.cfg.IP, Main.cfg.Port);
+                    client.Connect(cfg.IP, cfg.Port);
                 }
                 catch (SocketException)
                 {
-                    if (MessageBox.Show("Couldn't connect to the server to get the civilian ID.", "Client", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error) == DialogResult.Retry)
+                    if (MessageBox.Show("Couldn't connect to the server to get the civilian ID.", "CloneCAD", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error) == DialogResult.Retry)
                         Launch(id, name, plate);
 
                     return;
@@ -114,7 +111,7 @@ namespace Client.Menus
                         break;
 
                     case 1:
-                        if (MessageBox.Show("Name was not able to be found.", "Client", MessageBoxButtons.RetryCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button2) == DialogResult.Retry)
+                        if (MessageBox.Show("Name was not able to be found.", "CloneCAD", MessageBoxButtons.RetryCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button2) == DialogResult.Retry)
                             Launch(id, name, plate);
 
                         return;
@@ -125,7 +122,7 @@ namespace Client.Menus
 
             Invoke((MethodInvoker)delegate
             {
-                CivView civ = new CivView(ID);
+                CivView civ = new CivView(cfg, ID);
 
                 civ.Show();
                 civ.Sync();

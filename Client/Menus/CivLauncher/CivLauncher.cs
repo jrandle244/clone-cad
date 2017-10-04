@@ -1,34 +1,31 @@
-﻿using Client.Properties;
-using MaterialSkin;
+﻿using MaterialSkin;
 using MaterialSkin.Controls;
+using CloneCAD.Common.DataHolders;
+using CloneCAD.Client.DataHolders;
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Client.DataHolders.Static;
 
-#pragma warning disable IDE1006
+#pragma warning disable IDE1006 //Naming rule violation, gtfo
 
-namespace Client.Menus
+namespace CloneCAD.Client.Menus
 {
     public partial class CivLauncher : MaterialForm
     {
-        Socket client;
+        private readonly Config cfg;
+        private Socket client;
         
         public List<Civ> Civs { get; set; }
         public bool closed = false;
 
-        public CivLauncher()
+        public CivLauncher(Config Config)
         {
+            cfg = Config;
             client = new Socket(SocketType.Stream, ProtocolType.Tcp);
 
             InitializeComponent();
@@ -45,7 +42,7 @@ namespace Client.Menus
 
             try
             {
-                client.Connect(Main.cfg.IP, Main.cfg.Port);
+                client.Connect(cfg.IP, cfg.Port);
             }
             catch (SocketException)
             {
@@ -95,7 +92,7 @@ namespace Client.Menus
                     Invoke((MethodInvoker)delegate
                     {
                         Civs.Add(civ);
-                        civs.Items.Add(new ListViewItem(new string[] { civ.CivID.ToString(), civ.Name }));
+                        civs.Items.Add(new ListViewItem(new[] { civ.CivID.ToString(), civ.Name }));
                     });
                 }
             });
@@ -105,7 +102,7 @@ namespace Client.Menus
 
         private void civs_DoubleClick(object sender, EventArgs e)
         {
-            CivView civ = new CivView(ushort.Parse(civs.Items[civs.SelectedItems[0].Index].SubItems[0].Text));
+            CivView civ = new CivView(cfg, ushort.Parse(civs.Items[civs.SelectedItems[0].Index].SubItems[0].Text));
 
             civ.Show();
             civ.Sync();
@@ -113,7 +110,7 @@ namespace Client.Menus
 
         private void create_Click(object sender, EventArgs e)
         {
-            CivMenu civ = new CivMenu(0);
+            CivMenu civ = new CivMenu(cfg, 0);
 
             civ.Show();
             civ.Sync(false);
@@ -146,7 +143,7 @@ namespace Client.Menus
 
             try
             {
-                client.Connect(Main.cfg.IP, Main.cfg.Port);
+                client.Connect(cfg.IP, cfg.Port);
             }
             catch (SocketException)
             {
@@ -171,7 +168,7 @@ namespace Client.Menus
                     break;
 
                 case 1:
-                    MessageBox.Show("Your civilian was not able to be deleted. This is most likely an error in reserving civs.", "Client", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Your civilian was not able to be deleted. This is most likely an error in reserving civs.", "CloneCAD", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     break;
             }
 

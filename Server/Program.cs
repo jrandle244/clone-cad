@@ -1,5 +1,6 @@
-﻿using Server.DataHolders.Dynamic;
-using Server.DataHolders.Static;
+﻿using CloneCAD.Common.DataHolders;
+using CloneCAD.Server.DataHolders;
+using CloneCAD.Server.DataHolders.Static;
 
 using System;
 using System.Collections.Generic;
@@ -10,19 +11,34 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 
-namespace Server
+namespace CloneCAD.Server
 {
     static class Program
     {
         private static TcpListener list;
-        private static CivilianDictionary Civilians;
+        private static CivilianDictionary civilians;
         public static Config cfg;
         private static Log log;
         private static bool saving;
 
         static void Main(string[] args)
         {
-            Console.Title = "Client Server";
+            try
+            {
+                VirtualMain();
+            }
+            catch
+            {
+                Functions.Error(cfg.local);
+            }
+        }
+
+        /// <summary>
+        /// This is the would-be Main, however Main has the try catch block around this for exception catching
+        /// </summary>
+        private static void VirtualMain()
+        {
+            Console.Title = "CloneCAD Server";
 
             if (File.Exists("server-settings.ini"))
                 cfg = new Config("server-settings.ini");
@@ -34,26 +50,24 @@ namespace Server
             }
             log = new Log(cfg.Log, cfg.Aliases);
             list = new TcpListener(IPAddress.Parse(cfg.IP), cfg.Port);
-            Civilians = new CivilianDictionary();
+            civilians = new CivilianDictionary();
             saving = false;
 
             if (File.Exists("Civilians.db"))
                 foreach (string line in File.ReadLines("Civilians.db"))
                 {
                     Civ civ = Civ.Parse(line);
-                    Civilians.Add(civ);
+                    civilians.Add(civ);
                 }
 
-            //try
-            //{
+            try
+            {
                 list.Start();
-            //}
-            //catch
-            /*{
-                Console.WriteLine("The specified port (" + cfg.Port + ") is already in use.");
-                Console.ReadKey();
-                Environment.Exit(0);
-            }*/
+            }
+            catch (SocketException)
+            {
+                Functions.Error(cfg.Locale, "PortInUse", 1);
+            }
 
             Log.WriteLine("Listening for connections...");
 
@@ -68,7 +82,7 @@ namespace Server
 
             saving = true;
             Log.WriteLine("Saving...");
-            File.WriteAllLines("Civilians.db", Civilians.Select(x => x.ToString()));
+            File.WriteAllLines("Civilians.db", civilians.Select(x => x.ToString()));
             saving = false;
         }
 
@@ -110,7 +124,7 @@ namespace Server
                             civ = new Civ(GetLowestID());
                             Log.WriteLine("Reserved civ #" + civ.CivID + ".", ip);
 
-                            Civilians.Add(civ);
+                            civilians.Add(civ);
                             socket.Send(new byte[] { 0 }.Concat(civ.ToBytes()).ToArray());
                         }
                         else
@@ -119,7 +133,7 @@ namespace Server
                                 if (!cfg.HasPerm(ip, Permission.Civ) && !cfg.HasPerm(ip, Permission.Dispatch))
                                     break;
 
-                                socket.Send(new byte[] { 0 }.Concat(Civilians[id].ToBytes()).ToArray());
+                                socket.Send(new byte[] { 0 }.Concat(civilians[id].ToBytes()).ToArray());
                                 Log.WriteLine("Sent civ #" + id + ".", ip);
                             }
                             catch
@@ -136,18 +150,18 @@ namespace Server
 
                         civ = Civ.ToCiv(b.Take(e).ToArray());
 
-                        if (Civilians.ContainsID(civ.CivID))
+                        if (civilians.ContainsID(civ.CivID))
                         {
-                            List<Ticket> Tickets = Civilians[civ.CivID].Tickets;
+                            List<Ticket> Tickets = civilians[civ.CivID].Tickets;
 
-                            Civilians[civ.CivID] = civ;
-                            Civilians[civ.CivID].Tickets = Tickets;
+                            civilians[civ.CivID] = civ;
+                            civilians[civ.CivID].Tickets = Tickets;
 
                             Log.WriteLine("Updated civ #" + civ.CivID + ".", ip);
                         }
                         else
                         {
-                            Civilians.Add(civ);
+                            civilians.Add(civ);
                             Log.WriteLine("Saved civ #" + civ.CivID + ".", ip);
                         }
                         break;
@@ -159,7 +173,7 @@ namespace Server
 
                         string plate = Encoding.UTF8.GetString(b.Take(e).ToArray());
 
-                        civ = Civilians.GetFromPlate(plate);
+                        civ = civilians.GetFromPlate(plate);
 
                         if (civ == null)
                         {
@@ -180,7 +194,7 @@ namespace Server
 
                         string[] vars = Encoding.UTF8.GetString(b.Take(e).ToArray()).Split('|');
                         
-                        civ = Civilians[ushort.Parse(vars[0])];
+                        civ = civilians[ushort.Parse(vars[0])];
                         
                         if (civ == null)
                         {
@@ -201,7 +215,7 @@ namespace Server
 
                         id = BitConverter.ToUInt16(b.Take(e).ToArray(), 0);
 
-                        civ = Civilians[id];
+                        civ = civilians[id];
 
                         if (civ == null)
                         {
@@ -210,7 +224,7 @@ namespace Server
                             break;
                         }
 
-                        Civilians.Remove(civ);
+                        civilians.Remove(civ);
 
                         socket.Send(new byte[] { 0 });
 
@@ -224,7 +238,7 @@ namespace Server
 
                         string name = Encoding.UTF8.GetString(b.Take(e).ToArray());
 
-                        civ = Civilians[name];
+                        civ = civilians[name];
 
                         if (civ == null)
                         {
@@ -243,7 +257,7 @@ namespace Server
 
         static ushort GetLowestID()
         {
-            List<ushort> civIDs = Civilians.Select(x => x.CivID).ToList();
+            List<ushort> civIDs = civilians.Select(x => x.CivID).ToList();
 
             for (ushort i = 1; i < ushort.MaxValue; i++)
                 if (!civIDs.Contains(i))

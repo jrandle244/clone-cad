@@ -1,38 +1,30 @@
-﻿using Client.Properties;
-using MaterialSkin;
-using MaterialSkin.Controls;
+﻿using MaterialSkin.Controls;
+using CloneCAD.Common.DataHolders;
+using CloneCAD.Client.DataHolders;
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Net.Sockets;
-using System.Runtime.InteropServices;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Client.DataHolders.Static;
 
 #pragma warning disable IDE1006
 
-namespace Client.Menus
+namespace CloneCAD.Client.Menus
 {
     public partial class CivMenu : MaterialForm
     {
-        Socket client;
+        private readonly Config cfg;
+        private Socket client;
         public Civ localCiv;
         public ushort ID = 0;
         public bool closed = false;
-        bool downloaded = false;
-        byte downloadedTimeout = 0;
+        private bool downloaded = false;
+        private byte downloadedTimeout = 0;
 
-        public CivMenu(ushort ID)
+        public CivMenu(Config Config, ushort ID)
         {
+            cfg = Config;
             client = new Socket(SocketType.Stream, ProtocolType.Tcp);
 
             this.ID = ID;
@@ -61,7 +53,7 @@ namespace Client.Menus
         {
             try
             {
-                client.Connect(Main.cfg.IP, Main.cfg.Port);
+                client.Connect(cfg.IP, cfg.Port);
             }
             catch (SocketException)
             {
@@ -99,7 +91,7 @@ namespace Client.Menus
         {
             try
             {
-                client.Connect(Main.cfg.IP, Main.cfg.Port);
+                client.Connect(cfg.IP, cfg.Port);
             }
             catch (SocketException)
             {
@@ -263,7 +255,7 @@ namespace Client.Menus
 
         private void CivMenu_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (!sync.Checked && MessageBox.Show("Your civilian is not synced to the server.\nIf you exit your civilian will not be saved!", "Client", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1) == DialogResult.Cancel)
+            if (!sync.Checked && MessageBox.Show("Your civilian is not synced to the server.\nIf you exit your civilian will not be saved!", "CloneCAD", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1) == DialogResult.Cancel)
                 e.Cancel = true;
         }
 

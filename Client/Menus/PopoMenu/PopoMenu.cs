@@ -1,29 +1,27 @@
 ﻿using MaterialSkin;
 using MaterialSkin.Controls;
+using CloneCAD.Common.DataHolders;
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Client.DataHolders.Static;
+using CloneCAD.Client.DataHolders;
 
 #pragma warning disable IDE1006
 
-namespace Client.Menus
+namespace CloneCAD.Client.Menus
 {
     public partial class PopoMenu : MaterialForm
     {
-        Socket client;
+        private readonly Config cfg;
+        private Socket client;
 
-        public PopoMenu()
+        public PopoMenu(Config Config)
         {
+            cfg = Config;
             client = new Socket(SocketType.Stream, ProtocolType.Tcp);
 
             InitializeComponent();
@@ -36,11 +34,11 @@ namespace Client.Menus
         {
             try
             {
-                client.Connect(Main.cfg.IP, Main.cfg.Port);
+                client.Connect(cfg.IP, cfg.Port);
             }
             catch
             {
-                if (MessageBox.Show("Couldn't connect to the server to give the client the ticket.", "Client", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error) == DialogResult.Retry)
+                if (MessageBox.Show("Couldn't connect to the server to give the client the ticket.", "CloneCAD", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error) == DialogResult.Retry)
                     SendTicket(ID, ticket);
 
                 return;
@@ -60,11 +58,11 @@ namespace Client.Menus
             switch (tag)
             {
                 case 0:
-                    MessageBox.Show("The civilian has been given the ticket.", "Client", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("The civilian has been given the ticket.", "CloneCAD", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     break;
 
                 case 1:
-                    MessageBox.Show("Your civilian was not found.", "Client", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Your civilian was not found.", "CloneCAD", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     break;
             }
         }

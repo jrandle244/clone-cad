@@ -4,16 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{16972081-D018-432C-8ECB-575298203A64}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>CloneCAD.Server</RootNamespace>
-    <AssemblyName>CloneCADServer</AssemblyName>
+    <ProjectGuid>{54D00D8F-487B-4B7C-A6BC-D55535BEE778}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Common</RootNamespace>
+    <AssemblyName>CloneCAD.Common</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,21 +22,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>none</DebugType>
+    <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationIcon>clonecad.ico</ApplicationIcon>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -46,29 +40,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataHolders\AliasDictionary.cs" />
-    <Compile Include="DataHolders\Config.cs" />
-    <Compile Include="DataHolders\Log.cs" />
-    <Compile Include="DataHolders\CivilianDictionary.cs" />
-    <Compile Include="Functions.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="DataHolders\Civ.cs" />
+    <Compile Include="DataHolders\StorableValue.cs" />
+    <Compile Include="DataHolders\Ticket.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="DataHolders\Config\GenericConfig.cs" />
+    <Compile Include="DataHolders\Config\LocaleConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="clonecad.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Common\Common.csproj">
-      <Project>{54d00d8f-487b-4b7c-a6bc-d55535bee778}</Project>
-      <Name>Common</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>del $(TargetDir)\server.zip
-"D:\Program Files\7-Zip\7z" a $(TargetDir)\server.zip $(TargetDir)\*</PostBuildEvent>
-  </PropertyGroup>
 </Project>

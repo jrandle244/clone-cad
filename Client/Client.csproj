@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{4790065C-4180-4D98-B30F-34EED78D7569}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>CloneCAD</RootNamespace>
+    <RootNamespace>CloneCAD.Client</RootNamespace>
     <AssemblyName>CloneCAD</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -51,9 +51,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataHolders\Dynamic\Config.cs" />
-    <Compile Include="DataHolders\Static\Civ.cs" />
-    <Compile Include="DataHolders\Static\Ticket.cs" />
+    <Compile Include="DataHolders\Config.cs" />
+    <Compile Include="Functions.cs" />
     <Compile Include="Menus\CivLauncher\CivLauncher.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -130,6 +129,7 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="App.config" />
+    <None Include="locale_en.ini" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -144,6 +144,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="clonecad.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{54d00d8f-487b-4b7c-a6bc-d55535bee778}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

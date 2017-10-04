@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using Server.DataHolders.Static;
+using CloneCAD.Server.DataHolders.Static;
 
-namespace Server.DataHolders.Dynamic
+namespace CloneCAD.Server.DataHolders
 {
     public class Log
     {

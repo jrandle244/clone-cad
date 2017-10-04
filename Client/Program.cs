@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
-using Client.Menus;
+using CloneCAD.Client.Menus;
 
 namespace Client
 {

@@ -1,31 +1,27 @@
-﻿using MaterialSkin;
-using MaterialSkin.Controls;
+﻿using MaterialSkin.Controls;
+using CloneCAD.Common.DataHolders;
+using CloneCAD.Client.DataHolders;
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Client.DataHolders.Static;
 
 #pragma warning disable IDE1006
 
-namespace Client.Menus
+namespace CloneCAD.Client.Menus
 {
     public partial class CivView : MaterialForm
     {
-        Socket client;
-        Civ localCiv;
-        ushort ID;
+        private readonly Config cfg;
+        private Socket client;
+        private Civ localCiv;
+        private ushort ID;
 
-        public CivView(ushort ID)
+        public CivView(Config Config, ushort ID)
         {
+            cfg = Config;
             this.ID = ID;
             client = new Socket(SocketType.Stream, ProtocolType.Tcp);
 
@@ -36,7 +32,7 @@ namespace Client.Menus
         {
             try
             {
-                client.Connect(Main.cfg.IP, Main.cfg.Port);
+                client.Connect(cfg.IP, cfg.Port);
             }
             catch (SocketException)
             {
