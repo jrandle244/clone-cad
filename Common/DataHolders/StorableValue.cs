@@ -6,14 +6,14 @@ namespace CloneCAD.Common.DataHolders
 {
     public class StorableValue<T>
     {
-        private T _value;
+        private T value;
         public T Value
         {
-            get => _value;
+            get => value;
             set
             {
                 valChanged = true;
-                _value = value;
+                this.value = value;
             }
         }
 
@@ -85,6 +85,12 @@ namespace CloneCAD.Common.DataHolders
                 throw new InvalidOperationException("Cannot save to file if " + nameof(FilePath) + " is null or whitespace!");
 
             File.WriteAllBytes(FilePath, Bytes);
+        }
+
+        public static StorableValue<T> operator +(StorableValue<T> StorableValue, T Value)
+        {
+            StorableValue.Value = Value;
+            return StorableValue;
         }
     }
 }

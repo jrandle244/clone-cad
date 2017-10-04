@@ -1,27 +1,31 @@
-﻿using System;
+﻿using CloneCAD.Common.DataHolders;
+
+using System;
 using System.Collections.Generic;
 using System.IO;
-using CloneCAD.Server.DataHolders.Static;
 
 namespace CloneCAD.Server.DataHolders
 {
     public class Log
     {
         private static StreamWriter writer;
-        public static List<Alias> Aliases { get; set; }
 
-        public Log(string FileName, List<Alias> aliases)
+        public static AliasDictionary Aliases { get; set; }
+
+        public Log(string FileName, LocaleConfig Locale, AliasDictionary _Aliases)
         {
-            Aliases = aliases;
+            Aliases = _Aliases;
+
             try
             {
-                writer = new StreamWriter(FileName);
+                writer = new StreamWriter(FileName)
+                {
+                    AutoFlush = true
+                };
             }
             catch (IOException)
             {
-                Console.WriteLine("A program is hogging the log file! Please exit the program and start the server again.");
-                Console.ReadKey();
-                Environment.Exit(1);
+                Functions.Error(Locale, "LogFileInUse", 1);
             }
         }
 
@@ -31,18 +35,14 @@ namespace CloneCAD.Server.DataHolders
 
             Console.WriteLine(formatted);
             writer.WriteLine(formatted);
-
-            writer.Flush();
         }
 
         public static void WriteLine(string text, string ip)
         {
-            string formatted = "[" + DateTime.Now + "] [" + Aliases.GetAlias(ip) + "]: " + text;
+            string formatted = "[" + DateTime.Now + "] [" + Aliases[ip] + "]: " + text;
 
             Console.WriteLine(formatted);
             writer.WriteLine(formatted);
-
-            writer.Flush();
         }
     }
 }

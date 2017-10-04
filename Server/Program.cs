@@ -15,8 +15,10 @@ namespace CloneCAD.Server
 {
     static class Program
     {
+        private const string CIV_EXPORT = "Civilians.odf";
+
         private static TcpListener list;
-        private static CivilianDictionary civilians;
+        private static StorableValue<CivilianDictionary> civilians;
         public static Config cfg;
         private static Log log;
         private static bool saving;
@@ -29,7 +31,7 @@ namespace CloneCAD.Server
             }
             catch
             {
-                Functions.Error(cfg.local);
+                Functions.Error(cfg.Locale, "UnhandledException", 2);
             }
         }
 
@@ -44,21 +46,14 @@ namespace CloneCAD.Server
                 cfg = new Config("server-settings.ini");
             else
             {
-                Console.WriteLine("No \"server-settings.ini\" file exists. Check the README.md on GitHub to get a default \"server-settings.ini\".");
-                Console.ReadKey();
-                Environment.Exit(1);
+                Functions.Error("No \"server-settings.ini\" file exists. Check the README.md on GitHub to get a default \"server-settings.ini\".", 1);
             }
-            log = new Log(cfg.Log, cfg.Aliases);
+
+            log = new Log(cfg.Log, cfg.Locale, cfg.Aliases);
             list = new TcpListener(IPAddress.Parse(cfg.IP), cfg.Port);
-            civilians = new CivilianDictionary();
             saving = false;
 
-            if (File.Exists("Civilians.db"))
-                foreach (string line in File.ReadLines("Civilians.db"))
-                {
-                    Civ civ = Civ.Parse(line);
-                    civilians.Add(civ);
-                }
+            civilians = File.Exists(CIV_EXPORT) ? new StorableValue<CivilianDictionary>(CIV_EXPORT) : new StorableValue<CivilianDictionary>(new CivilianDictionary());
 
             try
             {
@@ -82,7 +77,7 @@ namespace CloneCAD.Server
 
             saving = true;
             Log.WriteLine("Saving...");
-            File.WriteAllLines("Civilians.db", civilians.Select(x => x.ToString()));
+            File.WriteAllLines(CIV_EXPORT, civilians.Select(x => x.ToString()));
             saving = false;
         }
 

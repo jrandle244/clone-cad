@@ -17,16 +17,7 @@ namespace CloneCAD.Server.DataHolders
         public string IP => base["IP"];
         public int Port { get; private set; }
 
-        public FilterType Filter
-        {
-            get
-            {
-                if (!int.TryParse(this["FilterType"], out int filter) || filter < 0 || filter > 2)
-                    Functions.Error(Locale, "InvalidFilterType", 1);
-
-                return (FilterType)filter;
-            }
-        }
+        public FilterType Filter { get; private set; }
         public string[] FilteredCivIPs { get; private set; }
         public string[] FilteredPoliceIPs { get; private set; }
         public string[] FilteredDispatchIPs { get; private set; }
@@ -36,8 +27,14 @@ namespace CloneCAD.Server.DataHolders
 
         public Config(string FilePath) : base (new List<string>()
         {
+            "Locale",
             "IP",
             "Port",
+            "Filter",
+            "FilteredCivIPs",
+            "FilteredDispatchIPs",
+            "Log",
+            "Aliases"
         })
         {
             this.FilePath = FilePath;
@@ -48,92 +45,71 @@ namespace CloneCAD.Server.DataHolders
         public new void Load()
         {
             base.Load();
-            Locale = new LocaleConfig();
+
+
+            Locale = new LocaleConfig(base["Locale"]);
+
+
+            if (!int.TryParse(base["Port"], out int port) || port < 1024 || port > 65536)
+                Functions.Error(Locale, "InvalidPort", 1);
+
+            Port = port;
+
+
+            if (!int.TryParse(base["FilterType"], out int filter) || filter < 0 || filter > 2)
+                Functions.Error(Locale, "InvalidFilterType", 1);
+
+            Filter = (FilterType)filter;
             
-            case "IP":
-                IP = line[1];
-                break;
 
-            case "Port":
-                int _Port;
+            FilteredCivIPs = string.IsNullOrWhiteSpace(base["FilteredCivIPs"]) ? new string[0] : base["FilteredCivIPs"].Split(',').Select(x => x.Trim()).ToArray();
 
-                if (!int.TryParse(line[1], out _Port) || _Port < 1024 || _Port > 65536)
-                {
-                    Console.WriteLine("The port is invalid.\nMake sure it is a positive integer within 1025-65535.");
-                    Environment.Exit(0);
-                }
 
-                Port = _Port;
-                break;
+            FilteredPoliceIPs = string.IsNullOrWhiteSpace(base["FilteredPoliceIPs"]) ? new string[0] : base["FilteredPoliceIPs"].Split(',').Select(x => x.Trim()).ToArray();
 
-            case "Filter":
-                int _Filter;
 
-                            
+            FilteredDispatchIPs = string.IsNullOrWhiteSpace(base["FilteredDispatchIPs"]) ? new string[0] : base["FilteredDispatchIPs"].Split(',').Select(x => x.Trim()).ToArray();
 
-                Filter = (FilterType)_Filter;
-                break;
-
-            case "FilteredCivIPs":
-                if (string.IsNullOrWhiteSpace(line[1]))
-                    FilteredCivIPs = new string[0];
-                else
-                    FilteredCivIPs = line[1].Split(',').Select(x => x.Trim()).ToArray();
-                break;
-
-            case "FilteredPoliceIPs":
-                if (string.IsNullOrWhiteSpace(line[1]))
-                    FilteredPoliceIPs = new string[0];
-                else
-                    FilteredPoliceIPs = line[1].Split(',').Select(x => x.Trim()).ToArray();
-                break;
-
-            case "FilteredDispatchIPs":
-                if (string.IsNullOrWhiteSpace(line[1]))
-                    FilteredDispatchIPs = new string[0];
-                else
-                    FilteredDispatchIPs = line[1].Split(',').Select(x => x.Trim()).ToArray();
-                break;
-
-            case "Aliases":
-                if (string.IsNullOrWhiteSpace(line[1]))
-                    Aliases = new List<Alias>();
-                else
-                    Aliases = line[1].Split(',').Select(x => x.Trim()).Select(x => Alias.Parse(x)).ToList();
-                break;
-            }
+            
+            Aliases = string.IsNullOrWhiteSpace(base["Aliases"]) ? new AliasDictionary(Locale) : new AliasDictionary(Locale, base["Aliases"]);
         }
 
         public bool HasPerm(string ip, Permission perm)
         {
-            if (Filter == FilterType.None)
-                return true;
-
-            if (Filter == FilterType.Blacklist)
+            switch (Filter)
             {
-                if (perm == Permission.Civ && !FilteredCivIPs.Contains(ip))
+                case FilterType.None:
                     return true;
+                case FilterType.Blacklist:
+                    switch (perm)
+                    {
+                        case Permission.Civ when !FilteredCivIPs.Contains(ip):
+                            return true;
+                        case Permission.Police when !FilteredPoliceIPs.Contains(ip):
+                            return true;
+                        case Permission.Dispatch when !FilteredDispatchIPs.Contains(ip):
+                            return true;
 
-                if (perm == Permission.Police && !FilteredPoliceIPs.Contains(ip))
-                    return true;
+                        default:
+                            return false;
+                    }
+                case FilterType.Whitelist:
+                    switch (perm)
+                    {
+                        case Permission.Civ when FilteredCivIPs.Contains(ip):
+                            return true;
+                        case Permission.Police when FilteredPoliceIPs.Contains(ip):
+                            return true;
+                        case Permission.Dispatch when FilteredDispatchIPs.Contains(ip):
+                            return true;
 
-                if (perm == Permission.Dispatch && !FilteredDispatchIPs.Contains(ip))
-                    return true;
+                        default:
+                            return false;
+                    }
+
+                default:
+                    return false;
             }
-            
-            if (Filter == FilterType.Whitelist)
-            {
-                if (perm == Permission.Civ && FilteredCivIPs.Contains(ip))
-                    return true;
-
-                if (perm == Permission.Police && FilteredPoliceIPs.Contains(ip))
-                    return true;
-
-                if (perm == Permission.Dispatch && FilteredDispatchIPs.Contains(ip))
-                    return true;
-            }
-
-            return false;
         }
     }
 }

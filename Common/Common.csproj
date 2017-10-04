@@ -7,7 +7,7 @@
     <ProjectGuid>{54D00D8F-487B-4B7C-A6BC-D55535BEE778}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Common</RootNamespace>
+    <RootNamespace>CloneCAD.Common</RootNamespace>
     <AssemblyName>CloneCAD.Common</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -43,9 +43,12 @@
     <Compile Include="DataHolders\Civ.cs" />
     <Compile Include="DataHolders\StorableValue.cs" />
     <Compile Include="DataHolders\Ticket.cs" />
-    <Compile Include="Extensions.cs" />
+    <Compile Include="Functions.cs" />
     <Compile Include="DataHolders\Config\GenericConfig.cs" />
     <Compile Include="DataHolders\Config\LocaleConfig.cs" />
+    <Compile Include="NetCode\NetEvent.cs" />
+    <Compile Include="NetCode\NetRequest.cs" />
+    <Compile Include="NetCode\NetRequestHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
