@@ -60,7 +60,7 @@ namespace CloneCAD.Common.DataHolders
             LoadValueFromBytes(File.ReadAllBytes(FilePath));
         }
 
-        public StorableValue(byte[] ValueBytes)
+        public StorableValue(byte[] ValueBytes) : this()
         {
             LoadValueFromBytes(ValueBytes);
         }
