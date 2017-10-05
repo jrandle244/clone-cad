@@ -13,15 +13,6 @@ namespace CloneCAD.Common.NetCode
         {
             this.Metadata = Metadata;
             this.Data = new StorableValue<object[]>(Data);
-
-        }
-
-        public NetRequest(byte[] Bytes)
-        {
-            NetRequest convertedRequest = new StorableValue<NetRequest>(Bytes).Value;
-
-            Metadata = convertedRequest.Metadata;
-            Data = convertedRequest.Data;
         }
     }
 }

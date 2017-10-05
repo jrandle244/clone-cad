@@ -25,7 +25,7 @@ namespace CloneCAD.Common.DataHolders
         {
             get
             {
-                if (valChanged)
+                if (!valChanged)
                     return bytes;
 
                 BinaryFormatter bf = new BinaryFormatter();
@@ -35,15 +35,22 @@ namespace CloneCAD.Common.DataHolders
                     bytes = ms.ToArray();
                 }
 
-                valChanged = false;
+                valChanged = true;
                 return bytes;
             }
         }
 
-        public StorableValue(T Value) =>
-            this.Value = Value;
+        public StorableValue() 
+        {
+            valChanged = true;
+        }
 
-        public StorableValue(string FilePath)
+        public StorableValue(T Value) : this()
+        {
+            this.Value = Value;
+        }
+
+        public StorableValue(string FilePath) : this()
         {
             if (!File.Exists(FilePath))
                 throw new InvalidOperationException("The file does not exist!");
