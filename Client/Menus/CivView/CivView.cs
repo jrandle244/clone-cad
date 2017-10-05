@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Threading;
 using System.Windows.Forms;
+using CloneCAD.Common.NetCode;
 
 #pragma warning disable IDE1006
 

@@ -23,6 +23,19 @@ namespace CloneCAD.Common.DataHolders
         private bool valChanged;
         public byte[] Bytes
         {
+            set
+            {
+                BinaryFormatter bf = new BinaryFormatter();
+                using (MemoryStream memStream = new MemoryStream())
+                {
+                    memStream.Write(value, 0, value.Length);
+                    memStream.Seek(0, SeekOrigin.Begin);
+                    Value = (T)bf.Deserialize(memStream);
+                }
+
+                bytes = value;
+                valChanged = false;
+            }
             get
             {
                 if (!valChanged)
@@ -57,12 +70,12 @@ namespace CloneCAD.Common.DataHolders
 
             this.FilePath = FilePath;
 
-            LoadValueFromBytes(File.ReadAllBytes(FilePath));
+            Bytes = File.ReadAllBytes(FilePath);
         }
 
         public StorableValue(byte[] ValueBytes) : this()
         {
-            LoadValueFromBytes(ValueBytes);
+            Bytes = ValueBytes;
         }
 
         public override string ToString() => Value.ToString();
@@ -74,17 +87,6 @@ namespace CloneCAD.Common.DataHolders
 
         public static bool operator !=(StorableValue<T> obj1, T obj2) =>
             !obj1.Value.Equals(obj2);
-
-        public void LoadValueFromBytes(byte[] ValueBytes)
-        {
-            BinaryFormatter bf = new BinaryFormatter();
-            using (MemoryStream memStream = new MemoryStream())
-            {
-                memStream.Write(ValueBytes, 0, ValueBytes.Length);
-                memStream.Seek(0, SeekOrigin.Begin);
-                Value = (T)bf.Deserialize(memStream);
-            }
-        }
 
         public void Save()
         {

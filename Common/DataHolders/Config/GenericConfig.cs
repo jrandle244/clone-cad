@@ -27,16 +27,26 @@ namespace CloneCAD.Common.DataHolders
 
         public string Path { get; set; }
 
-        public GenericConfig(List<string> RequiredKeys)
+        public GenericConfig()
         {
             values = new Dictionary<string, string>();
-            requiredKeys = RequiredKeys
+            requiredKeys = new List<string>();
         }
 
-        public GenericConfig(List<string> RequiredKeys, string Path)
+        public GenericConfig(List<string> RequiredKeys) : this()
         {
-            values = new Dictionary<string, string>();
             requiredKeys = RequiredKeys;
+        }
+
+        public GenericConfig(string Path) : this()
+        {
+            this.Path = Path;
+
+            Load();
+        }
+
+        public GenericConfig(List<string> RequiredKeys, string Path) : this(RequiredKeys)
+        {
             this.Path = Path;
 
             Load();
