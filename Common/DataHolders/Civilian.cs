@@ -5,9 +5,9 @@ using System.Text;
 
 namespace CloneCAD.Common.DataHolders
 {
-    public class Civ
+    public class Civilian
     {
-        public ushort CivID { get; }
+        public ulong ID { get; }
 
         public string Name { get; set; }
         public string RegisteredPlate { get; set; }
@@ -15,7 +15,7 @@ namespace CloneCAD.Common.DataHolders
         public List<Ticket> Tickets { get; set; }
         public string AssociatedBusiness { get; set; }
 
-        public Civ(ushort CivID, string Name = null, string RegisteredPlate = null, List<string> RegisteredWeapons = null, List<Ticket> Tickets = null, string AssociatedBusiness = null)
+        public Civilian(ulong ID, string Name = null, string RegisteredPlate = null, List<string> RegisteredWeapons = null, List<Ticket> Tickets = null, string AssociatedBusiness = null)
         {
             this.Name = Name;
 
@@ -23,7 +23,7 @@ namespace CloneCAD.Common.DataHolders
             this.RegisteredWeapons = RegisteredWeapons ?? new List<string>();
             this.Tickets = Tickets ?? new List<Ticket>();
             this.AssociatedBusiness = AssociatedBusiness;
-            this.CivID = CivID;
+            this.ID = ID;
         }
     }
 }

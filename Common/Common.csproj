@@ -40,14 +40,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataHolders\Civ.cs" />
+    <Compile Include="DataHolders\Civilian.cs" />
     <Compile Include="DataHolders\StorableValue.cs" />
     <Compile Include="DataHolders\Ticket.cs" />
     <Compile Include="Functions.cs" />
     <Compile Include="DataHolders\Config\GenericConfig.cs" />
     <Compile Include="DataHolders\Config\LocaleConfig.cs" />
     <Compile Include="NetCode\NetEvent.cs" />
-    <Compile Include="NetCode\NetProperty.cs" />
+    <Compile Include="NetCode\NetFunction.cs" />
     <Compile Include="NetCode\NetRequest.cs" />
     <Compile Include="NetCode\NetRequestHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

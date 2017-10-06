@@ -12,7 +12,17 @@ namespace CloneCAD.Common.DataHolders
             configCache = new Dictionary<string, string>();
         }
 
-        public LocaleConfig(string File) : base()
+        public LocaleConfig(string File) : base(File)
+        {
+            configCache = new Dictionary<string, string>();
+        }
+
+        public LocaleConfig(List<string> RequiredKeys) : base(RequiredKeys)
+        {
+            configCache = new Dictionary<string, string>();
+        }
+
+        public LocaleConfig(List<string> RequiredKeys, string Path) : base(RequiredKeys, Path)
         {
             configCache = new Dictionary<string, string>();
         }

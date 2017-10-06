@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 
 namespace CloneCAD.Server.DataHolders
 {
@@ -13,17 +14,17 @@ namespace CloneCAD.Server.DataHolders
     public class Config : GenericConfig
     {
         public string FilePath { get; }
-
-        public string IP => base["IP"];
+        
         public int Port { get; private set; }
 
         public FilterType Filter { get; private set; }
         public string[] FilteredCivIPs { get; private set; }
         public string[] FilteredPoliceIPs { get; private set; }
         public string[] FilteredDispatchIPs { get; private set; }
-        public string Log => base["Log"];
-        public AliasDictionary Aliases;
+
+        public AliasDictionary Aliases { get; private set; }
         public LocaleConfig Locale { get; private set; }
+        public Log Log { get; private set; }
 
         public Config(string FilePath) : base (new List<string>()
         {
@@ -32,6 +33,7 @@ namespace CloneCAD.Server.DataHolders
             "Port",
             "Filter",
             "FilteredCivIPs",
+            "FilteredPoliceIPs",
             "FilteredDispatchIPs",
             "Log",
             "Aliases"
@@ -72,6 +74,8 @@ namespace CloneCAD.Server.DataHolders
 
             
             Aliases = string.IsNullOrWhiteSpace(base["Aliases"]) ? new AliasDictionary(Locale) : new AliasDictionary(Locale, base["Aliases"]);
+
+            Log = new Log(base["Log"], Locale, Aliases);
         }
 
         public bool HasPerm(string ip, Permission perm)
