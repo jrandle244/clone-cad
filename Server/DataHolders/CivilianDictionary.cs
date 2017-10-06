@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace CloneCAD.Server.DataHolders.Static
 {
-    public class CivilianDictionary : Dictionary<ulong, Civilian>
+    public class CivilianDictionary : Dictionary<uint, Civilian>
     {
         public bool ContainsName(string name) =>
             Any(x => x.Value.Name == name);
@@ -14,8 +14,8 @@ namespace CloneCAD.Server.DataHolders.Static
         public bool ContainsPlate(string plate) =>
             Any(x => x.Value.RegisteredPlate == plate);
 
-        public IEnumerable<T> Select<T>(Func<KeyValuePair<ulong, Civilian>, T> Selector) =>
-             Keys.Select(id => Selector(new KeyValuePair<ulong, Civilian>(id, base[id]))).ToList();
+        public IEnumerable<T> Select<T>(Func<KeyValuePair<uint, Civilian>, T> selector) =>
+             Keys.Select(id => selector(new KeyValuePair<uint, Civilian>(id, base[id]))).ToList();
 
         public Civilian this[string name]
         {
@@ -31,7 +31,7 @@ namespace CloneCAD.Server.DataHolders.Static
                 if (!ContainsName(name))
                     throw new InvalidOperationException("Cannot set " + nameof(Civilian) + " by name when no " + nameof(Civilian) + " has this name.");
 
-                foreach (ushort id in Keys)
+                foreach (uint id in Keys)
                     if (base[id].Name == name)
                         base[id] = value;
             }
@@ -53,15 +53,15 @@ namespace CloneCAD.Server.DataHolders.Static
             if (!ContainsName(plate))
                 throw new InvalidOperationException("Cannot get " + nameof(Civilian) + " by plate when no " + nameof(Civilian) + " has this plate.");
 
-            foreach (ushort id in Keys)
+            foreach (uint id in Keys)
                 if (base[id].RegisteredPlate == plate)
                     base[id] = civ;
         }
 
-        private bool Any(Func<KeyValuePair<ushort, Civilian>, bool> Predicate)
+        private bool Any(Func<KeyValuePair<ushort, Civilian>, bool> predicate)
         {
             foreach (ushort id in Keys)
-                return Predicate(new KeyValuePair<ushort, Civilian>(id, base[id]));
+                return predicate(new KeyValuePair<ushort, Civilian>(id, base[id]));
 
             return false;
         }

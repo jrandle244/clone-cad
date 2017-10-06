@@ -8,18 +8,18 @@ namespace CloneCAD.Common.NetCode
 {
     public class NetFunction<T>
     {
-        private Func<object[], Task<T>> callback;
+        private Func<NetRequestHandler, object[], Task<T>> Callback;
 
-        public NetFunction(Func<object[], Task<T>> FunctionCallback) =>
-            callback = FunctionCallback;
+        public NetFunction(Func<NetRequestHandler, object[], Task<T>> functionCallback) =>
+            Callback = functionCallback;
 
-        public static NetFunction<T> operator +(NetFunction<T> NetProperty, Func<object[], Task<T>> FunctionCallback)
+        public static NetFunction<T> operator +(NetFunction<T> netProperty, Func<NetRequestHandler, object[], Task<T>> functionCallback)
         {
-            NetProperty.callback = (FunctionCallback);
-            return NetProperty;
+            netProperty.Callback = (functionCallback);
+            return netProperty;
         }
 
-        public async Task<T> Invoke(object[] args) =>
-            await callback.Invoke(args);
+        public async Task<T> Invoke(NetRequestHandler handler, object[] args) =>
+            await Callback.Invoke(handler, args);
     }
 }

@@ -7,7 +7,7 @@ namespace CloneCAD.Common.DataHolders
 {
     public class Civilian
     {
-        public ulong ID { get; }
+        public uint ID { get; }
 
         public string Name { get; set; }
         public string RegisteredPlate { get; set; }
@@ -15,7 +15,7 @@ namespace CloneCAD.Common.DataHolders
         public List<Ticket> Tickets { get; set; }
         public string AssociatedBusiness { get; set; }
 
-        public Civilian(ulong ID, string Name = null, string RegisteredPlate = null, List<string> RegisteredWeapons = null, List<Ticket> Tickets = null, string AssociatedBusiness = null)
+        public Civilian(uint ID, string Name = null, string RegisteredPlate = null, List<string> RegisteredWeapons = null, List<Ticket> Tickets = null, string AssociatedBusiness = null)
         {
             this.Name = Name;
 

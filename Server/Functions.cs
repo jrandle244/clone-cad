@@ -30,11 +30,11 @@ namespace CloneCAD.Server
             Common.Functions.ExceptionHandlerBackend(e, ExitCode);
         }
 
-        public static void Error(LocaleConfig Locale, string LocaleError, int ExitCode)
+        public static void Error(LocaleConfig locale, string LocaleError, int ExitCode)
         {
             SystemSounds.Exclamation.Play();
 
-            Console.WriteLine(Locale[LocaleError] + "\n" + Locale["PressAnyKeyToExit"]);
+            Console.WriteLine(locale[LocaleError] + "\n" + locale["PressAnyKeyToExit"]);
             Console.ReadKey();
             Environment.Exit(ExitCode);
         }

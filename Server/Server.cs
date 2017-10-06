@@ -61,7 +61,10 @@ namespace CloneCAD.Server
                 NetValues = NetValueCivilians
             };
 
-            handler.NetFunctions.Add("ReserveCiv", new NetFunction<object>(GetCivilian));
+            handler.NetFunctions.Add("ReserveCivilian", new NetFunction<object>(ReserveCivilian));
+            handler.NetFunctions.Add("CheckPlate", new NetFunction<object>(CheckPlate));
+
+            handler.NetEvents.Add("UpdateCivilian", new NetEvent(UpdateCivilian));
 
             /* old netcode
                     //Get civ
@@ -207,43 +210,62 @@ namespace CloneCAD.Server
         }
 
         #region netfunctions
-        async Task<object> GetCivilian(object[] objs)
+        private async Task<object> ReserveCivilian(NetRequestHandler handler, object[] objs)
         {
-            if (!Config.HasPerm(ip, Permission.Civ))
+            if (!Config.HasPerm(handler.IP, Permission.Civ))
                 return null;
 
             Civilian civilian = new Civilian(GetRandomID());
-            Log.WriteLine("Reserved civ #" + civilian.ID + ".", ip);
+            Log.WriteLine("Reserved civilian (" + civilian.ID + ").", handler.IP);
 
             Civilians.Value.Add(civilian);
+            handler.NetValues.Add("Civilian:" + civilian.ID, civilian);
 
-
+            await Task.FromResult(0);
             return civilian;
+        }
 
-            /* civ retrieval
-                try
-                {
-                    if (!Config.HasPerm(ip, Permission.Civ) && !Config.HasPerm(ip, Permission.Dispatch))
-                        break;
+        private async Task UpdateCivilian(NetRequestHandler handler, object[] objs)
+        {
+            if (!Config.HasPerm(handler.IP, Permission.Civ))
+                return;
 
-                    socket.Send(new byte[] { 0 }.Concat(Civilians[id].ToBytes()).ToArray());
-                    Log.WriteLine("Sent civ #" + id + ".", ip);
-                }
-                catch
-                {
-                    socket.Send(new byte[] { 1 });
-                    Log.WriteLine("Retrieving civ #" + id + " returned empty.", ip);
-                }
-                */
+            Civilian civilian = (Civilian) objs[0];
+
+            if (Civilians.Value.ContainsKey(civilian.ID))
+            {
+                List<Ticket> tickets = Civilians.Value[civilian.ID].Tickets;
+
+                Civilians.Value[civilian.ID] = civilian;
+                Civilians.Value[civilian.ID].Tickets = tickets;
+
+                handler.NetValues["Civilian:" + civilian.ID] = Civilians.Value[civilian.ID];
+
+                Log.WriteLine("Updated civilian (" + civilian.ID + ").", handler.IP);
+            }
+            else
+            {
+                Civilians.Value.Add(civilian);
+                handler.NetValues.Add("Civilian:" + civilian.ID, civilian);
+
+                Log.WriteLine("Saved civilian (" + civilian.ID + ").", handler.IP);
+            }
+
+            await Task.FromResult(0);
+        }
+
+        private async Task<object> CheckPlate(NetRequestHandler arg1, object[] arg2)
+        {
+            throw new NotImplementedException();
         }
         #endregion
 
-        private ulong GetRandomID()
+        private static uint GetRandomID()
         {
-            byte[] buffer = new byte[64];
+            byte[] buffer = new byte[32];
             Random random = new Random();
             random.NextBytes(buffer);
-            return BitConverter.ToUInt64(buffer, 0);
+            return BitConverter.ToUInt32(buffer, 0);
         }
     }
 }

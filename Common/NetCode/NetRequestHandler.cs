@@ -82,28 +82,28 @@ namespace CloneCAD.Common.NetCode
 
         #region handlers
 
-        private async Task<bool> HandleInvocation(NetRequest Request)
+        private async Task<bool> HandleInvocation(NetRequest request)
         {
-            if (Request.Metadata != NetRequestMetadata.Invocation)
+            if (request.Metadata != NetRequestMetadata.Invocation)
                 return false;
 
-            string netEvent = (string) Request.Data.Value[0];
-            object[] parameters = Request.Data.Value.Skip(1).ToArray();
+            string netEvent = (string) request.Data.Value[0];
+            object[] parameters = request.Data.Value.Skip(1).ToArray();
 
             if (!NetEvents.ContainsKey(netEvent))
                 return false;
 
-            await NetEvents[netEvent].Invoke(parameters);
+            await NetEvents[netEvent].Invoke(this, parameters);
 
             return true;
         }
 
-        private async Task<bool> HandleValueRequest(NetRequest Request)
+        private async Task<bool> HandleValueRequest(NetRequest request)
         {
-            if (Request.Metadata != NetRequestMetadata.ValueRequest)
+            if (request.Metadata != NetRequestMetadata.ValueRequest)
                 return false;
 
-            string valueName = (string) Request.Data.Value[0];
+            string valueName = (string) request.Data.Value[0];
 
             if (!NetValues.ContainsKey(valueName))
             {
@@ -134,30 +134,30 @@ namespace CloneCAD.Common.NetCode
             return true;
         }
 
-        private async Task<bool> HandleValueReturn(NetRequest Request)
+        private async Task<bool> HandleValueReturn(NetRequest request)
         {
-            if (Request.Metadata != NetRequestMetadata.ValueReturn)
+            if (request.Metadata != NetRequestMetadata.ValueReturn)
                 return false;
 
-            string valueName = (string) Request.Data.Value[0];
-            bool existed = (bool) Request.Data.Value[1];
+            string valueName = (string) request.Data.Value[0];
+            bool existed = (bool) request.Data.Value[1];
 
             if (!existed)
                 return true;
 
-            CachedNetValues.Add(valueName, Request.Data.Value[2]);
+            CachedNetValues.Add(valueName, request.Data.Value[2]);
 
             await Task.FromResult(0);
             return true;
         }
 
-        private async Task<bool> HandleFunctionRequest(NetRequest Request)
+        private async Task<bool> HandleFunctionRequest(NetRequest request)
         {
-            if (Request.Metadata != NetRequestMetadata.FunctionRequest)
+            if (request.Metadata != NetRequestMetadata.FunctionRequest)
                 return false;
 
-            string valueName = (string) Request.Data.Value[0];
-            object[] parameters = Request.Data.Value.Skip(1).ToArray();
+            string valueName = (string) request.Data.Value[0];
+            object[] parameters = request.Data.Value.Skip(1).ToArray();
 
             if (!NetFunctions.ContainsKey(valueName))
             {
@@ -178,7 +178,7 @@ namespace CloneCAD.Common.NetCode
             try
             {
                 S.Send(new StorableValue<NetRequest>(new NetRequest(NetRequestMetadata.FunctionReturn, valueName, true,
-                    NetFunctions[valueName].Invoke(parameters))).Bytes);
+                    NetFunctions[valueName].Invoke(this, parameters))).Bytes);
             }
             catch (SocketException)
             {
@@ -189,18 +189,18 @@ namespace CloneCAD.Common.NetCode
             return true;
         }
 
-        private async Task<bool> HandleFunctionReturn(NetRequest Request)
+        private async Task<bool> HandleFunctionReturn(NetRequest request)
         {
-            if (Request.Metadata != NetRequestMetadata.FunctionReturn)
+            if (request.Metadata != NetRequestMetadata.FunctionReturn)
                 return false;
 
-            string valueName = (string) Request.Data.Value[0];
-            bool existed = (bool) Request.Data.Value[1];
+            string valueName = (string) request.Data.Value[0];
+            bool existed = (bool) request.Data.Value[1];
 
             if (!existed)
                 return true;
 
-            CachedNetFunctions.Add(valueName, Request.Data.Value[2]);
+            CachedNetFunctions.Add(valueName, request.Data.Value[2]);
 
             await Task.FromResult(0);
             return true;
@@ -208,12 +208,12 @@ namespace CloneCAD.Common.NetCode
 
         #endregion
 
-        public async Task<bool> TriggetNetEvent(string NetEventName, params object[] Parameters)
+        public async Task<bool> TriggetNetEvent(string netEventName, params object[] parameters)
         {
             try
             {
-                S.Send(new StorableValue<NetRequest>(new NetRequest(NetRequestMetadata.Invocation, NetEventName,
-                    Parameters)).Bytes);
+                S.Send(new StorableValue<NetRequest>(new NetRequest(NetRequestMetadata.Invocation, netEventName,
+                    parameters)).Bytes);
             }
             catch (SocketException)
             {
@@ -224,11 +224,11 @@ namespace CloneCAD.Common.NetCode
             return true;
         }
 
-        public async Task<T> GetNetValue<T>(string NetValueName)
+        public async Task<T> GetNetValue<T>(string netValueName)
         {
             try
             {
-                S.Send(new StorableValue<NetRequest>(new NetRequest(NetRequestMetadata.ValueRequest, NetValueName))
+                S.Send(new StorableValue<NetRequest>(new NetRequest(NetRequestMetadata.ValueRequest, netValueName))
                     .Bytes);
             }
             catch (SocketException)
@@ -236,17 +236,17 @@ namespace CloneCAD.Common.NetCode
                 throw new InvalidOperationException("NetValue does not exist!");
             }
 
-            while (!CachedNetValues.ContainsKey(NetValueName))
+            while (!CachedNetValues.ContainsKey(netValueName))
                 await Task.Delay(10);
 
-            return (T) CachedNetValues[NetValueName];
+            return (T) CachedNetValues[netValueName];
         }
 
-        public async Task<Tuple<bool, T>> TryGetNetValue<T>(string NetValueName)
+        public async Task<Tuple<bool, T>> TryGetNetValue<T>(string netValueName)
         {
             try
             {
-                S.Send(new StorableValue<NetRequest>(new NetRequest(NetRequestMetadata.ValueRequest, NetValueName))
+                S.Send(new StorableValue<NetRequest>(new NetRequest(NetRequestMetadata.ValueRequest, netValueName))
                     .Bytes);
             }
             catch (SocketException)
@@ -254,46 +254,46 @@ namespace CloneCAD.Common.NetCode
                 return new Tuple<bool, T>(false, (T) new object());
             }
 
-            while (!CachedNetValues.ContainsKey(NetValueName))
+            while (!CachedNetValues.ContainsKey(netValueName))
                 await Task.Delay(10);
 
-            return new Tuple<bool, T>(true, (T) CachedNetValues[NetValueName]);
+            return new Tuple<bool, T>(true, (T) CachedNetValues[netValueName]);
         }
 
-        public async Task<T> GetNetFunction<T>(string NetFunctionName)
+        public async Task<T> GetNetFunction<T>(string netFunctionName)
         {
             try
             {
                 S.Send(new StorableValue<NetRequest>(
-                    new NetRequest(NetRequestMetadata.FunctionRequest, NetFunctionName)).Bytes);
+                    new NetRequest(NetRequestMetadata.FunctionRequest, netFunctionName)).Bytes);
             }
             catch (SocketException)
             {
                 throw new InvalidOperationException("NetFunction does not exist!");
             }
 
-            while (!CachedNetFunctions.ContainsKey(NetFunctionName))
+            while (!CachedNetFunctions.ContainsKey(netFunctionName))
                 await Task.Delay(10);
 
-            return (T) CachedNetValues[NetFunctionName];
+            return (T) CachedNetValues[netFunctionName];
         }
 
-        public async Task<Tuple<bool, T>> TryGetNetFunction<T>(string NetFunctionName)
+        public async Task<Tuple<bool, T>> TryGetNetFunction<T>(string netFunctionName)
         {
             try
             {
                 S.Send(new StorableValue<NetRequest>(
-                    new NetRequest(NetRequestMetadata.FunctionRequest, NetFunctionName)).Bytes);
+                    new NetRequest(NetRequestMetadata.FunctionRequest, netFunctionName)).Bytes);
             }
             catch (SocketException)
             {
                 return new Tuple<bool, T>(false, (T) new object());
             }
 
-            while (!CachedNetFunctions.ContainsKey(NetFunctionName))
+            while (!CachedNetFunctions.ContainsKey(netFunctionName))
                 await Task.Delay(10);
 
-            return new Tuple<bool, T>(true, (T) CachedNetValues[NetFunctionName]);
+            return new Tuple<bool, T>(true, (T) CachedNetValues[netFunctionName]);
         }
     }
 }

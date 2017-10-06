@@ -36,18 +36,25 @@ namespace CloneCAD.Server
             server.Start();
 #endif
 #if !DEBUG
-            Config config;
-
-            if (File.Exists(CONFIG_PATH))
-                config = new Config(CONFIG_PATH);
-            else
+            try 
             {
-                Functions.Error("No \"" + CONFIG_PATH + "\" file exists. Check the README.md on GitHub to get a default \"" + CONFIG_PATH + "\".", 1);
-                return; //Have to put this here so 'server' initialization didn't throw an error saying 'config' might not be initialized.
-            }
+                Config config;
 
-            Server server = new Server(config, (File.Exists(CIV_EXPORT_PATH) ? new StorableValue<CivilianDictionary>(CIV_EXPORT_PATH) : new StorableValue<CivilianDictionary>()).Value);
-            server.Start();
+                if (File.Exists(CONFIG_PATH))
+                    config = new Config(CONFIG_PATH);
+                else
+                {
+                    Functions.Error("No \"" + CONFIG_PATH + "\" file exists. Check the README.md on GitHub to get a default \"" + CONFIG_PATH + "\".", 1);
+                    return; //Have to put this here so 'server' initialization didn't throw an error saying 'config' might not be initialized.
+                }
+
+                Server server = new Server(config, (File.Exists(CIV_EXPORT_PATH) ? new StorableValue<CivilianDictionary>(CIV_EXPORT_PATH) : new StorableValue<CivilianDictionary>()).Value);
+                server.Start();
+            }
+            catch (Exception e)
+            {
+                Functions.Error("An exception went unhandled.", e, 3);
+            }
 #endif
         }
     }
