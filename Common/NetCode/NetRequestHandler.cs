@@ -15,7 +15,7 @@ namespace CloneCAD.Common.NetCode
         private readonly Dictionary<string, object> CachedNetValues;
 
         public Dictionary<string, NetEvent> NetEvents { get; set; }
-        public Dictionary<string, NetFunction<object>> NetFunctions { get; set; }
+        public Dictionary<string, NetFunction> NetFunctions { get; set; }
         public Dictionary<string, object> NetValues { get; set; }
         public string IP { get; }
         public int Port { get; }
@@ -27,7 +27,7 @@ namespace CloneCAD.Common.NetCode
             Port = int.Parse(vals[1]);
 
             NetEvents = new Dictionary<string, NetEvent>();
-            NetFunctions = new Dictionary<string, NetFunction<object>>();
+            NetFunctions = new Dictionary<string, NetFunction>();
             NetValues = new Dictionary<string, object>();
 
             CachedNetValues = new Dictionary<string, object>();

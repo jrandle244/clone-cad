@@ -16,11 +16,9 @@ namespace CloneCAD.Server
 {
     public class Server
     {
-        private TcpListener Listener;
-        private StorableValue<CivilianDictionary> Civilians;
+        private readonly TcpListener Listener;
+        private readonly StorableValue<CivilianDictionary> Civilians;
         private Dictionary<string, object> NetValueCivilians => Civilians.Value.Values.ToDictionary<Civilian, string, object>(civilian => "Civilian:" + civilian.ID, civilian => civilian);
-        private Dictionary<string, NetFunction<object>> NetFunctions;
-        private bool Saving;
 
         public Config Config;
 
@@ -32,7 +30,6 @@ namespace CloneCAD.Server
             Civilians = new StorableValue<CivilianDictionary>(civilians);
 
             Listener = new TcpListener(IPAddress.Parse(Config["IP"]), Config.Port);
-            Saving = false;
         }
 
         public void Start()

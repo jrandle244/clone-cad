@@ -6,20 +6,20 @@ using System.Threading.Tasks;
 
 namespace CloneCAD.Common.NetCode
 {
-    public class NetFunction<T>
+    public class NetFunction
     {
-        private Func<NetRequestHandler, object[], Task<T>> Callback;
+        private Func<NetRequestHandler, object[], Task<object>> Callback;
 
-        public NetFunction(Func<NetRequestHandler, object[], Task<T>> functionCallback) =>
+        public NetFunction(Func<NetRequestHandler, object[], Task<object>> functionCallback) =>
             Callback = functionCallback;
 
-        public static NetFunction<T> operator +(NetFunction<T> netProperty, Func<NetRequestHandler, object[], Task<T>> functionCallback)
+        public static NetFunction operator +(NetFunction netProperty, Func<NetRequestHandler, object[], Task<object>> functionCallback)
         {
             netProperty.Callback = (functionCallback);
             return netProperty;
         }
 
-        public async Task<T> Invoke(NetRequestHandler handler, object[] args) =>
+        public async Task<object> Invoke(NetRequestHandler handler, object[] args) =>
             await Callback.Invoke(handler, args);
     }
 }
