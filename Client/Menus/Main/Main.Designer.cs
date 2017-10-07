@@ -29,108 +29,108 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
-            this.civ = new MaterialSkin.Controls.MaterialRadioButton();
-            this.popo = new MaterialSkin.Controls.MaterialRadioButton();
-            this.dispatch = new MaterialSkin.Controls.MaterialRadioButton();
-            this.launch = new MaterialSkin.Controls.MaterialRaisedButton();
-            this.close = new MaterialSkin.Controls.MaterialCheckBox();
+            this.CivilianRadial = new MaterialSkin.Controls.MaterialRadioButton();
+            this.PoliceRadial = new MaterialSkin.Controls.MaterialRadioButton();
+            this.DispatchRadial = new MaterialSkin.Controls.MaterialRadioButton();
+            this.Launch = new MaterialSkin.Controls.MaterialRaisedButton();
+            this.CloseCheckbox = new MaterialSkin.Controls.MaterialCheckBox();
             this.SuspendLayout();
             // 
-            // civ
+            // CivilianRadial
             // 
-            this.civ.AutoSize = true;
-            this.civ.Depth = 0;
-            this.civ.Font = new System.Drawing.Font("Roboto", 10F);
-            this.civ.Location = new System.Drawing.Point(9, 77);
-            this.civ.Margin = new System.Windows.Forms.Padding(0);
-            this.civ.MouseLocation = new System.Drawing.Point(-1, -1);
-            this.civ.MouseState = MaterialSkin.MouseState.HOVER;
-            this.civ.Name = "civ";
-            this.civ.Ripple = true;
-            this.civ.Size = new System.Drawing.Size(74, 30);
-            this.civ.TabIndex = 0;
-            this.civ.TabStop = true;
-            this.civ.Text = "Civilian";
-            this.civ.UseVisualStyleBackColor = true;
+            this.CivilianRadial.AutoSize = true;
+            this.CivilianRadial.Depth = 0;
+            this.CivilianRadial.Font = new System.Drawing.Font("Roboto", 10F);
+            this.CivilianRadial.Location = new System.Drawing.Point(9, 77);
+            this.CivilianRadial.Margin = new System.Windows.Forms.Padding(0);
+            this.CivilianRadial.MouseLocation = new System.Drawing.Point(-1, -1);
+            this.CivilianRadial.MouseState = MaterialSkin.MouseState.HOVER;
+            this.CivilianRadial.Name = "CivilianRadial";
+            this.CivilianRadial.Ripple = true;
+            this.CivilianRadial.Size = new System.Drawing.Size(74, 30);
+            this.CivilianRadial.TabIndex = 0;
+            this.CivilianRadial.TabStop = true;
+            this.CivilianRadial.Text = "Civilian";
+            this.CivilianRadial.UseVisualStyleBackColor = true;
             // 
-            // popo
+            // PoliceRadial
             // 
-            this.popo.AutoSize = true;
-            this.popo.Depth = 0;
-            this.popo.Font = new System.Drawing.Font("Roboto", 10F);
-            this.popo.Location = new System.Drawing.Point(9, 111);
-            this.popo.Margin = new System.Windows.Forms.Padding(0);
-            this.popo.MouseLocation = new System.Drawing.Point(-1, -1);
-            this.popo.MouseState = MaterialSkin.MouseState.HOVER;
-            this.popo.Name = "popo";
-            this.popo.Ripple = true;
-            this.popo.Size = new System.Drawing.Size(67, 30);
-            this.popo.TabIndex = 1;
-            this.popo.TabStop = true;
-            this.popo.Text = "Police";
-            this.popo.UseVisualStyleBackColor = true;
+            this.PoliceRadial.AutoSize = true;
+            this.PoliceRadial.Depth = 0;
+            this.PoliceRadial.Font = new System.Drawing.Font("Roboto", 10F);
+            this.PoliceRadial.Location = new System.Drawing.Point(9, 111);
+            this.PoliceRadial.Margin = new System.Windows.Forms.Padding(0);
+            this.PoliceRadial.MouseLocation = new System.Drawing.Point(-1, -1);
+            this.PoliceRadial.MouseState = MaterialSkin.MouseState.HOVER;
+            this.PoliceRadial.Name = "PoliceRadial";
+            this.PoliceRadial.Ripple = true;
+            this.PoliceRadial.Size = new System.Drawing.Size(67, 30);
+            this.PoliceRadial.TabIndex = 1;
+            this.PoliceRadial.TabStop = true;
+            this.PoliceRadial.Text = "Police";
+            this.PoliceRadial.UseVisualStyleBackColor = true;
             // 
-            // dispatch
+            // DispatchRadial
             // 
-            this.dispatch.AutoSize = true;
-            this.dispatch.Depth = 0;
-            this.dispatch.Font = new System.Drawing.Font("Roboto", 10F);
-            this.dispatch.Location = new System.Drawing.Point(9, 145);
-            this.dispatch.Margin = new System.Windows.Forms.Padding(0);
-            this.dispatch.MouseLocation = new System.Drawing.Point(-1, -1);
-            this.dispatch.MouseState = MaterialSkin.MouseState.HOVER;
-            this.dispatch.Name = "dispatch";
-            this.dispatch.Ripple = true;
-            this.dispatch.Size = new System.Drawing.Size(83, 30);
-            this.dispatch.TabIndex = 2;
-            this.dispatch.TabStop = true;
-            this.dispatch.Text = "Dispatch";
-            this.dispatch.UseVisualStyleBackColor = true;
+            this.DispatchRadial.AutoSize = true;
+            this.DispatchRadial.Depth = 0;
+            this.DispatchRadial.Font = new System.Drawing.Font("Roboto", 10F);
+            this.DispatchRadial.Location = new System.Drawing.Point(9, 145);
+            this.DispatchRadial.Margin = new System.Windows.Forms.Padding(0);
+            this.DispatchRadial.MouseLocation = new System.Drawing.Point(-1, -1);
+            this.DispatchRadial.MouseState = MaterialSkin.MouseState.HOVER;
+            this.DispatchRadial.Name = "DispatchRadial";
+            this.DispatchRadial.Ripple = true;
+            this.DispatchRadial.Size = new System.Drawing.Size(83, 30);
+            this.DispatchRadial.TabIndex = 2;
+            this.DispatchRadial.TabStop = true;
+            this.DispatchRadial.Text = "Dispatch";
+            this.DispatchRadial.UseVisualStyleBackColor = true;
             // 
-            // launch
+            // Launch
             // 
-            this.launch.AutoSize = true;
-            this.launch.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.launch.Depth = 0;
-            this.launch.Icon = null;
-            this.launch.Location = new System.Drawing.Point(12, 240);
-            this.launch.MouseState = MaterialSkin.MouseState.HOVER;
-            this.launch.Name = "launch";
-            this.launch.Primary = true;
-            this.launch.Size = new System.Drawing.Size(75, 36);
-            this.launch.TabIndex = 3;
-            this.launch.Text = "launch";
-            this.launch.UseVisualStyleBackColor = true;
-            this.launch.Click += new System.EventHandler(this.launch_Click);
+            this.Launch.AutoSize = true;
+            this.Launch.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.Launch.Depth = 0;
+            this.Launch.Icon = null;
+            this.Launch.Location = new System.Drawing.Point(12, 240);
+            this.Launch.MouseState = MaterialSkin.MouseState.HOVER;
+            this.Launch.Name = "Launch";
+            this.Launch.Primary = true;
+            this.Launch.Size = new System.Drawing.Size(75, 36);
+            this.Launch.TabIndex = 3;
+            this.Launch.Text = "launch";
+            this.Launch.UseVisualStyleBackColor = true;
+            this.Launch.Click += new System.EventHandler(this.Launch_Click);
             // 
-            // close
+            // CloseCheckbox
             // 
-            this.close.AutoSize = true;
-            this.close.Checked = true;
-            this.close.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.close.Depth = 0;
-            this.close.Font = new System.Drawing.Font("Roboto", 10F);
-            this.close.Location = new System.Drawing.Point(12, 203);
-            this.close.Margin = new System.Windows.Forms.Padding(0);
-            this.close.MouseLocation = new System.Drawing.Point(-1, -1);
-            this.close.MouseState = MaterialSkin.MouseState.HOVER;
-            this.close.Name = "close";
-            this.close.Ripple = true;
-            this.close.Size = new System.Drawing.Size(128, 30);
-            this.close.TabIndex = 4;
-            this.close.Text = "Close on launch";
-            this.close.UseVisualStyleBackColor = true;
+            this.CloseCheckbox.AutoSize = true;
+            this.CloseCheckbox.Checked = true;
+            this.CloseCheckbox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.CloseCheckbox.Depth = 0;
+            this.CloseCheckbox.Font = new System.Drawing.Font("Roboto", 10F);
+            this.CloseCheckbox.Location = new System.Drawing.Point(12, 203);
+            this.CloseCheckbox.Margin = new System.Windows.Forms.Padding(0);
+            this.CloseCheckbox.MouseLocation = new System.Drawing.Point(-1, -1);
+            this.CloseCheckbox.MouseState = MaterialSkin.MouseState.HOVER;
+            this.CloseCheckbox.Name = "CloseCheckbox";
+            this.CloseCheckbox.Ripple = true;
+            this.CloseCheckbox.Size = new System.Drawing.Size(128, 30);
+            this.CloseCheckbox.TabIndex = 4;
+            this.CloseCheckbox.Text = "Close on launch";
+            this.CloseCheckbox.UseVisualStyleBackColor = true;
             // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(190, 288);
-            this.Controls.Add(this.close);
-            this.Controls.Add(this.launch);
-            this.Controls.Add(this.dispatch);
-            this.Controls.Add(this.popo);
-            this.Controls.Add(this.civ);
+            this.Controls.Add(this.CloseCheckbox);
+            this.Controls.Add(this.Launch);
+            this.Controls.Add(this.DispatchRadial);
+            this.Controls.Add(this.PoliceRadial);
+            this.Controls.Add(this.CivilianRadial);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "Main";
@@ -142,11 +142,11 @@
 
         #endregion
 
-        private MaterialSkin.Controls.MaterialRadioButton civ;
-        private MaterialSkin.Controls.MaterialRadioButton popo;
-        private MaterialSkin.Controls.MaterialRadioButton dispatch;
-        private MaterialSkin.Controls.MaterialRaisedButton launch;
-        private MaterialSkin.Controls.MaterialCheckBox close;
+        private MaterialSkin.Controls.MaterialRadioButton CivilianRadial;
+        private MaterialSkin.Controls.MaterialRadioButton PoliceRadial;
+        private MaterialSkin.Controls.MaterialRadioButton DispatchRadial;
+        private MaterialSkin.Controls.MaterialRaisedButton Launch;
+        private MaterialSkin.Controls.MaterialCheckBox CloseCheckbox;
     }
 }
 

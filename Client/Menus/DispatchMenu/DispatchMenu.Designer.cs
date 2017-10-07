@@ -29,31 +29,31 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DispatchMenu));
-            this.id = new MaterialSkin.Controls.MaterialSingleLineTextField();
+            this.IDBox = new MaterialSkin.Controls.MaterialSingleLineTextField();
             this.materialLabel1 = new MaterialSkin.Controls.MaterialLabel();
-            this.plate = new MaterialSkin.Controls.MaterialSingleLineTextField();
-            this.name = new MaterialSkin.Controls.MaterialSingleLineTextField();
-            this.launch = new MaterialSkin.Controls.MaterialRaisedButton();
+            this.PlateBox = new MaterialSkin.Controls.MaterialSingleLineTextField();
+            this.NameBox = new MaterialSkin.Controls.MaterialSingleLineTextField();
+            this.LaunchBtn = new MaterialSkin.Controls.MaterialRaisedButton();
             this.SuspendLayout();
             // 
-            // id
+            // IDBox
             // 
-            this.id.Depth = 0;
-            this.id.Hint = "Civilian ID";
-            this.id.Location = new System.Drawing.Point(12, 109);
-            this.id.MaxLength = 4;
-            this.id.MouseState = MaterialSkin.MouseState.HOVER;
-            this.id.Name = "id";
-            this.id.PasswordChar = '\0';
-            this.id.SelectedText = "";
-            this.id.SelectionLength = 0;
-            this.id.SelectionStart = 0;
-            this.id.Size = new System.Drawing.Size(97, 23);
-            this.id.TabIndex = 0;
-            this.id.TabStop = false;
-            this.id.UseSystemPasswordChar = false;
-            this.id.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyDown);
-            this.id.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.id_KeyPress);
+            this.IDBox.Depth = 0;
+            this.IDBox.Hint = "Civilian ID";
+            this.IDBox.Location = new System.Drawing.Point(12, 109);
+            this.IDBox.MaxLength = 4;
+            this.IDBox.MouseState = MaterialSkin.MouseState.HOVER;
+            this.IDBox.Name = "IDBox";
+            this.IDBox.PasswordChar = '\0';
+            this.IDBox.SelectedText = "";
+            this.IDBox.SelectionLength = 0;
+            this.IDBox.SelectionStart = 0;
+            this.IDBox.Size = new System.Drawing.Size(97, 23);
+            this.IDBox.TabIndex = 0;
+            this.IDBox.TabStop = false;
+            this.IDBox.UseSystemPasswordChar = false;
+            this.IDBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyDown);
+            this.IDBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.IDBox_KeyPress);
             // 
             // materialLabel1
             // 
@@ -68,70 +68,70 @@
             this.materialLabel1.TabIndex = 3;
             this.materialLabel1.Text = "View civilian:";
             // 
-            // plate
+            // PlateBox
             // 
-            this.plate.Depth = 0;
-            this.plate.Hint = "License plate";
-            this.plate.Location = new System.Drawing.Point(115, 109);
-            this.plate.MaxLength = 8;
-            this.plate.MouseState = MaterialSkin.MouseState.HOVER;
-            this.plate.Name = "plate";
-            this.plate.PasswordChar = '\0';
-            this.plate.SelectedText = "";
-            this.plate.SelectionLength = 0;
-            this.plate.SelectionStart = 0;
-            this.plate.Size = new System.Drawing.Size(97, 23);
-            this.plate.TabIndex = 1;
-            this.plate.TabStop = false;
-            this.plate.UseSystemPasswordChar = false;
-            this.plate.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyDown);
-            this.plate.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.plate_KeyPress);
+            this.PlateBox.Depth = 0;
+            this.PlateBox.Hint = "License plate";
+            this.PlateBox.Location = new System.Drawing.Point(115, 109);
+            this.PlateBox.MaxLength = 8;
+            this.PlateBox.MouseState = MaterialSkin.MouseState.HOVER;
+            this.PlateBox.Name = "PlateBox";
+            this.PlateBox.PasswordChar = '\0';
+            this.PlateBox.SelectedText = "";
+            this.PlateBox.SelectionLength = 0;
+            this.PlateBox.SelectionStart = 0;
+            this.PlateBox.Size = new System.Drawing.Size(97, 23);
+            this.PlateBox.TabIndex = 1;
+            this.PlateBox.TabStop = false;
+            this.PlateBox.UseSystemPasswordChar = false;
+            this.PlateBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyDown);
+            this.PlateBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.PlateBox_KeyPress);
             // 
-            // name
+            // NameBox
             // 
-            this.name.Depth = 0;
-            this.name.Hint = "Name";
-            this.name.Location = new System.Drawing.Point(12, 138);
-            this.name.MaxLength = 30;
-            this.name.MouseState = MaterialSkin.MouseState.HOVER;
-            this.name.Name = "name";
-            this.name.PasswordChar = '\0';
-            this.name.SelectedText = "";
-            this.name.SelectionLength = 0;
-            this.name.SelectionStart = 0;
-            this.name.Size = new System.Drawing.Size(200, 23);
-            this.name.TabIndex = 4;
-            this.name.TabStop = false;
-            this.name.UseSystemPasswordChar = false;
-            this.name.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyDown);
-            this.name.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.name_KeyPress);
+            this.NameBox.Depth = 0;
+            this.NameBox.Hint = "Name";
+            this.NameBox.Location = new System.Drawing.Point(12, 138);
+            this.NameBox.MaxLength = 30;
+            this.NameBox.MouseState = MaterialSkin.MouseState.HOVER;
+            this.NameBox.Name = "NameBox";
+            this.NameBox.PasswordChar = '\0';
+            this.NameBox.SelectedText = "";
+            this.NameBox.SelectionLength = 0;
+            this.NameBox.SelectionStart = 0;
+            this.NameBox.Size = new System.Drawing.Size(200, 23);
+            this.NameBox.TabIndex = 4;
+            this.NameBox.TabStop = false;
+            this.NameBox.UseSystemPasswordChar = false;
+            this.NameBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyDown);
+            this.NameBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NameBox_KeyPress);
             // 
-            // launch
+            // LaunchBtn
             // 
-            this.launch.AutoSize = true;
-            this.launch.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.launch.Depth = 0;
-            this.launch.Icon = null;
-            this.launch.Location = new System.Drawing.Point(12, 167);
-            this.launch.MouseState = MaterialSkin.MouseState.HOVER;
-            this.launch.Name = "launch";
-            this.launch.Primary = true;
-            this.launch.Size = new System.Drawing.Size(113, 36);
-            this.launch.TabIndex = 5;
-            this.launch.Text = "View civilian";
-            this.launch.UseVisualStyleBackColor = true;
-            this.launch.Click += new System.EventHandler(this.launch_Click);
+            this.LaunchBtn.AutoSize = true;
+            this.LaunchBtn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.LaunchBtn.Depth = 0;
+            this.LaunchBtn.Icon = null;
+            this.LaunchBtn.Location = new System.Drawing.Point(12, 167);
+            this.LaunchBtn.MouseState = MaterialSkin.MouseState.HOVER;
+            this.LaunchBtn.Name = "LaunchBtn";
+            this.LaunchBtn.Primary = true;
+            this.LaunchBtn.Size = new System.Drawing.Size(113, 36);
+            this.LaunchBtn.TabIndex = 5;
+            this.LaunchBtn.Text = "View civilian";
+            this.LaunchBtn.UseVisualStyleBackColor = true;
+            this.LaunchBtn.Click += new System.EventHandler(this.launch_Click);
             // 
             // DispatchMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(224, 215);
-            this.Controls.Add(this.launch);
-            this.Controls.Add(this.name);
-            this.Controls.Add(this.plate);
+            this.Controls.Add(this.LaunchBtn);
+            this.Controls.Add(this.NameBox);
+            this.Controls.Add(this.PlateBox);
             this.Controls.Add(this.materialLabel1);
-            this.Controls.Add(this.id);
+            this.Controls.Add(this.IDBox);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "DispatchMenu";
@@ -143,10 +143,10 @@
 
         #endregion
 
-        private MaterialSkin.Controls.MaterialSingleLineTextField id;
+        private MaterialSkin.Controls.MaterialSingleLineTextField IDBox;
         private MaterialSkin.Controls.MaterialLabel materialLabel1;
-        private MaterialSkin.Controls.MaterialSingleLineTextField plate;
-        private MaterialSkin.Controls.MaterialSingleLineTextField name;
-        private MaterialSkin.Controls.MaterialRaisedButton launch;
+        private MaterialSkin.Controls.MaterialSingleLineTextField PlateBox;
+        private MaterialSkin.Controls.MaterialSingleLineTextField NameBox;
+        private MaterialSkin.Controls.MaterialRaisedButton LaunchBtn;
     }
 }

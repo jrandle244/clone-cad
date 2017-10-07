@@ -83,11 +83,11 @@
     <Compile Include="Menus\Main\Main.Designer.cs">
       <DependentUpon>Main.cs</DependentUpon>
     </Compile>
-    <Compile Include="Menus\PopoMenu\PopoMenu.cs">
+    <Compile Include="Menus\PoliceMenu\PoliceMenu.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Menus\PopoMenu\PopoMenu.Designer.cs">
-      <DependentUpon>PopoMenu.cs</DependentUpon>
+    <Compile Include="Menus\PoliceMenu\PoliceMenu.Designer.cs">
+      <DependentUpon>PoliceMenu.cs</DependentUpon>
     </Compile>
     <Compile Include="Menus\RegWeaponMenu\RegWeaponMenu.cs">
       <SubType>Form</SubType>
@@ -112,8 +112,8 @@
     <EmbeddedResource Include="Menus\Main\Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Menus\PopoMenu\PopoMenu.resx">
-      <DependentUpon>PopoMenu.cs</DependentUpon>
+    <EmbeddedResource Include="Menus\PoliceMenu\PoliceMenu.resx">
+      <DependentUpon>PoliceMenu.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Menus\RegWeaponMenu\RegWeaponMenu.resx">
       <DependentUpon>RegWeaponMenu.cs</DependentUpon>
@@ -129,7 +129,9 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="App.config" />
-    <None Include="locale_en.ini" />
+    <None Include="locale_en.ini">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

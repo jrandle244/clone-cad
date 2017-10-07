@@ -56,7 +56,7 @@
             this.civs.TabIndex = 0;
             this.civs.UseCompatibleStateImageBehavior = false;
             this.civs.View = System.Windows.Forms.View.Details;
-            this.civs.DoubleClick += new System.EventHandler(this.civs_DoubleClick);
+            this.civs.DoubleClick += new System.EventHandler(this.Civs_DoubleClick);
             // 
             // columnHeader1
             // 
@@ -81,7 +81,7 @@
             this.create.TabIndex = 1;
             this.create.Text = "Create";
             this.create.UseVisualStyleBackColor = true;
-            this.create.Click += new System.EventHandler(this.create_Click);
+            this.create.Click += new System.EventHandler(this.Create_Click);
             // 
             // delete
             // 
@@ -97,7 +97,7 @@
             this.delete.TabIndex = 2;
             this.delete.Text = "Delete";
             this.delete.UseVisualStyleBackColor = true;
-            this.delete.Click += new System.EventHandler(this.delete_Click);
+            this.delete.Click += new System.EventHandler(this.Delete_Click);
             // 
             // CivLauncher
             // 
@@ -111,7 +111,6 @@
             this.MaximizeBox = false;
             this.Name = "CivLauncher";
             this.Text = "Civilian Selector";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.CivLauncher_FormClosed);
             this.ResumeLayout(false);
             this.PerformLayout();
 

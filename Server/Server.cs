@@ -191,7 +191,7 @@ namespace CloneCAD.Server
             Log.WriteLine("Plate (" + plate + ") checked", handler.IP, Log.Status.Failed);
 
             await Task.FromResult(0);
-            return null;
+            return 0;
         }
 
         private async Task<object> CheckName(NetRequestHandler handler, object[] objs)
@@ -210,7 +210,7 @@ namespace CloneCAD.Server
             Log.WriteLine("Name (" + name + ") checked", handler.IP, Log.Status.Failed);
 
             await Task.FromResult(0);
-            return null;
+            return 0;
         }
         #endregion
 

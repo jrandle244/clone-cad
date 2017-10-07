@@ -2,17 +2,17 @@
 
 namespace CloneCAD.Common.NetCode
 {
-    public enum NetRequestMetadata { Invocation, ValueRequest, ValueReturn, FunctionRequest, FunctionReturn }
+    public enum NetRequestMetadata { InvocationRequest, InvocationReturn, ValueRequest, ValueReturn, FunctionRequest, FunctionReturn }
 
     public class NetRequest
     {
         public StorableValue<object[]> Data { get; }
         public NetRequestMetadata Metadata { get; set; }
 
-        public NetRequest(NetRequestMetadata Metadata, params object[] Data)
+        public NetRequest(NetRequestMetadata metadata, params object[] data)
         {
-            this.Metadata = Metadata;
-            this.Data = new StorableValue<object[]>(Data);
+            Metadata = metadata;
+            Data = new StorableValue<object[]>(data);
         }
     }
 }

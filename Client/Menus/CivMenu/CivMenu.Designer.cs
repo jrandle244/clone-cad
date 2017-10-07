@@ -326,7 +326,6 @@
             this.Name = "CivMenu";
             this.Text = "Civilian Record";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.CivMenu_FormClosing);
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.CivMenu_FormClosed);
             this.ResumeLayout(false);
             this.PerformLayout();
 

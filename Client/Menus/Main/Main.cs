@@ -14,78 +14,78 @@ namespace CloneCAD.Client.Menus
 {
     public partial class Main : MaterialForm
     {
-        private Config cfg;
-        private ColorScheme scheme;
-        private MaterialSkinManager.Themes theme;
+        private readonly Config Config;
+        private readonly ColorScheme Scheme;
+        private readonly MaterialSkinManager.Themes Theme;
 
         public Main()
         {
-            cfg = new Config("settings.ini");
-            scheme = SkinManager.ColorScheme;
-            theme = SkinManager.Theme;
+            Config = new Config("settings.ini");
+            Scheme = SkinManager.ColorScheme;
+            Theme = SkinManager.Theme;
 
             InitializeComponent();
         }
 
-        private void launch_Click(object sender, EventArgs e)
+        private void Launch_Click(object sender, EventArgs e)
         {
             Visible = false;
 
-            if (civ.Checked)
+            if (CivilianRadial.Checked)
             {
-                CivLauncher civ = new CivLauncher(cfg);
-                civ.FormClosed += (Sender, Args) =>
+                CivLauncher civLauncher = new CivLauncher(Config);
+                civLauncher.FormClosed += delegate
                 {
                     Visible = true;
-                    SkinManager.ColorScheme = scheme;
-                    SkinManager.Theme = theme;
+                    SkinManager.ColorScheme = Scheme;
+                    SkinManager.Theme = Theme;
                 };
 
-                civ.Show();
+                civLauncher.Show();
                 if (File.Exists("ids.cfg") && !string.IsNullOrWhiteSpace(File.ReadAllText("ids.cfg")))
-                    civ.Sync(File.ReadAllText("ids.cfg").Split(',').Select(x => ushort.Parse(x.Trim())).ToArray());
+                    civLauncher.Sync(File.ReadAllText("ids.cfg").Split(',').Select(x => uint.Parse(x.Trim())).ToArray());
 
-                ThreadPool.QueueUserWorkItem(x =>
+                civLauncher.Closed += delegate
                 {
-                    while (!civ.closed)
-                        Thread.Sleep(10);
-
-                    Invoke((MethodInvoker)delegate
-                    {
-                        if (close.Checked)
-                            Close();
-                    });
-                });
+                    if (CloseCheckbox.Checked)
+                        Close();
+                };
             }
-            else if (popo.Checked)
+            else if (PoliceRadial.Checked)
             {
-                PopoMenu popo = new PopoMenu(cfg);
-                popo.FormClosed += (Sender, Args) =>
+                PopoMenu policeMenu = new PopoMenu(Config);
+                policeMenu.FormClosed += delegate
                 {
                     Visible = true;
-                    SkinManager.ColorScheme = scheme;
-                    SkinManager.Theme = theme;
+                    SkinManager.ColorScheme = Scheme;
+                    SkinManager.Theme = Theme;
                 };
 
-                popo.ShowDialog();
+                policeMenu.Show();
 
-                if (close.Checked)
-                    Close();
+                policeMenu.Closed += delegate
+                {
+                    if (CloseCheckbox.Checked)
+                        Close();
+                };
             }
-            else if (dispatch.Checked)
+            else if (DispatchRadial.Checked)
             {
-                DispatchMenu dis = new DispatchMenu(cfg);
-                dis.FormClosed += (Sender, Args) =>
+                DispatchMenu dispatchMenu = new DispatchMenu(Config);
+                dispatchMenu.FormClosed += delegate
                 {
                     Visible = true;
-                    SkinManager.ColorScheme = scheme;
-                    SkinManager.Theme = theme;
+                    SkinManager.ColorScheme = Scheme;
+                    SkinManager.Theme = Theme;
                 };
 
-                dis.ShowDialog();
+                dispatchMenu.ShowDialog();
 
-                if (close.Checked)
-                    Close();
+                dispatchMenu.Closed += delegate
+                {
+                    if (CloseCheckbox.Checked)
+                        Close();
+                };
             }
         }
     }

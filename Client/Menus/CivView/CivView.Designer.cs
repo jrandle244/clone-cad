@@ -287,7 +287,6 @@
             this.MaximizeBox = false;
             this.Name = "CivView";
             this.Text = "Civilian Record (read-only)";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.CivView_FormClosed);
             this.ResumeLayout(false);
             this.PerformLayout();
 

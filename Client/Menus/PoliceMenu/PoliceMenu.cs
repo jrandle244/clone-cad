@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using CloneCAD.Client.DataHolders;
+using CloneCAD.Common.NetCode;
 
 #pragma warning disable IDE1006
 
@@ -16,13 +17,13 @@ namespace CloneCAD.Client.Menus
 {
     public partial class PopoMenu : MaterialForm
     {
-        private readonly Config cfg;
-        private Socket client;
+        private readonly Config Config;
+        private Socket S;
 
-        public PopoMenu(Config Config)
+        public PopoMenu(Config config)
         {
-            cfg = Config;
-            client = new Socket(SocketType.Stream, ProtocolType.Tcp);
+            Config = config;
+            S = new Socket(SocketType.Stream, ProtocolType.Tcp);
 
             InitializeComponent();
             
@@ -30,41 +31,33 @@ namespace CloneCAD.Client.Menus
             SkinManager.ColorScheme = new ColorScheme(Primary.LightBlue500, Primary.LightBlue900, Primary.LightBlue300, Accent.Blue700, TextShade.WHITE);
         }
 
-        private void SendTicket(ushort ID, Ticket ticket)
+        private void SendTicket(uint id, Ticket ticket)
         {
             try
             {
-                client.Connect(cfg.IP, cfg.Port);
+                S.Connect(Config.IP, Config.Port);
             }
             catch
             {
                 if (MessageBox.Show("Couldn't connect to the server to give the client the ticket.", "CloneCAD", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error) == DialogResult.Retry)
-                    SendTicket(ID, ticket);
+                    SendTicket(id, ticket);
 
                 return;
             }
 
-            client.Send(new byte[] { 3 }.Concat(Encoding.UTF8.GetBytes(ID + "|" + ticket)).ToArray());
+            NetRequestHandler handler = new NetRequestHandler(S);
 
-            byte[] b = new byte[1001];
-            int e = client.Receive(b);
-            byte tag = b[0];
-            b = b.Skip(1).ToArray();
-            e = e - 1;
+            Tuple<bool, bool> tryGetResult = handler.TryTriggerNetFunction<bool>("TicketCivilian", id, ticket).GetAwaiter().GetResult();
 
-            client.Disconnect(true);
-            client = new Socket(SocketType.Stream, ProtocolType.Tcp);
+            S.Disconnect(true);
+            S = new Socket(SocketType.Stream, ProtocolType.Tcp);
 
-            switch (tag)
-            {
-                case 0:
-                    MessageBox.Show("The civilian has been given the ticket.", "CloneCAD", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    break;
+            Functions.GetFailTest(tryGetResult.Item1);
 
-                case 1:
-                    MessageBox.Show("Your civilian was not found.", "CloneCAD", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    break;
-            }
+            if (tryGetResult.Item2)
+                MessageBox.Show("The civilian has been given the ticket.", "CloneCAD", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            else
+                MessageBox.Show("The civilian was not found.", "CloneCAD", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private void id_KeyPress(object sender, KeyPressEventArgs e)

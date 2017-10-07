@@ -10,7 +10,7 @@ namespace CloneCAD.Common
 {
     public static class Functions
     {
-        public static void ExceptionHandlerBackend(this Exception e, int exitCode)
+        public static string ExceptionHandlerBackend(this Exception e, int exitCode)
         {
             string errorFile = "error0.dump";
 
@@ -21,7 +21,7 @@ namespace CloneCAD.Common
                     errorFile = "error" + ++reiteration + ".dump";
             }
 
-            Environment.Exit(exitCode);
+            return errorFile;
         }
     }
 }

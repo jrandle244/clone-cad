@@ -3,11 +3,13 @@ using MaterialSkin.Controls;
 using CloneCAD.Client.DataHolders;
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using CloneCAD.Common.NetCode;
 
 #pragma warning disable IDE1006
 
@@ -15,13 +17,13 @@ namespace CloneCAD.Client.Menus
 {
     public partial class DispatchMenu : MaterialForm
     {
-        private readonly Config cfg;
-        private Socket client;
+        private readonly Config Config;
+        private Socket S;
 
-        public DispatchMenu(Config Config)
+        public DispatchMenu(Config config)
         {
-            cfg = Config;
-            client = new Socket(SocketType.Stream, ProtocolType.Tcp);
+            Config = config;
+            S = new Socket(SocketType.Stream, ProtocolType.Tcp);
 
             InitializeComponent();
 
@@ -30,19 +32,17 @@ namespace CloneCAD.Client.Menus
         }
 
         private void launch_Click(object sender, EventArgs ev) =>
-            ThreadPool.QueueUserWorkItem(x => Launch(id.Text, name.Text, plate.Text));
+            ThreadPool.QueueUserWorkItem(x => Launch(IDBox.Text, NameBox.Text, PlateBox.Text));
 
         private void Launch(string id, string name, string plate)
         {
-            ushort ID = 1;
+            uint ID = 1;
 
-            if (!string.IsNullOrWhiteSpace(id))
-                ID = ushort.Parse(id);
-            else if (!string.IsNullOrWhiteSpace(plate))
+            if (string.IsNullOrWhiteSpace(id))
             {
                 try
                 {
-                    client.Connect(cfg.IP, cfg.Port);
+                    S.Connect(Config.IP, Config.Port);
                 }
                 catch (SocketException)
                 {
@@ -52,95 +52,75 @@ namespace CloneCAD.Client.Menus
                     return;
                 }
 
-                client.Send(new byte[] { 2 }.Concat(Encoding.UTF8.GetBytes(plate)).ToArray());
+                NetRequestHandler handler = new NetRequestHandler(S);
 
-                byte[] b = new byte[1001];
-                int e = client.Receive(b);
-                byte tag = b[0];
-                b = b.Skip(1).ToArray();
-                e = e - 1;
-
-                client.Disconnect(true);
-                client = new Socket(SocketType.Stream, ProtocolType.Tcp);
-
-                switch (tag)
+                if (!string.IsNullOrWhiteSpace(plate))
                 {
-                    case 0:
-                        ID = BitConverter.ToUInt16(b.Take(e).ToArray(), 0);
-                        break;
+                    Tuple<bool, uint> tryGetResult = handler.TryTriggerNetFunction<uint>("CheckPlate", plate).GetAwaiter().GetResult();
 
-                    case 1:
-                        if (MessageBox.Show("Plate was not able to be found.", "CloneCAD", MessageBoxButtons.RetryCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button2) == DialogResult.Retry)
-                        {
-                            Launch(id, name, plate);
-                            return;
-                        }
-                        break;
-                }
-            }
-            else if (!string.IsNullOrWhiteSpace(name))
-            {
-                try
-                {
-                    client.Connect(cfg.IP, cfg.Port);
-                }
-                catch (SocketException)
-                {
-                    if (MessageBox.Show("Couldn't connect to the server to get the civilian ID.", "CloneCAD", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error) == DialogResult.Retry)
+                    S.Disconnect(true);
+                    S = new Socket(SocketType.Stream, ProtocolType.Tcp);
+
+                    Functions.GetFailTest(tryGetResult.Item1);
+
+                    if (tryGetResult.Item2 == 0 && MessageBox.Show("Plate was not able to be found.", "CloneCAD", MessageBoxButtons.RetryCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button2) == DialogResult.Retry)
+                    {
                         Launch(id, name, plate);
-
-                    return;
-                }
-
-                client.Send(new byte[] { 5 }.Concat(Encoding.UTF8.GetBytes(name)).ToArray());
-
-                byte[] b = new byte[1001];
-                int e = client.Receive(b);
-                byte tag = b[0];
-                b = b.Skip(1).ToArray();
-                e = e - 1;
-
-                client.Disconnect(true);
-                client = new Socket(SocketType.Stream, ProtocolType.Tcp);
-
-
-                switch (tag)
-                {
-                    case 0:
-                        ID = BitConverter.ToUInt16(b.Take(e).ToArray(), 0);
-                        break;
-
-                    case 1:
-                        if (MessageBox.Show("Name was not able to be found.", "CloneCAD", MessageBoxButtons.RetryCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button2) == DialogResult.Retry)
-                            Launch(id, name, plate);
-
                         return;
+                    }
+
+                    ID = tryGetResult.Item2;
+                }
+                else if (!string.IsNullOrWhiteSpace(name))
+                {
+                    Tuple<bool, uint> tryGetResult = handler.TryTriggerNetFunction<uint>("CheckName", plate).GetAwaiter().GetResult();
+
+                    S.Disconnect(true);
+                    S = new Socket(SocketType.Stream, ProtocolType.Tcp);
+
+                    Functions.GetFailTest(tryGetResult.Item1);
+
+                    if (tryGetResult.Item2 == 0 && MessageBox.Show("Name was not able to be found.", "CloneCAD",
+                            MessageBoxButtons.RetryCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button2) ==
+                        DialogResult.Retry)
+                    {
+                        Launch(id, name, plate);
+                        return;
+                    }
+
+
                 }
             }
             else
-                return;
+                ID = uint.Parse(id);
 
             Invoke((MethodInvoker)delegate
             {
-                CivView civ = new CivView(cfg, ID);
+                CivView civ = new CivView(Config, ID);
 
                 civ.Show();
-                civ.Sync();
+                civ.Download();
             });
         }
 
-        private void id_KeyPress(object sender, KeyPressEventArgs e)
+        private new void KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+                ThreadPool.QueueUserWorkItem(x => Launch(IDBox.Text, NameBox.Text, PlateBox.Text));
+        }
+
+        private void IDBox_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
                 e.Handled = true;
-            else if (!string.IsNullOrEmpty(name.Text) || !string.IsNullOrEmpty(plate.Text))
+            else if (!string.IsNullOrEmpty(NameBox.Text) || !string.IsNullOrEmpty(PlateBox.Text))
             {
-                name.Text = "";
-                plate.Text = "";
+                NameBox.Text = "";
+                PlateBox.Text = "";
             }
         }
 
-        private void plate_KeyPress(object sender, KeyPressEventArgs e)
+        private void PlateBox_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!char.IsControl(e.KeyChar) && !char.IsLetterOrDigit(e.KeyChar))
                 e.Handled = true;
@@ -149,29 +129,23 @@ namespace CloneCAD.Client.Menus
             {
                 e.KeyChar = e.KeyChar.ToString().ToUpper()[0];
 
-                if (!string.IsNullOrEmpty(id.Text) || !string.IsNullOrEmpty(name.Text))
+                if (!string.IsNullOrEmpty(IDBox.Text) || !string.IsNullOrEmpty(NameBox.Text))
                 {
-                    id.Text = "";
-                    name.Text = "";
+                    IDBox.Text = "";
+                    NameBox.Text = "";
                 }
             }
         }
 
-        private void name_KeyPress(object sender, KeyPressEventArgs e)
+        private void NameBox_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!char.IsControl(e.KeyChar) && !char.IsLetter(e.KeyChar) && e.KeyChar != ' ')
                 e.Handled = true;
-            else if (!string.IsNullOrEmpty(id.Text) || !string.IsNullOrEmpty(plate.Text))
+            else if (!string.IsNullOrEmpty(IDBox.Text) || !string.IsNullOrEmpty(PlateBox.Text))
             {
-                id.Text = "";
-                plate.Text = "";
+                IDBox.Text = "";
+                PlateBox.Text = "";
             }
-        }
-
-        private new void KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter)
-                ThreadPool.QueueUserWorkItem(x => Launch(id.Text, name.Text, plate.Text));
         }
     }
 }

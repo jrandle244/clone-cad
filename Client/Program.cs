@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using CloneCAD.Client;
 using CloneCAD.Client.Menus;
 
 namespace Client
@@ -12,9 +13,23 @@ namespace Client
         [STAThread]
         static void Main()
         {
+#if !DEBUG
+            try
+            {
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                Application.Run(new Main());
+            }
+            catch
+            {
+                Functions.ExceptionHandler(e, 4);
+            }
+#endif
+#if DEBUG
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Main());
+#endif
         }
     }
 }

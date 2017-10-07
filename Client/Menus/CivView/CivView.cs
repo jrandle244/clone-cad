@@ -15,16 +15,20 @@ namespace CloneCAD.Client.Menus
 {
     public partial class CivView : MaterialForm
     {
-        private readonly Config cfg;
-        private Socket client;
-        private Civ localCiv;
-        private ushort ID;
+        private readonly Config Config;
+        private Socket S;
+        private bool Downloaded;
 
-        public CivView(Config Config, ushort ID)
+        public Civilian LocalCivilian { get; private set; }
+        public uint StartingID { get; private set; }
+
+        public CivView(Config config, uint startingID)
         {
-            cfg = Config;
-            this.ID = ID;
-            client = new Socket(SocketType.Stream, ProtocolType.Tcp);
+            Config = config;
+            S = new Socket(SocketType.Stream, ProtocolType.Tcp);
+
+            StartingID = startingID;
+            Downloaded = false;
 
             InitializeComponent();
         }
@@ -33,148 +37,111 @@ namespace CloneCAD.Client.Menus
         {
             try
             {
-                client.Connect(cfg.IP, cfg.Port);
+                S.Connect(Config.IP, Config.Port);
             }
             catch (SocketException)
             {
                 return false;
             }
 
-            client.Send(new byte[] { 0 }.Concat(BitConverter.GetBytes(ID)).ToArray());
+            NetRequestHandler handler = new NetRequestHandler(S);
 
-            byte[] b = new byte[1001];
-            int e = client.Receive(b);
-            byte tag = b[0];
-            b = b.Skip(1).ToArray();
-            e = e - 1;
+            Tuple<bool, Civilian> tryGetResult = handler.TryTriggerNetFunction<Civilian>("GetCivilian", LocalCivilian.ID).GetAwaiter().GetResult();
 
-            client.Disconnect(true);
-            client = new Socket(SocketType.Stream, ProtocolType.Tcp);
+            Functions.GetFailTest(tryGetResult.Item1);
 
-            switch (tag)
-            {
-                case 0:
-                    localCiv = Civ.ToCiv(b.Take(e).ToArray());
-                    break;
+            S.Disconnect(true);
+            S = new Socket(SocketType.Stream, ProtocolType.Tcp);
 
-                case 1:
-                    return false;
-            }
+            LocalCivilian = tryGetResult.Item2;
 
             return true;
         }
 
-        private void syncBtn_Click(object sender, EventArgs e) =>
-            Sync();
-
-        public void Sync()
+        private void syncBtn_Click(object sender, EventArgs e)
         {
+            if (!Downloaded)
+            {
+                Downloaded = true;
+                StartingID = 0;
+            }
+
+            Download();
+        }
+
+        public void Download() =>
             ThreadPool.QueueUserWorkItem(z =>
             {
-                if (localCiv == null)
-                    localCiv = new Civ(ID);
+                RefreshCiv();
 
-                int[] nameS = new int[2];
-                int[] plateS = new int[2];
-                int[] businessS = new int[2];
-
-                bool regWepB;
-                int[] regWepS = new int[0];
-
-                bool ticketB;
-                int ticketS = 0;
-
-                try
+                Invoke((MethodInvoker)delegate
                 {
-                    Invoke((MethodInvoker)delegate
+                    idDisp.Text = "Civilian ID:\n" + LocalCivilian.ID.ToString();
+
                     {
-                        regWepB = regWepList.SelectedItems.Count != 0;
-                        regWepS = new int[regWepList.SelectedItems.Count];
+                        int[] nameS = { name.SelectionStart, name.SelectionLength };
 
-                        ticketB = ticketList.SelectedItems.Count != 0;
-
-                        localCiv.Name = name.Text;
-                        nameS[0] = name.SelectionStart;
-                        nameS[1] = name.SelectionLength;
-
-                        localCiv.RegisteredPlate = plate.Text;
-                        plateS[0] = plate.SelectionStart;
-                        plateS[1] = plate.SelectionLength;
-
-                        localCiv.AssociatedBusiness = business.Text;
-                        businessS[0] = business.SelectionStart;
-                        businessS[1] = business.SelectionLength;
-
-                        localCiv.RegisteredWeapons.Clear();
-                        foreach (ListViewItem item in regWepList.Items)
-                            localCiv.RegisteredWeapons.Add(item.Text);
-
-                        if (regWepB)
-                            for (int i = 0; i < regWepS.Length; i++)
-                                regWepS[i] = regWepList.SelectedItems[i].Index;
-
-                        if (ticketB)
-                            ticketS = ticketList.SelectedItems[0].Index;
-                    });
-                }
-                catch { return; }
-
-                if (!RefreshCiv())
-                    return;
-
-                try
-                {
-                    Invoke((MethodInvoker)delegate
-                    {
-                        idDisp.Text = "Civilian ID: " + localCiv.CivID.ToString();
-                        name.Text = localCiv.Name;
+                        name.Text = LocalCivilian.Name;
                         if (name.Text.Length != 0)
                         {
                             name.SelectionStart = nameS[0];
                             name.SelectionLength = nameS[1];
                         }
+                    }
 
-                        plate.Text = localCiv.RegisteredPlate;
+                    {
+                        int[] plateS = { plate.SelectionStart, plate.SelectionLength };
+
+                        plate.Text = LocalCivilian.RegisteredPlate;
                         if (plate.Text.Length != 0)
                         {
                             plate.SelectionStart = plateS[0];
                             plate.SelectionLength = plateS[1];
                         }
+                    }
 
-                        business.Text = localCiv.AssociatedBusiness;
+                    {
+                        int[] businessS = { business.SelectionStart, business.SelectionLength };
+
+                        business.Text = LocalCivilian.AssociatedBusiness;
                         if (business.Text.Length != 0)
                         {
                             business.SelectionStart = businessS[0];
                             business.SelectionLength = businessS[1];
                         }
+                    }
 
-                        ticketList.Items.Clear();
-                        localCiv.Tickets.ForEach(x => ticketList.Items.Add(new ListViewItem(new string[] { x.Price.ToString(), x.Type, x.Description })));
-                        if (ticketList.Items.Count != 0)
-                            ticketList.Items[ticketS].Selected = true;
+                    {
+                        int[] weaponS = (from ListViewItem item in regWepList.SelectedItems select item.Index)
+                            .ToArray();
 
                         regWepList.Items.Clear();
-                        localCiv.RegisteredWeapons.ForEach(x => regWepList.Items.Add(x));
-                        if (regWepList.Items.Count != 0)
-                            foreach (int i in regWepS)
-                                regWepList.Items[i].Selected = true;
+                        LocalCivilian.RegisteredWeapons.ForEach(x => regWepList.Items.Add(x));
 
-                        sync.Checked = true;
-                    });
-                }
-                catch { }
+                        if (regWepList.Items.Count != 0)
+                            foreach (int i in weaponS)
+                                regWepList.Items[i].Selected = true;
+                    }
+
+                    {
+                        int ticketS = ticketList.SelectedItems[0].Index;
+
+                        ticketList.Items.Clear();
+                        LocalCivilian.Tickets.ForEach(x =>
+                            ticketList.Items.Add(new ListViewItem(new[] { x.Price.ToString(), x.Type, x.Description })));
+
+                        if (ticketList.Items.Count != 0)
+                            ticketList.Items[ticketS].Selected = true;
+                    }
+
+                    sync.Checked = true;
+                });
             });
-        }
 
         private new void KeyPress(object sender, KeyPressEventArgs e) =>
             e.Handled = true;
 
         private void timer_Tick(object sender, EventArgs e) =>
-            Sync();
-
-        private void CivView_FormClosed(object sender, FormClosedEventArgs e)
-        {
-
-        }
+            Download();
     }
 }
