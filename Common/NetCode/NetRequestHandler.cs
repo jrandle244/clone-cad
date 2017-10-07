@@ -13,6 +13,7 @@ namespace CloneCAD.Common.NetCode
         private readonly Socket S;
         private readonly Dictionary<string, object> CachedNetFunctions;
         private readonly Dictionary<string, object> CachedNetValues;
+        private readonly Dictionary<int, Thread> Threads;
 
         public Dictionary<string, NetEvent> NetEvents { get; set; }
         public Dictionary<string, NetFunction> NetFunctions { get; set; }
@@ -34,6 +35,7 @@ namespace CloneCAD.Common.NetCode
             CachedNetFunctions = new Dictionary<string, object>();
 
             S = socket;
+            Threads = new Dictionary<int, Thread>();
             Thread listenThread = new Thread(Listener);
             listenThread.Start();
         }
@@ -58,23 +60,43 @@ namespace CloneCAD.Common.NetCode
                 switch (netRequest.Metadata)
                 {
                     case NetRequestMetadata.Invocation:
-                        new Thread(() => HandleInvocation(netRequest).Wait());
+                        Threads.Add(Threads.Count, new Thread(() =>
+                        {
+                            HandleInvocation(netRequest).Wait();
+                            Threads.Remove(Threads.Count);
+                        }));
                         break;
 
                     case NetRequestMetadata.ValueRequest:
-                        new Thread(() => HandleValueRequest(netRequest).Wait());
+                        Threads.Add(Threads.Count, new Thread(() =>
+                        {
+                            HandleValueRequest(netRequest).Wait();
+                            Threads.Remove(Threads.Count);
+                        }));
                         break;
 
                     case NetRequestMetadata.ValueReturn:
-                        new Thread(() => HandleValueReturn(netRequest).Wait());
+                        Threads.Add(Threads.Count, new Thread(() =>
+                        {
+                            HandleValueReturn(netRequest).Wait();
+                            Threads.Remove(Threads.Count);
+                        }));
                         break;
 
                     case NetRequestMetadata.FunctionRequest:
-                        new Thread(() => HandleFunctionRequest(netRequest).Wait());
+                        Threads.Add(Threads.Count, new Thread(() =>
+                        {
+                            HandleFunctionReturn(netRequest).Wait();
+                            Threads.Remove(Threads.Count);
+                        }));
                         break;
 
                     case NetRequestMetadata.FunctionReturn:
-                        new Thread(() => HandleFunctionReturn(netRequest).Wait());
+                        Threads.Add(Threads.Count, new Thread(() =>
+                        {
+                            HandleFunctionReturn(netRequest).Wait();
+                            Threads.Remove(Threads.Count);
+                        }));
                         break;
                 }
             }
@@ -239,7 +261,9 @@ namespace CloneCAD.Common.NetCode
             while (!CachedNetValues.ContainsKey(netValueName))
                 await Task.Delay(10);
 
-            return (T) CachedNetValues[netValueName];
+            T obj = (T) CachedNetValues[netValueName];
+            CachedNetValues.Remove(netValueName);
+            return obj;
         }
 
         public async Task<Tuple<bool, T>> TryGetNetValue<T>(string netValueName)
@@ -257,7 +281,9 @@ namespace CloneCAD.Common.NetCode
             while (!CachedNetValues.ContainsKey(netValueName))
                 await Task.Delay(10);
 
-            return new Tuple<bool, T>(true, (T) CachedNetValues[netValueName]);
+            T obj = (T)CachedNetValues[netValueName];
+            CachedNetValues.Remove(netValueName);
+            return new Tuple<bool, T>(true, obj);
         }
 
         public async Task<T> GetNetFunction<T>(string netFunctionName)
@@ -275,7 +301,9 @@ namespace CloneCAD.Common.NetCode
             while (!CachedNetFunctions.ContainsKey(netFunctionName))
                 await Task.Delay(10);
 
-            return (T) CachedNetValues[netFunctionName];
+            T obj = (T)CachedNetFunctions[netFunctionName];
+            CachedNetFunctions.Remove(netFunctionName);
+            return obj;
         }
 
         public async Task<Tuple<bool, T>> TryGetNetFunction<T>(string netFunctionName)
@@ -293,7 +321,9 @@ namespace CloneCAD.Common.NetCode
             while (!CachedNetFunctions.ContainsKey(netFunctionName))
                 await Task.Delay(10);
 
-            return new Tuple<bool, T>(true, (T) CachedNetValues[netFunctionName]);
+            T obj = (T) CachedNetValues[netFunctionName];
+            CachedNetFunctions.Remove(netFunctionName);
+            return new Tuple<bool, T>(true, obj);
         }
     }
 }

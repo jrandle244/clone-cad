@@ -58,168 +58,95 @@ namespace CloneCAD.Server
                 NetValues = NetValueCivilians
             };
 
-            handler.NetFunctions.Add("ReserveCivilian", new NetFunction<object>(ReserveCivilian));
-            handler.NetFunctions.Add("CheckPlate", new NetFunction<object>(CheckPlate));
+            handler.NetFunctions.Add("GetCivilian", new NetFunction(GetCivilian));
+            handler.NetFunctions.Add("ReserveCivilian", new NetFunction(ReserveCivilian));
+            handler.NetFunctions.Add("TicketCivilian", new NetFunction(TicketCivilian));
+            handler.NetFunctions.Add("DeleteCivilian", new NetFunction(DeleteCivilian));
+
+            handler.NetFunctions.Add("CheckPlate", new NetFunction(CheckPlate));
+            handler.NetFunctions.Add("CheckName", new NetFunction(CheckName));
 
             handler.NetEvents.Add("UpdateCivilian", new NetEvent(UpdateCivilian));
-
-            /* old netcode
-                    //Get civ
-                    case 0:
-                        id = BitConverter.ToUInt16(b.Take(e).ToArray(), 0);
-
-                        if (id == 0)
-                        {
-                            if (!Config.HasPerm(ip, Permission.Civ))
-                                break;
-
-                            civ = new Civilian(GetLowestID());
-                            Log.WriteLine("Reserved civ #" + civ.CivID + ".", ip);
-
-                            Civilians.Add(civ);
-                            socket.Send(new byte[] { 0 }.Concat(civ.ToBytes()).ToArray());
-                        }
-                        else
-                            try
-                            {
-                                if (!Config.HasPerm(ip, Permission.Civ) && !Config.HasPerm(ip, Permission.Dispatch))
-                                    break;
-
-                                socket.Send(new byte[] { 0 }.Concat(Civilians[id].ToBytes()).ToArray());
-                                Log.WriteLine("Sent civ #" + id + ".", ip);
-                            }
-                            catch
-                            {
-                                socket.Send(new byte[] { 1 });
-                                Log.WriteLine("Retrieving civ #" + id + " returned empty.", ip);
-                            }
-                        break;
-
-                    //Update civ
-                    case 1:
-                        if (!Config.HasPerm(ip, Permission.Civ))
-                            break;
-
-                        civ = Civ.ToCiv(b.Take(e).ToArray());
-
-                        if (Civilians.ContainsID(civ.CivID))
-                        {
-                            List<Ticket> Tickets = Civilians[civ.CivID].Tickets;
-
-                            Civilians[civ.CivID] = civ;
-                            Civilians[civ.CivID].Tickets = Tickets;
-
-                            Log.WriteLine("Updated civ #" + civ.CivID + ".", ip);
-                        }
-                        else
-                        {
-                            Civilians.Add(civ);
-                            Log.WriteLine("Saved civ #" + civ.CivID + ".", ip);
-                        }
-                        break;
-
-                    //Plate check
-                    case 2:
-                        if (!Config.HasPerm(ip, Permission.Dispatch))
-                            break;
-
-                        string plate = Encoding.UTF8.GetString(b.Take(e).ToArray());
-
-                        civ = Civilians.GetFromPlate(plate);
-
-                        if (civ == null)
-                        {
-                            socket.Send(new byte[] { 1 });
-                            Log.WriteLine("Plate check \"" + plate + "\" returned empty.", ip);
-                            break;
-                        }
-
-                        socket.Send(new byte[] { 0 }.Concat(BitConverter.GetBytes(civ.CivID)).ToArray());
-
-                        Log.WriteLine("Plate checked \"" + plate + "\".", ip);
-                        break;
-
-                    //Add ticket
-                    case 3:
-                        if (!Config.HasPerm(ip, Permission.Police))
-                            break;
-
-                        string[] vars = Encoding.UTF8.GetString(b.Take(e).ToArray()).Split('|');
-
-                        civ = Civilians[ushort.Parse(vars[0])];
-
-                        if (civ == null)
-                        {
-                            socket.Send(new byte[] { 1 });
-                            Log.WriteLine("Ticketing civ #" + vars[0] + " returned empty.", ip);
-                            break;
-                        }
-
-                        civ.Tickets.Add(Ticket.Parse(vars[1]));
-                        socket.Send(new byte[] { 0 });
-                        Log.WriteLine("Ticketed civ #" + vars[0] + ".", ip);
-                        break;
-
-                    //Delete records on a civ but still reserve it
-                    case 4:
-                        if (!Config.HasPerm(ip, Permission.Civ))
-                            break;
-
-                        id = BitConverter.ToUInt16(b.Take(e).ToArray(), 0);
-
-                        civ = Civilians[id];
-
-                        if (civ == null)
-                        {
-                            socket.Send(new byte[] { 1 });
-                            Log.WriteLine("Deleting civ #" + id + " returned empty.", ip);
-                            break;
-                        }
-
-                        Civilians.Remove(civ);
-
-                        socket.Send(new byte[] { 0 });
-
-                        Log.WriteLine("Deleted civ #" + id, ip);
-                        break;
-
-                    //Name check
-                    case 5:
-                        if (!Config.HasPerm(ip, Permission.Dispatch))
-                            break;
-
-                        string name = Encoding.UTF8.GetString(b.Take(e).ToArray());
-
-                        civ = Civilians[name];
-
-                        if (civ == null)
-                        {
-                            socket.Send(new byte[] { 1 });
-                            Log.WriteLine("Name check on \"" + name + "\" returned empty.", ip);
-                            break;
-                        }
-
-                        socket.Send(new byte[] { 0 }.Concat(BitConverter.GetBytes(civ.CivID)).ToArray());
-
-                        Log.WriteLine("Name checked \"" + name + "\".");
-                        break;
-            */
         }
 
         #region netfunctions
+        private async Task<object> GetCivilian(NetRequestHandler handler, object[] objs)
+        {
+            if (!Config.HasPerm(handler.IP, Permission.Civ, Permission.Dispatch))
+                return null;
+
+            uint civilianID = (uint) objs[0];
+
+            if (Civilians.Value.ContainsKey(civilianID))
+            {
+                Log.WriteLine("Retrieved civilian (" + civilianID + ")", handler.IP, Log.Status.Succeeded);
+                return Civilians.Value[civilianID];
+            }
+
+            Log.WriteLine("Retrieved civilian (" + civilianID + ")", handler.IP, Log.Status.Failed);
+
+            await Task.FromResult(0);
+            return null;
+        }
+
         private async Task<object> ReserveCivilian(NetRequestHandler handler, object[] objs)
         {
             if (!Config.HasPerm(handler.IP, Permission.Civ))
                 return null;
 
             Civilian civilian = new Civilian(GetRandomID());
-            Log.WriteLine("Reserved civilian (" + civilian.ID + ").", handler.IP);
-
             Civilians.Value.Add(civilian);
-            handler.NetValues.Add("Civilian:" + civilian.ID, civilian);
+
+            Log.WriteLine("Reserved civilian (" + civilian.ID + ")", handler.IP);
 
             await Task.FromResult(0);
             return civilian;
+        }
+
+        private async Task<object> TicketCivilian(NetRequestHandler handler, object[] objs)
+        {
+            if (!Config.HasPerm(handler.IP, Permission.Police))
+                return false;
+
+            uint civilianID = (uint)objs[0];
+
+            if (Civilians.Value.ContainsKey(civilianID))
+            {
+                Civilian civilian = Civilians.Value[civilianID];
+                Ticket ticket = (Ticket)objs[1];
+
+                civilian.Tickets.Add(ticket);
+                Log.WriteLine("Ticketed civilian (" + civilian.ID + ")", handler.IP, Log.Status.Succeeded);
+                return true;
+            }
+
+            Log.WriteLine("Ticketed civilian (" + civilianID + ")", handler.IP, Log.Status.Failed);
+
+            await Task.FromResult(0);
+            return false;
+        }
+
+        private async Task<object> DeleteCivilian(NetRequestHandler handler, object[] objs)
+        {
+            if (!Config.HasPerm(handler.IP, Permission.Civ))
+                return false;
+
+            uint id = (uint)objs[0];
+
+            uint civilianID = (uint)objs[0];
+
+            if (Civilians.Value.ContainsKey(civilianID))
+            {
+                Civilians.Value.Remove(civilianID);
+
+                Log.WriteLine("Deleted civilian (" + id + ")", handler.IP, Log.Status.Succeeded);
+                return true;
+            }
+
+            Log.WriteLine("Deleted civilian (" + id + ")", handler.IP, Log.Status.Failed);
+
+            await Task.FromResult(0);
+            return false;
         }
 
         private async Task UpdateCivilian(NetRequestHandler handler, object[] objs)
@@ -236,33 +163,71 @@ namespace CloneCAD.Server
                 Civilians.Value[civilian.ID] = civilian;
                 Civilians.Value[civilian.ID].Tickets = tickets;
 
-                handler.NetValues["Civilian:" + civilian.ID] = Civilians.Value[civilian.ID];
-
-                Log.WriteLine("Updated civilian (" + civilian.ID + ").", handler.IP);
+                Log.WriteLine("Updated civilian (" + civilian.ID + ")", handler.IP, Log.Status.Succeeded);
             }
             else
             {
                 Civilians.Value.Add(civilian);
-                handler.NetValues.Add("Civilian:" + civilian.ID, civilian);
 
-                Log.WriteLine("Saved civilian (" + civilian.ID + ").", handler.IP);
+                Log.WriteLine("Saved civilian (" + civilian.ID + ")", handler.IP, Log.Status.Succeeded);
             }
 
             await Task.FromResult(0);
         }
 
-        private async Task<object> CheckPlate(NetRequestHandler arg1, object[] arg2)
+        private async Task<object> CheckPlate(NetRequestHandler handler, object[] objs)
         {
-            throw new NotImplementedException();
+            if (!Config.HasPerm(handler.IP, Permission.Dispatch))
+                return null;
+
+            string plate = (string) objs[0];
+
+            if (Civilians.Value.ContainsPlate(plate))
+            {
+                Log.WriteLine("Plate (" + plate + ") checked", handler.IP, Log.Status.Succeeded);
+                return Civilians.Value.GetFromPlate(plate).ID;
+            }
+
+            Log.WriteLine("Plate (" + plate + ") checked", handler.IP, Log.Status.Failed);
+
+            await Task.FromResult(0);
+            return null;
+        }
+
+        private async Task<object> CheckName(NetRequestHandler handler, object[] objs)
+        {
+            if (!Config.HasPerm(handler.IP, Permission.Dispatch))
+                return null;
+
+            string name = (string) objs[0];
+
+            if (Civilians.Value.ContainsName(name))
+            {
+                Log.WriteLine("Name (" + name + ") checked", handler.IP, Log.Status.Succeeded);
+                return Civilians.Value[name].ID;
+            }
+
+            Log.WriteLine("Name (" + name + ") checked", handler.IP, Log.Status.Failed);
+
+            await Task.FromResult(0);
+            return null;
         }
         #endregion
 
-        private static uint GetRandomID()
+        private uint GetRandomID()
         {
-            byte[] buffer = new byte[32];
-            Random random = new Random();
-            random.NextBytes(buffer);
-            return BitConverter.ToUInt32(buffer, 0);
+            uint randomUInt = 0;
+
+            while (randomUInt == 0 || Civilians.Value.ContainsKey(randomUInt))
+            {
+                byte[] buffer = new byte[32];
+
+                Random random = new Random();
+                random.NextBytes(buffer);
+                randomUInt = BitConverter.ToUInt32(buffer, 0);
+            }
+
+            return randomUInt;
         }
     }
 }

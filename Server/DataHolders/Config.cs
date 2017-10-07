@@ -78,42 +78,38 @@ namespace CloneCAD.Server.DataHolders
             Log = new Log(base["Log"], Locale, Aliases);
         }
 
-        public bool HasPerm(string ip, Permission perm)
+        public bool HasPerm(string ip, params Permission[] permissions)
         {
-            switch (Filter)
-            {
-                case FilterType.None:
-                    return true;
-                case FilterType.Blacklist:
-                    switch (perm)
-                    {
-                        case Permission.Civ when !FilteredCivIPs.Contains(ip):
-                            return true;
-                        case Permission.Police when !FilteredPoliceIPs.Contains(ip):
-                            return true;
-                        case Permission.Dispatch when !FilteredDispatchIPs.Contains(ip):
-                            return true;
+            foreach (Permission perm in permissions)
+                switch (Filter)
+                {
+                    case FilterType.None:
+                        return true;
+                    case FilterType.Blacklist:
+                        switch (perm)
+                        {
+                            case Permission.Civ when !FilteredCivIPs.Contains(ip):
+                                return true;
+                            case Permission.Police when !FilteredPoliceIPs.Contains(ip):
+                                return true;
+                            case Permission.Dispatch when !FilteredDispatchIPs.Contains(ip):
+                                return true;
+                        }
+                        break;
+                    case FilterType.Whitelist:
+                        switch (perm)
+                        {
+                            case Permission.Civ when FilteredCivIPs.Contains(ip):
+                                return true;
+                            case Permission.Police when FilteredPoliceIPs.Contains(ip):
+                                return true;
+                            case Permission.Dispatch when FilteredDispatchIPs.Contains(ip):
+                                return true;
+                        }
+                        break;
+                }
 
-                        default:
-                            return false;
-                    }
-                case FilterType.Whitelist:
-                    switch (perm)
-                    {
-                        case Permission.Civ when FilteredCivIPs.Contains(ip):
-                            return true;
-                        case Permission.Police when FilteredPoliceIPs.Contains(ip):
-                            return true;
-                        case Permission.Dispatch when FilteredDispatchIPs.Contains(ip):
-                            return true;
-
-                        default:
-                            return false;
-                    }
-
-                default:
-                    return false;
-            }
+            return false;
         }
     }
 }
