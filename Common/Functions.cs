@@ -1,10 +1,5 @@
-﻿using CloneCAD.Common.DataHolders;
-using CloneCAD.Common.NetCode;
-
-using System;
+﻿using System;
 using System.IO;
-using System.Linq;
-using System.Net.Sockets;
 
 namespace CloneCAD.Common
 {
@@ -22,6 +17,60 @@ namespace CloneCAD.Common
             }
 
             return errorFile;
+        }
+
+        public static string ToSplitID(this uint rawValue)
+        {
+            try
+            {
+                char[] idC = rawValue.ToString().ToCharArray();
+
+                return new string(new[]
+                {
+                    idC[0],
+                    idC[1],
+                    idC[2],
+                    '-',
+                    idC[3],
+                    idC[4],
+                    idC[5],
+                    '-',
+                    idC[6],
+                    idC[7],
+                    idC[8]
+                });
+            }
+            catch
+            {
+                return rawValue.ToString();
+            }
+        }
+
+        public static uint ToRawID(this string id)
+        {
+            try
+            {
+                char[] idC = id.ToCharArray();
+
+                return uint.Parse(new string(new[]
+                {
+                    idC[0],
+                    idC[1],
+                    idC[2],
+
+                    idC[4],
+                    idC[5],
+                    idC[6],
+
+                    idC[8],
+                    idC[9],
+                    idC[10],
+                }));
+            }
+            catch
+            {
+                return uint.Parse(id.Replace("-", ""));
+            }
         }
     }
 }

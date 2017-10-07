@@ -4,16 +4,14 @@ using CloneCAD.Common.DataHolders;
 using CloneCAD.Client.DataHolders;
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Threading;
 using System.Windows.Forms;
+using CloneCAD.Common;
 using CloneCAD.Common.NetCode;
 using CloneCAD.Server.DataHolders.Static;
-
-#pragma warning disable IDE1006 //Naming rule violation, gtfo
 
 namespace CloneCAD.Client.Menus
 {
@@ -27,7 +25,7 @@ namespace CloneCAD.Client.Menus
         public CivLauncher(Config config)
         {
             Config = config;
-            S = new Socket(SocketType.Stream, ProtocolType.Tcp);
+            S = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
             InitializeComponent();
             Civilians = new CivilianDictionary();
@@ -50,14 +48,15 @@ namespace CloneCAD.Client.Menus
 
             NetRequestHandler handler = new NetRequestHandler(S);
 
-            Tuple<bool, Civilian> tryTriggerResult = handler.TryTriggerNetFunction<Civilian>("GetCivilian", id).GetAwaiter().GetResult();
+            Tuple<NetRequestResult, Civilian> tryTriggerResult = handler.TryTriggerNetFunction<Civilian>("GetCivilian", id).GetAwaiter().GetResult();
 
-            S.Disconnect(true);
-            S = new Socket(SocketType.Stream, ProtocolType.Tcp);
+            S.Shutdown(SocketShutdown.Both);
+            S.Close();
+            S = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
             Functions.GetFailTest(tryTriggerResult.Item1);
 
-            civ = tryTriggerResult.Item1 ? tryTriggerResult.Item2 : null;
+            civ = tryTriggerResult.Item2;
             return true;
         }
 
@@ -72,23 +71,21 @@ namespace CloneCAD.Client.Menus
             {
                 foreach (uint id in ids)
                 {
-                    if (!RefreshCiv(id, out Civilian civ))
+                    if (!RefreshCiv(id, out Civilian civ) || civ == null)
                         continue;
 
                     Invoke((MethodInvoker)delegate
                     {
                         Civilians.Add(civ);
-                        civs.Items.Add(new ListViewItem(new[] { civ.ID.ToString(), civ.Name }));
+                        civs.Items.Add(new ListViewItem(new[] { civ.ID.ToSplitID(), civ.Name }));
                     });
                 }
             });
-
-            File.WriteAllText("ids.cfg", string.Join(",", Civilians.Select(x => x.Key.ToString()).ToArray()));
         }
 
         private void Civs_DoubleClick(object sender, EventArgs e)
         {
-            CivMenu civ = new CivMenu(Config, ushort.Parse(civs.Items[civs.SelectedItems[0].Index].SubItems[0].Text));
+            CivMenu civ = new CivMenu(Config, uint.Parse(civs.Items[civs.SelectedItems[0].Index].SubItems[0].Text));
 
             civ.Show();
             civ.Sync();
@@ -97,13 +94,14 @@ namespace CloneCAD.Client.Menus
         private void Create_Click(object sender, EventArgs e)
         {
             CivMenu civMenu = new CivMenu(Config, 0);
-
+            
             civMenu.Show();
-            civMenu.Download();
+            civMenu.Sync();
 
             ThreadPool.QueueUserWorkItem(x =>
             {
-                Thread.Sleep(3000);
+                while (civMenu.LocalCivilian == null)
+                    Thread.Sleep(1000);
 
                 Invoke((MethodInvoker) delegate
                 {
@@ -111,8 +109,6 @@ namespace CloneCAD.Client.Menus
 #pragma warning disable CS1690 // Accessing a member on a field of a marshal-by-reference class may cause a runtime exception
                     civs.Items.Add(new ListViewItem(new[] {civMenu.StartingID.ToString(), ""}));
 #pragma warning restore CS1690 // Accessing a member on a field of a marshal-by-reference class may cause a runtime exception
-
-                    File.WriteAllText("ids.cfg", string.Join(",", Civilians.Select(y => y.Key.ToString()).ToArray()));
                 });
 
                 civMenu.Closed += delegate
@@ -138,10 +134,11 @@ namespace CloneCAD.Client.Menus
 
             NetRequestHandler handler = new NetRequestHandler(S);
 
-            Tuple<bool, bool> tryTriggerResult = handler.TryTriggerNetFunction<bool>("DeleteCivilian", uint.Parse(civs.SelectedItems[0].SubItems[0].Text)).GetAwaiter().GetResult();
+            Tuple<NetRequestResult, bool> tryTriggerResult = handler.TryTriggerNetFunction<bool>("DeleteCivilian", civs.SelectedItems[0].SubItems[0].Text.ToRawID()).GetAwaiter().GetResult();
 
-            S.Disconnect(true);
-            S = new Socket(SocketType.Stream, ProtocolType.Tcp);
+            S.Shutdown(SocketShutdown.Both);
+            S.Close();
+            S = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             
             Functions.GetFailTest(tryTriggerResult.Item1);
 
@@ -152,8 +149,6 @@ namespace CloneCAD.Client.Menus
 
             Civilians.Remove(uint.Parse(civs.SelectedItems[0].SubItems[0].Text));
             civs.Items.RemoveAt(civs.SelectedItems[0].Index);
-
-            File.WriteAllText("ids.cfg", string.Join(",", Civilians.Select(x => x.Key.ToString()).ToArray()));
         }
     }
 }

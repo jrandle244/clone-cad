@@ -1,19 +1,29 @@
 ﻿using System;
 using System.IO;
 using System.Media;
+using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using CloneCAD.Common.DataHolders;
+using CloneCAD.Common.NetCode;
 
 namespace CloneCAD.Client
 {
     public static class Functions
     {
-        public static void GetFailTest(bool tryGetResult)
+        public static void GetFailTest(NetRequestResult tryGetResult, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null, [CallerFilePath] string filePath = null)
         {
-            if (tryGetResult)
-                return;
+            switch (tryGetResult)
+            {
+                case NetRequestResult.Completed:
+                    return;
+                case NetRequestResult.Invalid:
+                    MessageBox.Show("Server does not contain the function that has been \"TryGet\"ed! If this continues please submit a bug report.\n\nAt: " + caller + " (line " + lineNumber + ") in " + caller, "CloneCAD", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    break;
+                case NetRequestResult.Incompleted:
+                    MessageBox.Show("Server execute the function that has been \"TryGet\"ed! If this continues please submit a bug report.\n\nAt: " + caller + " (line " + lineNumber + ") in " + caller , "CloneCAD", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    break;
+            }
 
-            MessageBox.Show("Server does not contain the value or function that has been \"TryGet\"ed! If this continues please submit a bug report.", "CloneCAD", MessageBoxButtons.OK, MessageBoxIcon.Error);
             Environment.Exit(4);
         }
 

@@ -1,6 +1,7 @@
 ﻿using CloneCAD.Common.DataHolders;
 
 using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace CloneCAD.Client.DataHolders
@@ -11,17 +12,16 @@ namespace CloneCAD.Client.DataHolders
         public int Port { get; private set; }
         public LocaleConfig Locale { get; private set; }
 
-        public Config(string FilePath) : base(FilePath)
+        public Config(string filePath) : base(new List<string>
         {
-            try
-            {
-                Load();
-            }
-            catch (InvalidOperationException)
-            {
-                MessageBox.Show("The config file has reoccuring values. Please remove the reoccuring values.");
-                Environment.Exit(1);
-            }
+            "Locale",
+            "IP",
+            "Port"
+        })
+        {
+            Path = filePath;
+
+            Load();
         }
 
         public new void Load()
@@ -36,13 +36,13 @@ namespace CloneCAD.Client.DataHolders
 
             Locale = new LocaleConfig(this["Locale"]);
 
-            if (!Contains("IP") || this["IP"] == "changeme")
+            if (this["IP"] == "changeme")
             {
                 MessageBox.Show(Locale["ChangeMeIP"], "CloneCAD", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Environment.Exit(1);
             }
 
-            if (!Contains("Port") || !int.TryParse(this["Port"], out int port) || port < 1024 || port > 65536)
+            if (!int.TryParse(this["Port"], out int port) || port < 1024 || port > 65536)
             {
                 MessageBox.Show(Locale["InvalidPort"], "CloneCAD", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Environment.Exit(1);

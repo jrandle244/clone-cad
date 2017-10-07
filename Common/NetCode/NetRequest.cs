@@ -1,9 +1,16 @@
-﻿using CloneCAD.Common.DataHolders;
+﻿using System;
+using System.Runtime.Serialization;
+using CloneCAD.Common.DataHolders;
 
 namespace CloneCAD.Common.NetCode
 {
+    [Serializable]
     public enum NetRequestMetadata { InvocationRequest, InvocationReturn, ValueRequest, ValueReturn, FunctionRequest, FunctionReturn }
 
+    [Serializable]
+    public enum NetRequestResult { Invalid, Incompleted, Completed }
+
+    [Serializable]
     public class NetRequest
     {
         public StorableValue<object[]> Data { get; }

@@ -13,8 +13,6 @@ namespace CloneCAD.Server.DataHolders
 
     public class Config : GenericConfig
     {
-        public string FilePath { get; }
-        
         public int Port { get; private set; }
 
         public FilterType Filter { get; private set; }
@@ -26,7 +24,7 @@ namespace CloneCAD.Server.DataHolders
         public LocaleConfig Locale { get; private set; }
         public Log Log { get; private set; }
 
-        public Config(string FilePath) : base (new List<string>()
+        public Config(string filePath) : base (new List<string>()
         {
             "Locale",
             "IP",
@@ -39,15 +37,13 @@ namespace CloneCAD.Server.DataHolders
             "Aliases"
         })
         {
-            this.FilePath = FilePath;
-
+            Path = filePath;
             Load();
         }
 
         public new void Load()
         {
             base.Load();
-
 
             Locale = new LocaleConfig(base["Locale"]);
 
@@ -58,7 +54,7 @@ namespace CloneCAD.Server.DataHolders
             Port = port;
 
 
-            if (!int.TryParse(base["FilterType"], out int filter) || filter < 0 || filter > 2)
+            if (!int.TryParse(base["Filter"], out int filter) || filter < 0 || filter > 2)
                 Functions.Error(Locale, "InvalidFilterType", 1);
 
             Filter = (FilterType)filter;

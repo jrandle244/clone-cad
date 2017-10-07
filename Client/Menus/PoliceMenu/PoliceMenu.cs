@@ -3,9 +3,7 @@ using MaterialSkin.Controls;
 using CloneCAD.Common.DataHolders;
 
 using System;
-using System.Linq;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using CloneCAD.Client.DataHolders;
@@ -23,7 +21,7 @@ namespace CloneCAD.Client.Menus
         public PopoMenu(Config config)
         {
             Config = config;
-            S = new Socket(SocketType.Stream, ProtocolType.Tcp);
+            S = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
             InitializeComponent();
             
@@ -47,10 +45,11 @@ namespace CloneCAD.Client.Menus
 
             NetRequestHandler handler = new NetRequestHandler(S);
 
-            Tuple<bool, bool> tryGetResult = handler.TryTriggerNetFunction<bool>("TicketCivilian", id, ticket).GetAwaiter().GetResult();
+            Tuple<NetRequestResult, bool> tryGetResult = handler.TryTriggerNetFunction<bool>("TicketCivilian", id, ticket).GetAwaiter().GetResult();
 
-            S.Disconnect(true);
-            S = new Socket(SocketType.Stream, ProtocolType.Tcp);
+            S.Shutdown(SocketShutdown.Both);
+            S.Close();
+            S = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
             Functions.GetFailTest(tryGetResult.Item1);
 
@@ -60,13 +59,13 @@ namespace CloneCAD.Client.Menus
                 MessageBox.Show("The civilian was not found.", "CloneCAD", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
-        private void id_KeyPress(object sender, KeyPressEventArgs e)
+        private void ID_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
                 e.Handled = true;
         }
 
-        private void price_KeyPress(object sender, KeyPressEventArgs e)
+        private void Price_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
                 e.Handled = true;
@@ -74,21 +73,21 @@ namespace CloneCAD.Client.Menus
 
         private Ticket PrepTicket()
         {
-            string type = fixit.Checked ? "Fix-it" : "";
-            type = warning.Checked ? "Warning" : type;
-            type = citation.Checked ? "Citation" : type;
-            type = ticket.Checked ? "Ticket" : type;
+            string type = FixItMode.Checked ? "Fix-it" : "";
+            type = WarningMode.Checked ? "Warning" : type;
+            type = CitationMode.Checked ? "Citation" : type;
+            type = TicketMode.Checked ? "Ticket" : type;
 
-            return new Ticket(ushort.Parse(price.Text), type, context.Text);
+            return new Ticket(ushort.Parse(Price.Text), type, Context.Text);
         }
 
         private new void KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
-                ThreadPool.QueueUserWorkItem(x => SendTicket(ushort.Parse(id.Text), PrepTicket()));
+                ThreadPool.QueueUserWorkItem(x => SendTicket(uint.Parse(ID.Text), PrepTicket()));
         }
 
         private void giveTicket_Click(object sender, EventArgs e) =>
-            ThreadPool.QueueUserWorkItem(x => SendTicket(ushort.Parse(id.Text), PrepTicket()));
+            ThreadPool.QueueUserWorkItem(x => SendTicket(uint.Parse(ID.Text), PrepTicket()));
     }
 }

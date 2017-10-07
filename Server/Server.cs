@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using CloneCAD.Common;
 using CloneCAD.Common.DataHolders;
 using CloneCAD.Common.NetCode;
 using CloneCAD.Server.DataHolders;
@@ -16,6 +16,20 @@ namespace CloneCAD.Server
 {
     public class Server
     {
+        #region on close hook
+        [DllImport("Kernel32")]
+        private static extern bool SetConsoleCtrlHandler(EventHandler handler, bool add);
+
+        private delegate bool EventHandler();
+
+        private bool OnExit()
+        {
+            Civilians.Save();
+
+            return true;
+        }
+        #endregion
+
         private readonly TcpListener Listener;
         private readonly StorableValue<CivilianDictionary> Civilians;
         private Dictionary<string, object> NetValueCivilians => Civilians.Value.Values.ToDictionary<Civilian, string, object>(civilian => "Civilian:" + civilian.ID, civilian => civilian);
@@ -27,9 +41,14 @@ namespace CloneCAD.Server
             Console.Title = "CloneCAD Server";
 
             Config = config;
-            Civilians = new StorableValue<CivilianDictionary>(civilians);
+            Civilians = new StorableValue<CivilianDictionary>(civilians)
+            {
+                FilePath = Program.CIV_EXPORT_PATH
+            };
 
             Listener = new TcpListener(IPAddress.Parse(Config["IP"]), Config.Port);
+
+            SetConsoleCtrlHandler(OnExit, true);
         }
 
         public void Start()
@@ -53,7 +72,7 @@ namespace CloneCAD.Server
         {
             Socket socket = (Socket)socketO;
 
-            NetRequestHandler handler = new NetRequestHandler(socket)
+            NetRequestHandler handler = new NetRequestHandler(socket, false)
             {
                 NetValues = NetValueCivilians
             };
@@ -67,6 +86,8 @@ namespace CloneCAD.Server
             handler.NetFunctions.Add("CheckName", new NetFunction(CheckName));
 
             handler.NetEvents.Add("UpdateCivilian", new NetEvent(UpdateCivilian));
+
+            handler.Receive();
         }
 
         #region netfunctions
@@ -74,16 +95,16 @@ namespace CloneCAD.Server
         {
             if (!Config.HasPerm(handler.IP, Permission.Civ, Permission.Dispatch))
                 return null;
-
+            
             uint civilianID = (uint) objs[0];
 
             if (Civilians.Value.ContainsKey(civilianID))
             {
-                Log.WriteLine("Retrieved civilian (" + civilianID + ")", handler.IP, Log.Status.Succeeded);
+                Log.WriteLine("Retrieved civilian (" + civilianID.ToSplitID() + ")", handler.IP, Log.Status.Succeeded);
                 return Civilians.Value[civilianID];
             }
 
-            Log.WriteLine("Retrieved civilian (" + civilianID + ")", handler.IP, Log.Status.Failed);
+            Log.WriteLine("Retrieved civilian (" + civilianID.ToSplitID() + ")", handler.IP, Log.Status.Failed);
 
             await Task.FromResult(0);
             return null;
@@ -97,7 +118,7 @@ namespace CloneCAD.Server
             Civilian civilian = new Civilian(GetRandomID());
             Civilians.Value.Add(civilian);
 
-            Log.WriteLine("Reserved civilian (" + civilian.ID + ")", handler.IP);
+            Log.WriteLine("Reserved civilian (" + civilian.ID.ToSplitID() + ")", handler.IP);
 
             await Task.FromResult(0);
             return civilian;
@@ -116,11 +137,11 @@ namespace CloneCAD.Server
                 Ticket ticket = (Ticket)objs[1];
 
                 civilian.Tickets.Add(ticket);
-                Log.WriteLine("Ticketed civilian (" + civilian.ID + ")", handler.IP, Log.Status.Succeeded);
+                Log.WriteLine("Ticketed civilian (" + civilian.ID.ToSplitID() + ")", handler.IP, Log.Status.Succeeded);
                 return true;
             }
 
-            Log.WriteLine("Ticketed civilian (" + civilianID + ")", handler.IP, Log.Status.Failed);
+            Log.WriteLine("Ticketed civilian (" + civilianID.ToSplitID() + ")", handler.IP, Log.Status.Failed);
 
             await Task.FromResult(0);
             return false;
@@ -139,11 +160,11 @@ namespace CloneCAD.Server
             {
                 Civilians.Value.Remove(civilianID);
 
-                Log.WriteLine("Deleted civilian (" + id + ")", handler.IP, Log.Status.Succeeded);
+                Log.WriteLine("Deleted civilian (" + id.ToSplitID() + ")", handler.IP, Log.Status.Succeeded);
                 return true;
             }
 
-            Log.WriteLine("Deleted civilian (" + id + ")", handler.IP, Log.Status.Failed);
+            Log.WriteLine("Deleted civilian (" + id.ToSplitID() + ")", handler.IP, Log.Status.Failed);
 
             await Task.FromResult(0);
             return false;
@@ -163,13 +184,13 @@ namespace CloneCAD.Server
                 Civilians.Value[civilian.ID] = civilian;
                 Civilians.Value[civilian.ID].Tickets = tickets;
 
-                Log.WriteLine("Updated civilian (" + civilian.ID + ")", handler.IP, Log.Status.Succeeded);
+                Log.WriteLine("Updated civilian (" + civilian.ID.ToSplitID() + ")", handler.IP, Log.Status.Succeeded);
             }
             else
             {
                 Civilians.Value.Add(civilian);
 
-                Log.WriteLine("Saved civilian (" + civilian.ID + ")", handler.IP, Log.Status.Succeeded);
+                Log.WriteLine("Saved civilian (" + civilian.ID.ToSplitID() + ")", handler.IP, Log.Status.Succeeded);
             }
 
             await Task.FromResult(0);
@@ -216,18 +237,24 @@ namespace CloneCAD.Server
 
         private uint GetRandomID()
         {
-            uint randomUInt = 0;
+            uint id = 0;
+            bool firstTime = true;
 
-            while (randomUInt == 0 || Civilians.Value.ContainsKey(randomUInt))
+            while (firstTime || Civilians.Value.ContainsKey(id))
             {
-                byte[] buffer = new byte[32];
-
+                byte[] digits = new byte[9];
                 Random random = new Random();
-                random.NextBytes(buffer);
-                randomUInt = BitConverter.ToUInt32(buffer, 0);
+
+                for (int i = 0; i < digits.Length; i++)
+                    digits[i] = (byte)random.Next(0, 10);
+
+                for (int i = 0; i < digits.Length; i++)
+                    id += (uint)(digits[i] * Math.Pow(10, i));
+
+                firstTime = false;
             }
 
-            return randomUInt;
+            return id;
         }
     }
 }

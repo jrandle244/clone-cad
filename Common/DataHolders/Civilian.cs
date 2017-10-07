@@ -5,6 +5,7 @@ using System.Text;
 
 namespace CloneCAD.Common.DataHolders
 {
+    [Serializable]
     public class Civilian
     {
         public uint ID { get; }

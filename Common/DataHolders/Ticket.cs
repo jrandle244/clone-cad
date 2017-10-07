@@ -1,5 +1,8 @@
-﻿namespace CloneCAD.Common.DataHolders
+﻿using System;
+
+namespace CloneCAD.Common.DataHolders
 {
+    [Serializable]
     public class Ticket
     {
         public ushort Price { get; }

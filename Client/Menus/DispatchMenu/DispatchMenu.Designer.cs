@@ -41,7 +41,7 @@
             this.IDBox.Depth = 0;
             this.IDBox.Hint = "Civilian ID";
             this.IDBox.Location = new System.Drawing.Point(12, 109);
-            this.IDBox.MaxLength = 4;
+            this.IDBox.MaxLength = 9;
             this.IDBox.MouseState = MaterialSkin.MouseState.HOVER;
             this.IDBox.Name = "IDBox";
             this.IDBox.PasswordChar = '\0';

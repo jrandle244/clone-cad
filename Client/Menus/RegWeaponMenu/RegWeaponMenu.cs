@@ -1,14 +1,4 @@
-﻿using MaterialSkin;
-using MaterialSkin.Controls;
-
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MaterialSkin.Controls;
 using System.Windows.Forms;
 
 namespace CloneCAD.Client.Menus
@@ -18,11 +8,6 @@ namespace CloneCAD.Client.Menus
         public RegWeaponMenu()
         {
             InitializeComponent();
-        }
-
-        private void Add_Click(object sender, EventArgs e)
-        {
-            Close();
         }
 
         private void WeaponName_KeyDown(object sender, KeyEventArgs e)

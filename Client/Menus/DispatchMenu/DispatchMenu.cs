@@ -3,10 +3,7 @@ using MaterialSkin.Controls;
 using CloneCAD.Client.DataHolders;
 
 using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using CloneCAD.Common.NetCode;
@@ -23,7 +20,7 @@ namespace CloneCAD.Client.Menus
         public DispatchMenu(Config config)
         {
             Config = config;
-            S = new Socket(SocketType.Stream, ProtocolType.Tcp);
+            S = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
             InitializeComponent();
 
@@ -36,7 +33,7 @@ namespace CloneCAD.Client.Menus
 
         private void Launch(string id, string name, string plate)
         {
-            uint ID = 1;
+            uint receivedID = 1;
 
             if (string.IsNullOrWhiteSpace(id))
             {
@@ -56,10 +53,11 @@ namespace CloneCAD.Client.Menus
 
                 if (!string.IsNullOrWhiteSpace(plate))
                 {
-                    Tuple<bool, uint> tryGetResult = handler.TryTriggerNetFunction<uint>("CheckPlate", plate).GetAwaiter().GetResult();
+                    Tuple<NetRequestResult, uint> tryGetResult = handler.TryTriggerNetFunction<uint>("CheckPlate", plate).GetAwaiter().GetResult();
 
-                    S.Disconnect(true);
-                    S = new Socket(SocketType.Stream, ProtocolType.Tcp);
+                    S.Shutdown(SocketShutdown.Both);
+                    S.Close();
+                    S = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
                     Functions.GetFailTest(tryGetResult.Item1);
 
@@ -69,14 +67,15 @@ namespace CloneCAD.Client.Menus
                         return;
                     }
 
-                    ID = tryGetResult.Item2;
+                    receivedID = tryGetResult.Item2;
                 }
                 else if (!string.IsNullOrWhiteSpace(name))
                 {
-                    Tuple<bool, uint> tryGetResult = handler.TryTriggerNetFunction<uint>("CheckName", plate).GetAwaiter().GetResult();
+                    Tuple<NetRequestResult, uint> tryGetResult = handler.TryTriggerNetFunction<uint>("CheckName", plate).GetAwaiter().GetResult();
 
-                    S.Disconnect(true);
-                    S = new Socket(SocketType.Stream, ProtocolType.Tcp);
+                    S.Shutdown(SocketShutdown.Both);
+                    S.Close();
+                    S = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
                     Functions.GetFailTest(tryGetResult.Item1);
 
@@ -92,11 +91,11 @@ namespace CloneCAD.Client.Menus
                 }
             }
             else
-                ID = uint.Parse(id);
+                receivedID = uint.Parse(id);
 
             Invoke((MethodInvoker)delegate
             {
-                CivView civ = new CivView(Config, ID);
+                CivView civ = new CivView(Config, receivedID);
 
                 civ.Show();
                 civ.Download();
@@ -127,7 +126,7 @@ namespace CloneCAD.Client.Menus
 
             if (char.IsLetter(e.KeyChar))
             {
-                e.KeyChar = e.KeyChar.ToString().ToUpper()[0];
+                e.KeyChar = char.ToUpper(e.KeyChar);
 
                 if (!string.IsNullOrEmpty(IDBox.Text) || !string.IsNullOrEmpty(NameBox.Text))
                 {

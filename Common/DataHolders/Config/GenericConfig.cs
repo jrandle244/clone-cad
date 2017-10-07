@@ -7,17 +7,17 @@ namespace CloneCAD.Common.DataHolders
 {
     public class GenericConfig
     {
-        private readonly Dictionary<string, string> values;
+        private readonly Dictionary<string, string> Values;
         
-        private List<string> requiredKeys;
+        private List<string> _RequiredKeys;
         public List<string> RequiredKeys
         {
-            get => requiredKeys;
+            get => _RequiredKeys;
             set
             {
-                requiredKeys = value;
+                _RequiredKeys = value;
 
-                requiredKeys.ForEach(x =>
+                _RequiredKeys.ForEach(x =>
                 {
                     if (!Contains(x))
                         throw new InvalidOperationException("Current locale does not contain key " + x);
@@ -29,39 +29,39 @@ namespace CloneCAD.Common.DataHolders
 
         public GenericConfig()
         {
-            values = new Dictionary<string, string>();
-            requiredKeys = new List<string>();
+            Values = new Dictionary<string, string>();
+            _RequiredKeys = new List<string>();
         }
 
-        public GenericConfig(List<string> RequiredKeys) : this()
+        public GenericConfig(List<string> requiredKeys) : this()
         {
-            requiredKeys = RequiredKeys;
+            _RequiredKeys = requiredKeys;
         }
 
-        public GenericConfig(string Path) : this()
+        public GenericConfig(string path) : this()
         {
-            this.Path = Path;
+            Path = path;
 
             Load();
         }
 
-        public GenericConfig(List<string> RequiredKeys, string Path) : this(RequiredKeys)
+        public GenericConfig(List<string> requiredKeys, string path) : this(requiredKeys)
         {
-            this.Path = Path;
+            Path = path;
 
             Load();
         }
 
         public bool Contains(string key) =>
-            values.ContainsKey(key);
+            Values.ContainsKey(key);
 
         public void Load()
         {
             if (string.IsNullOrWhiteSpace(Path))
-                throw new InvalidOperationException("Cannot load from a file if the " + nameof(Path) + " property is null!");
+                throw new NullReferenceException("Cannot load from a file if the " + nameof(Path) + " property is null!");
 
             if (!File.Exists(Path))
-                throw new InvalidOperationException("The file does not exist!");
+                throw new FileNotFoundException("The file does not exist!");
 
             StreamReader reader = new StreamReader(Path);
 
@@ -78,19 +78,21 @@ namespace CloneCAD.Common.DataHolders
                 if (string.IsNullOrWhiteSpace(rawVals[0]))
                     continue;
 
-                if (values.ContainsKey(rawVals[0]))
-                    throw new InvalidOperationException("The config has already loaded an element with the same key.");
+                if (Values.ContainsKey(rawVals[0]))
+                    Values[rawVals[0]] = rawVals[1];
 
-                values.Add(rawVals[0], string.IsNullOrWhiteSpace(rawVals[1]) ? null : rawVals[1]);
+                Values.Add(rawVals[0], string.IsNullOrWhiteSpace(rawVals[1]) ? null : rawVals[1]);
             }
 
-            requiredKeys.ForEach(x =>
+            reader.Close();
+
+            _RequiredKeys.ForEach(x =>
             {
                 if (!Contains(x))
-                    throw new InvalidOperationException("Current locale does not contain key " + x);
+                    throw new KeyNotFoundException("Current locale does not contain key " + x);
             });
         }
 
-        public string this[string key] => values[key];
+        public string this[string key] => Values[key];
     }
 }

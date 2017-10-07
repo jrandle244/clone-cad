@@ -52,7 +52,7 @@
             this.civs.MultiSelect = false;
             this.civs.Name = "civs";
             this.civs.OwnerDraw = true;
-            this.civs.Size = new System.Drawing.Size(300, 236);
+            this.civs.Size = new System.Drawing.Size(458, 236);
             this.civs.TabIndex = 0;
             this.civs.UseCompatibleStateImageBehavior = false;
             this.civs.View = System.Windows.Forms.View.Details;
@@ -61,11 +61,12 @@
             // columnHeader1
             // 
             this.columnHeader1.Text = "ID";
+            this.columnHeader1.Width = 153;
             // 
             // columnHeader2
             // 
             this.columnHeader2.Text = "Name";
-            this.columnHeader2.Width = 238;
+            this.columnHeader2.Width = 302;
             // 
             // create
             // 
@@ -89,7 +90,7 @@
             this.delete.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.delete.Depth = 0;
             this.delete.Icon = null;
-            this.delete.Location = new System.Drawing.Point(217, 306);
+            this.delete.Location = new System.Drawing.Point(378, 306);
             this.delete.MouseState = MaterialSkin.MouseState.HOVER;
             this.delete.Name = "delete";
             this.delete.Primary = true;
@@ -103,7 +104,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(300, 354);
+            this.ClientSize = new System.Drawing.Size(459, 354);
             this.Controls.Add(this.delete);
             this.Controls.Add(this.create);
             this.Controls.Add(this.civs);

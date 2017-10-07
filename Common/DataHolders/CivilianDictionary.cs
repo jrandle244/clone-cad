@@ -3,11 +3,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 
 namespace CloneCAD.Server.DataHolders.Static
 {
+    [Serializable]
     public class CivilianDictionary : Dictionary<uint, Civilian>
     {
+        public CivilianDictionary() { }
+        public CivilianDictionary(SerializationInfo info, StreamingContext context) : base(info, context) { }
+
         public bool ContainsName(string name) =>
             Any(x => x.Value.Name == name);
 

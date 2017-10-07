@@ -1,10 +1,10 @@
 ﻿using System;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Runtime.Serialization.Formatters.Binary;
 
 namespace CloneCAD.Common.DataHolders
 {
+    [Serializable]
     public class StorableValue<T>
     {
         private T value;
@@ -26,10 +26,13 @@ namespace CloneCAD.Common.DataHolders
         {
             set
             {
-                IntPtr ptr = Marshal.AllocHGlobal(value.Length);
-                Marshal.Copy(bytes, 0, ptr, value.Length);
-                this.value = (T)Marshal.PtrToStructure(ptr, typeof(T));
-                Marshal.FreeHGlobal(ptr);
+                BinaryFormatter bf = new BinaryFormatter();
+                using (MemoryStream memStream = new MemoryStream())
+                {
+                    memStream.Write(value, 0, value.Length);
+                    memStream.Seek(0, SeekOrigin.Begin);
+                    Value = (T)bf.Deserialize(memStream);
+                }
 
                 bytes = value;
                 valChanged = false;
@@ -39,13 +42,14 @@ namespace CloneCAD.Common.DataHolders
                 if (!valChanged)
                     return bytes;
 
-                int size = Marshal.SizeOf(Value);
-                IntPtr ptr = Marshal.AllocHGlobal(size);
-                Marshal.StructureToPtr(value, ptr, false);
-                Marshal.Copy(ptr, bytes, 0, size);
-                Marshal.FreeHGlobal(ptr);
+                BinaryFormatter bf = new BinaryFormatter();
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    bf.Serialize(ms, Value);
+                    bytes = ms.ToArray();
+                }
 
-                valChanged = false;
+                valChanged = true;
                 return bytes;
             }
         }

@@ -30,105 +30,105 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CivMenu));
-            this.name = new MaterialSkin.Controls.MaterialSingleLineTextField();
-            this.business = new MaterialSkin.Controls.MaterialSingleLineTextField();
-            this.plate = new MaterialSkin.Controls.MaterialSingleLineTextField();
-            this.ticketList = new MaterialSkin.Controls.MaterialListView();
+            this.NameBox = new MaterialSkin.Controls.MaterialSingleLineTextField();
+            this.BusinessBox = new MaterialSkin.Controls.MaterialSingleLineTextField();
+            this.PlateBox = new MaterialSkin.Controls.MaterialSingleLineTextField();
+            this.TicketList = new MaterialSkin.Controls.MaterialListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.syncBtn = new MaterialSkin.Controls.MaterialRaisedButton();
-            this.regWepList = new MaterialSkin.Controls.MaterialListView();
+            this.SyncBtn = new MaterialSkin.Controls.MaterialRaisedButton();
+            this.RegisteredWepList = new MaterialSkin.Controls.MaterialListView();
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.materialDivider1 = new MaterialSkin.Controls.MaterialDivider();
             this.materialDivider2 = new MaterialSkin.Controls.MaterialDivider();
-            this.addWep = new MaterialSkin.Controls.MaterialRaisedButton();
-            this.remWep = new MaterialSkin.Controls.MaterialRaisedButton();
-            this.idDisp = new MaterialSkin.Controls.MaterialLabel();
+            this.AddWepBtn = new MaterialSkin.Controls.MaterialRaisedButton();
+            this.RemWepBtn = new MaterialSkin.Controls.MaterialRaisedButton();
+            this.IDLabel = new MaterialSkin.Controls.MaterialLabel();
             this.materialLabel1 = new MaterialSkin.Controls.MaterialLabel();
             this.materialLabel2 = new MaterialSkin.Controls.MaterialLabel();
-            this.timer = new System.Windows.Forms.Timer(this.components);
-            this.sync = new MaterialSkin.Controls.MaterialCheckBox();
+            this.Timer = new System.Windows.Forms.Timer(this.components);
+            this.SyncCheck = new MaterialSkin.Controls.MaterialCheckBox();
             this.SuspendLayout();
             // 
-            // name
+            // NameBox
             // 
-            this.name.Depth = 0;
-            this.name.Hint = "Full Name";
-            this.name.Location = new System.Drawing.Point(12, 75);
-            this.name.MaxLength = 30;
-            this.name.MouseState = MaterialSkin.MouseState.HOVER;
-            this.name.Name = "name";
-            this.name.PasswordChar = '\0';
-            this.name.SelectedText = "";
-            this.name.SelectionLength = 0;
-            this.name.SelectionStart = 0;
-            this.name.Size = new System.Drawing.Size(264, 23);
-            this.name.TabIndex = 0;
-            this.name.TabStop = false;
-            this.name.UseSystemPasswordChar = false;
-            this.name.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.name_KeyPress);
-            this.name.TextChanged += new System.EventHandler(this.name_TextChanged);
+            this.NameBox.Depth = 0;
+            this.NameBox.Hint = "Full Name";
+            this.NameBox.Location = new System.Drawing.Point(12, 75);
+            this.NameBox.MaxLength = 30;
+            this.NameBox.MouseState = MaterialSkin.MouseState.HOVER;
+            this.NameBox.Name = "NameBox";
+            this.NameBox.PasswordChar = '\0';
+            this.NameBox.SelectedText = "";
+            this.NameBox.SelectionLength = 0;
+            this.NameBox.SelectionStart = 0;
+            this.NameBox.Size = new System.Drawing.Size(264, 23);
+            this.NameBox.TabIndex = 0;
+            this.NameBox.TabStop = false;
+            this.NameBox.UseSystemPasswordChar = false;
+            this.NameBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NameBox_KeyPress);
+            this.NameBox.TextChanged += new System.EventHandler(this.NameBox_TextChanged);
             // 
-            // business
+            // BusinessBox
             // 
-            this.business.Depth = 0;
-            this.business.Hint = "Associated Business";
-            this.business.Location = new System.Drawing.Point(12, 105);
-            this.business.MaxLength = 50;
-            this.business.MouseState = MaterialSkin.MouseState.HOVER;
-            this.business.Name = "business";
-            this.business.PasswordChar = '\0';
-            this.business.SelectedText = "";
-            this.business.SelectionLength = 0;
-            this.business.SelectionStart = 0;
-            this.business.Size = new System.Drawing.Size(264, 23);
-            this.business.TabIndex = 1;
-            this.business.TabStop = false;
-            this.business.UseSystemPasswordChar = false;
-            this.business.TextChanged += new System.EventHandler(this.business_TextChanged);
+            this.BusinessBox.Depth = 0;
+            this.BusinessBox.Hint = "Associated Business";
+            this.BusinessBox.Location = new System.Drawing.Point(12, 105);
+            this.BusinessBox.MaxLength = 50;
+            this.BusinessBox.MouseState = MaterialSkin.MouseState.HOVER;
+            this.BusinessBox.Name = "BusinessBox";
+            this.BusinessBox.PasswordChar = '\0';
+            this.BusinessBox.SelectedText = "";
+            this.BusinessBox.SelectionLength = 0;
+            this.BusinessBox.SelectionStart = 0;
+            this.BusinessBox.Size = new System.Drawing.Size(264, 23);
+            this.BusinessBox.TabIndex = 1;
+            this.BusinessBox.TabStop = false;
+            this.BusinessBox.UseSystemPasswordChar = false;
+            this.BusinessBox.TextChanged += new System.EventHandler(this.BusinessBox_TextChanged);
             // 
-            // plate
+            // PlateBox
             // 
-            this.plate.Depth = 0;
-            this.plate.Hint = "License Plate";
-            this.plate.Location = new System.Drawing.Point(12, 135);
-            this.plate.MaxLength = 8;
-            this.plate.MouseState = MaterialSkin.MouseState.HOVER;
-            this.plate.Name = "plate";
-            this.plate.PasswordChar = '\0';
-            this.plate.SelectedText = "";
-            this.plate.SelectionLength = 0;
-            this.plate.SelectionStart = 0;
-            this.plate.Size = new System.Drawing.Size(132, 23);
-            this.plate.TabIndex = 2;
-            this.plate.TabStop = false;
-            this.plate.UseSystemPasswordChar = false;
-            this.plate.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.plate_KeyPress);
-            this.plate.TextChanged += new System.EventHandler(this.plate_TextChanged);
+            this.PlateBox.Depth = 0;
+            this.PlateBox.Hint = "License Plate";
+            this.PlateBox.Location = new System.Drawing.Point(12, 135);
+            this.PlateBox.MaxLength = 8;
+            this.PlateBox.MouseState = MaterialSkin.MouseState.HOVER;
+            this.PlateBox.Name = "PlateBox";
+            this.PlateBox.PasswordChar = '\0';
+            this.PlateBox.SelectedText = "";
+            this.PlateBox.SelectionLength = 0;
+            this.PlateBox.SelectionStart = 0;
+            this.PlateBox.Size = new System.Drawing.Size(132, 23);
+            this.PlateBox.TabIndex = 2;
+            this.PlateBox.TabStop = false;
+            this.PlateBox.UseSystemPasswordChar = false;
+            this.PlateBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.PlateBox_KeyPress);
+            this.PlateBox.TextChanged += new System.EventHandler(this.PlateBox_TextChanged);
             // 
-            // ticketList
+            // TicketList
             // 
-            this.ticketList.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.ticketList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.TicketList.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.TicketList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2,
             this.columnHeader4});
-            this.ticketList.Depth = 0;
-            this.ticketList.Font = new System.Drawing.Font("Roboto", 32F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.World);
-            this.ticketList.FullRowSelect = true;
-            this.ticketList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-            this.ticketList.Location = new System.Drawing.Point(574, 97);
-            this.ticketList.MouseLocation = new System.Drawing.Point(-1, -1);
-            this.ticketList.MouseState = MaterialSkin.MouseState.OUT;
-            this.ticketList.MultiSelect = false;
-            this.ticketList.Name = "ticketList";
-            this.ticketList.OwnerDraw = true;
-            this.ticketList.Size = new System.Drawing.Size(369, 257);
-            this.ticketList.Sorting = System.Windows.Forms.SortOrder.Ascending;
-            this.ticketList.TabIndex = 8;
-            this.ticketList.UseCompatibleStateImageBehavior = false;
-            this.ticketList.View = System.Windows.Forms.View.Details;
+            this.TicketList.Depth = 0;
+            this.TicketList.Font = new System.Drawing.Font("Roboto", 32F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.World);
+            this.TicketList.FullRowSelect = true;
+            this.TicketList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+            this.TicketList.Location = new System.Drawing.Point(574, 97);
+            this.TicketList.MouseLocation = new System.Drawing.Point(-1, -1);
+            this.TicketList.MouseState = MaterialSkin.MouseState.OUT;
+            this.TicketList.MultiSelect = false;
+            this.TicketList.Name = "TicketList";
+            this.TicketList.OwnerDraw = true;
+            this.TicketList.Size = new System.Drawing.Size(369, 257);
+            this.TicketList.Sorting = System.Windows.Forms.SortOrder.Ascending;
+            this.TicketList.TabIndex = 8;
+            this.TicketList.UseCompatibleStateImageBehavior = false;
+            this.TicketList.View = System.Windows.Forms.View.Details;
             // 
             // columnHeader1
             // 
@@ -145,41 +145,41 @@
             this.columnHeader4.Text = "Description";
             this.columnHeader4.Width = 213;
             // 
-            // syncBtn
+            // SyncBtn
             // 
-            this.syncBtn.AutoSize = true;
-            this.syncBtn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.syncBtn.Depth = 0;
-            this.syncBtn.Icon = null;
-            this.syncBtn.Location = new System.Drawing.Point(12, 318);
-            this.syncBtn.MouseState = MaterialSkin.MouseState.HOVER;
-            this.syncBtn.Name = "syncBtn";
-            this.syncBtn.Primary = true;
-            this.syncBtn.Size = new System.Drawing.Size(56, 36);
-            this.syncBtn.TabIndex = 3;
-            this.syncBtn.Text = "Sync";
-            this.syncBtn.UseVisualStyleBackColor = true;
-            this.syncBtn.Click += new System.EventHandler(this.syncBtn_Click);
+            this.SyncBtn.AutoSize = true;
+            this.SyncBtn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.SyncBtn.Depth = 0;
+            this.SyncBtn.Icon = null;
+            this.SyncBtn.Location = new System.Drawing.Point(12, 318);
+            this.SyncBtn.MouseState = MaterialSkin.MouseState.HOVER;
+            this.SyncBtn.Name = "SyncBtn";
+            this.SyncBtn.Primary = true;
+            this.SyncBtn.Size = new System.Drawing.Size(56, 36);
+            this.SyncBtn.TabIndex = 3;
+            this.SyncBtn.Text = "Sync";
+            this.SyncBtn.UseVisualStyleBackColor = true;
+            this.SyncBtn.Click += new System.EventHandler(this.SyncBtn_Click);
             // 
-            // regWepList
+            // RegisteredWepList
             // 
-            this.regWepList.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.regWepList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.RegisteredWepList.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.RegisteredWepList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader3});
-            this.regWepList.Depth = 0;
-            this.regWepList.Font = new System.Drawing.Font("Roboto", 32F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.World);
-            this.regWepList.FullRowSelect = true;
-            this.regWepList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-            this.regWepList.Location = new System.Drawing.Point(312, 97);
-            this.regWepList.MouseLocation = new System.Drawing.Point(-1, -1);
-            this.regWepList.MouseState = MaterialSkin.MouseState.OUT;
-            this.regWepList.Name = "regWepList";
-            this.regWepList.OwnerDraw = true;
-            this.regWepList.Size = new System.Drawing.Size(226, 201);
-            this.regWepList.Sorting = System.Windows.Forms.SortOrder.Ascending;
-            this.regWepList.TabIndex = 6;
-            this.regWepList.UseCompatibleStateImageBehavior = false;
-            this.regWepList.View = System.Windows.Forms.View.Details;
+            this.RegisteredWepList.Depth = 0;
+            this.RegisteredWepList.Font = new System.Drawing.Font("Roboto", 32F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.World);
+            this.RegisteredWepList.FullRowSelect = true;
+            this.RegisteredWepList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+            this.RegisteredWepList.Location = new System.Drawing.Point(312, 97);
+            this.RegisteredWepList.MouseLocation = new System.Drawing.Point(-1, -1);
+            this.RegisteredWepList.MouseState = MaterialSkin.MouseState.OUT;
+            this.RegisteredWepList.Name = "RegisteredWepList";
+            this.RegisteredWepList.OwnerDraw = true;
+            this.RegisteredWepList.Size = new System.Drawing.Size(226, 201);
+            this.RegisteredWepList.Sorting = System.Windows.Forms.SortOrder.Ascending;
+            this.RegisteredWepList.TabIndex = 6;
+            this.RegisteredWepList.UseCompatibleStateImageBehavior = false;
+            this.RegisteredWepList.View = System.Windows.Forms.View.Details;
             // 
             // columnHeader3
             // 
@@ -208,50 +208,50 @@
             this.materialDivider2.TabIndex = 7;
             this.materialDivider2.Text = "materialDivider2";
             // 
-            // addWep
+            // AddWepBtn
             // 
-            this.addWep.AutoSize = true;
-            this.addWep.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.addWep.Depth = 0;
-            this.addWep.Icon = null;
-            this.addWep.Location = new System.Drawing.Point(312, 318);
-            this.addWep.MouseState = MaterialSkin.MouseState.HOVER;
-            this.addWep.Name = "addWep";
-            this.addWep.Primary = true;
-            this.addWep.Size = new System.Drawing.Size(48, 36);
-            this.addWep.TabIndex = 5;
-            this.addWep.Text = "Add";
-            this.addWep.UseVisualStyleBackColor = true;
-            this.addWep.Click += new System.EventHandler(this.addWep_Click);
+            this.AddWepBtn.AutoSize = true;
+            this.AddWepBtn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.AddWepBtn.Depth = 0;
+            this.AddWepBtn.Icon = null;
+            this.AddWepBtn.Location = new System.Drawing.Point(312, 318);
+            this.AddWepBtn.MouseState = MaterialSkin.MouseState.HOVER;
+            this.AddWepBtn.Name = "AddWepBtn";
+            this.AddWepBtn.Primary = true;
+            this.AddWepBtn.Size = new System.Drawing.Size(48, 36);
+            this.AddWepBtn.TabIndex = 5;
+            this.AddWepBtn.Text = "Add";
+            this.AddWepBtn.UseVisualStyleBackColor = true;
+            this.AddWepBtn.Click += new System.EventHandler(this.AddWepBtn_Click);
             // 
-            // remWep
+            // RemWepBtn
             // 
-            this.remWep.AutoSize = true;
-            this.remWep.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.remWep.Depth = 0;
-            this.remWep.Icon = null;
-            this.remWep.Location = new System.Drawing.Point(463, 318);
-            this.remWep.MouseState = MaterialSkin.MouseState.HOVER;
-            this.remWep.Name = "remWep";
-            this.remWep.Primary = true;
-            this.remWep.Size = new System.Drawing.Size(75, 36);
-            this.remWep.TabIndex = 7;
-            this.remWep.Text = "Remove";
-            this.remWep.UseVisualStyleBackColor = true;
-            this.remWep.Click += new System.EventHandler(this.remWep_Click);
+            this.RemWepBtn.AutoSize = true;
+            this.RemWepBtn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.RemWepBtn.Depth = 0;
+            this.RemWepBtn.Icon = null;
+            this.RemWepBtn.Location = new System.Drawing.Point(463, 318);
+            this.RemWepBtn.MouseState = MaterialSkin.MouseState.HOVER;
+            this.RemWepBtn.Name = "RemWepBtn";
+            this.RemWepBtn.Primary = true;
+            this.RemWepBtn.Size = new System.Drawing.Size(75, 36);
+            this.RemWepBtn.TabIndex = 7;
+            this.RemWepBtn.Text = "Remove";
+            this.RemWepBtn.UseVisualStyleBackColor = true;
+            this.RemWepBtn.Click += new System.EventHandler(this.RemWepBtn_Click);
             // 
-            // idDisp
+            // IDLabel
             // 
-            this.idDisp.AutoSize = true;
-            this.idDisp.Depth = 0;
-            this.idDisp.Font = new System.Drawing.Font("Roboto", 11F);
-            this.idDisp.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.idDisp.Location = new System.Drawing.Point(12, 224);
-            this.idDisp.MouseState = MaterialSkin.MouseState.HOVER;
-            this.idDisp.Name = "idDisp";
-            this.idDisp.Size = new System.Drawing.Size(117, 19);
-            this.idDisp.TabIndex = 10;
-            this.idDisp.Text = "Your civilian ID: ";
+            this.IDLabel.AutoSize = true;
+            this.IDLabel.Depth = 0;
+            this.IDLabel.Font = new System.Drawing.Font("Roboto", 11F);
+            this.IDLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.IDLabel.Location = new System.Drawing.Point(12, 224);
+            this.IDLabel.MouseState = MaterialSkin.MouseState.HOVER;
+            this.IDLabel.Name = "IDLabel";
+            this.IDLabel.Size = new System.Drawing.Size(117, 19);
+            this.IDLabel.TabIndex = 10;
+            this.IDLabel.Text = "Your civilian ID: ";
             // 
             // materialLabel1
             // 
@@ -279,48 +279,48 @@
             this.materialLabel2.TabIndex = 12;
             this.materialLabel2.Text = "Tickets:";
             // 
-            // timer
+            // Timer
             // 
-            this.timer.Enabled = true;
-            this.timer.Interval = 5000;
-            this.timer.Tick += new System.EventHandler(this.timer_Tick);
+            this.Timer.Enabled = true;
+            this.Timer.Interval = 5000;
+            this.Timer.Tick += new System.EventHandler(this.Timer_Tick);
             // 
-            // sync
+            // SyncCheck
             // 
-            this.sync.AutoSize = true;
-            this.sync.Depth = 0;
-            this.sync.Enabled = false;
-            this.sync.Font = new System.Drawing.Font("Roboto", 10F);
-            this.sync.Location = new System.Drawing.Point(201, 327);
-            this.sync.Margin = new System.Windows.Forms.Padding(0);
-            this.sync.MouseLocation = new System.Drawing.Point(-1, -1);
-            this.sync.MouseState = MaterialSkin.MouseState.HOVER;
-            this.sync.Name = "sync";
-            this.sync.Ripple = true;
-            this.sync.Size = new System.Drawing.Size(75, 30);
-            this.sync.TabIndex = 9;
-            this.sync.Text = "Synced";
-            this.sync.UseVisualStyleBackColor = true;
+            this.SyncCheck.AutoSize = true;
+            this.SyncCheck.Depth = 0;
+            this.SyncCheck.Enabled = false;
+            this.SyncCheck.Font = new System.Drawing.Font("Roboto", 10F);
+            this.SyncCheck.Location = new System.Drawing.Point(201, 327);
+            this.SyncCheck.Margin = new System.Windows.Forms.Padding(0);
+            this.SyncCheck.MouseLocation = new System.Drawing.Point(-1, -1);
+            this.SyncCheck.MouseState = MaterialSkin.MouseState.HOVER;
+            this.SyncCheck.Name = "SyncCheck";
+            this.SyncCheck.Ripple = true;
+            this.SyncCheck.Size = new System.Drawing.Size(75, 30);
+            this.SyncCheck.TabIndex = 9;
+            this.SyncCheck.Text = "Synced";
+            this.SyncCheck.UseVisualStyleBackColor = true;
             // 
             // CivMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(955, 366);
-            this.Controls.Add(this.sync);
+            this.Controls.Add(this.SyncCheck);
             this.Controls.Add(this.materialLabel2);
             this.Controls.Add(this.materialLabel1);
-            this.Controls.Add(this.idDisp);
-            this.Controls.Add(this.remWep);
-            this.Controls.Add(this.addWep);
+            this.Controls.Add(this.IDLabel);
+            this.Controls.Add(this.RemWepBtn);
+            this.Controls.Add(this.AddWepBtn);
             this.Controls.Add(this.materialDivider2);
             this.Controls.Add(this.materialDivider1);
-            this.Controls.Add(this.regWepList);
-            this.Controls.Add(this.syncBtn);
-            this.Controls.Add(this.ticketList);
-            this.Controls.Add(this.plate);
-            this.Controls.Add(this.business);
-            this.Controls.Add(this.name);
+            this.Controls.Add(this.RegisteredWepList);
+            this.Controls.Add(this.SyncBtn);
+            this.Controls.Add(this.TicketList);
+            this.Controls.Add(this.PlateBox);
+            this.Controls.Add(this.BusinessBox);
+            this.Controls.Add(this.NameBox);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "CivMenu";
@@ -333,24 +333,24 @@
 
         #endregion
 
-        private MaterialSkin.Controls.MaterialSingleLineTextField name;
-        private MaterialSkin.Controls.MaterialSingleLineTextField business;
-        private MaterialSkin.Controls.MaterialSingleLineTextField plate;
-        private MaterialSkin.Controls.MaterialListView ticketList;
+        private MaterialSkin.Controls.MaterialSingleLineTextField NameBox;
+        private MaterialSkin.Controls.MaterialSingleLineTextField BusinessBox;
+        private MaterialSkin.Controls.MaterialSingleLineTextField PlateBox;
+        private MaterialSkin.Controls.MaterialListView TicketList;
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ColumnHeader columnHeader2;
-        private MaterialSkin.Controls.MaterialRaisedButton syncBtn;
-        private MaterialSkin.Controls.MaterialListView regWepList;
+        private MaterialSkin.Controls.MaterialRaisedButton SyncBtn;
+        private MaterialSkin.Controls.MaterialListView RegisteredWepList;
         private System.Windows.Forms.ColumnHeader columnHeader3;
         private MaterialSkin.Controls.MaterialDivider materialDivider1;
         private MaterialSkin.Controls.MaterialDivider materialDivider2;
-        private MaterialSkin.Controls.MaterialRaisedButton addWep;
-        private MaterialSkin.Controls.MaterialRaisedButton remWep;
-        private MaterialSkin.Controls.MaterialLabel idDisp;
+        private MaterialSkin.Controls.MaterialRaisedButton AddWepBtn;
+        private MaterialSkin.Controls.MaterialRaisedButton RemWepBtn;
+        private MaterialSkin.Controls.MaterialLabel IDLabel;
         private MaterialSkin.Controls.MaterialLabel materialLabel1;
         private MaterialSkin.Controls.MaterialLabel materialLabel2;
-        private System.Windows.Forms.Timer timer;
-        private MaterialSkin.Controls.MaterialCheckBox sync;
+        private System.Windows.Forms.Timer Timer;
+        private MaterialSkin.Controls.MaterialCheckBox SyncCheck;
         private System.Windows.Forms.ColumnHeader columnHeader4;
     }
 }
