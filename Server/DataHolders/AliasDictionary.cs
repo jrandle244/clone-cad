@@ -7,44 +7,42 @@ namespace CloneCAD.Server.DataHolders
 {
     public class AliasDictionary : Dictionary<string, string>
     {
+        private ErrorHandler Handler;
         public LocaleConfig Locale;
 
-        public AliasDictionary(LocaleConfig Locale) : base()
+        public AliasDictionary(LocaleConfig locale) : base()
         {
-            this.Locale = Locale;
+            Locale = locale;
+            Handler = new ErrorHandler(locale);
         }
 
-        public AliasDictionary(LocaleConfig Locale, string List) : base()
-        {
-            this.Locale = Locale;
+        public AliasDictionary(LocaleConfig locale, string list) : this(locale) => 
+            Load(list);
 
-            Load(List);
-        }
-
-        public void Load(string List)
+        public void Load(string list)
         {
             Clear();
 
-            foreach (string element in List.Split(',').Select(x => x.Trim()))
+            foreach (string element in list.Split(',').Select(x => x.Trim()))
             {
                 string[] vals = element.Split(':').Select(x => x.Trim()).ToArray();
 
                 if (vals.Length != 2)
-                    ServerFunctions.Error(Locale, "InvalidAlias", 1);
+                    Handler.Error("InvalidAlias", 1);
 
                 Add(vals[0], vals[1]);
             }
         }
 
-        public new string this[string IP]
+        public new string this[string ip]
         {
-            get => ContainsKey(IP) ? base[IP] : IP;
+            get => ContainsKey(ip) ? base[ip] : ip;
             set
             {
-                if (ContainsKey(IP))
-                    base[IP] = value;
+                if (ContainsKey(ip))
+                    base[ip] = value;
                 else
-                    Add(IP, value);
+                    Add(ip, value);
             }
         }
     }

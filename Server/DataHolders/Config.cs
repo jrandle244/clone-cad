@@ -13,6 +13,8 @@ namespace CloneCAD.Server.DataHolders
 
     public class Config : GenericConfig
     {
+        private ErrorHandler Handler;
+
         public int Port { get; private set; }
 
         public FilterType Filter { get; private set; }
@@ -46,16 +48,16 @@ namespace CloneCAD.Server.DataHolders
             base.Load();
 
             Locale = new LocaleConfig(base["Locale"]);
-
+            Handler = new ErrorHandler(Locale);
 
             if (!int.TryParse(base["Port"], out int port) || port < 1024 || port > 65536)
-                ServerFunctions.Error(Locale, "InvalidPort", 1);
+                Handler.Error("InvalidPort", 1, base["Port"]);
 
             Port = port;
 
 
             if (!int.TryParse(base["Filter"], out int filter) || filter < 0 || filter > 2)
-                ServerFunctions.Error(Locale, "InvalidFilterType", 1);
+                Handler.Error("InvalidFilterType", 1, base["Filter"]);
 
             Filter = (FilterType)filter;
             

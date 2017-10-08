@@ -21,7 +21,7 @@ namespace CloneCAD.Server
                 config = new Config(CONFIG_PATH);
             else
             {
-                ServerFunctions.Error("No \"" + CONFIG_PATH + "\" file exists. Check the README.md on GitHub to get a default \"" + CONFIG_PATH + "\".", 1);
+                new ErrorHandler(null).Error("No \"" + CONFIG_PATH + "\" file exists. Check the README.md on GitHub to get a default \"" + CONFIG_PATH + "\".", 1);
                 return; //Have to put this here so 'server' initialization didn't throw an error saying 'config' might not be initialized.
             }
 
