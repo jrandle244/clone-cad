@@ -62,7 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataHolders\Config.cs" />
-    <Compile Include="Functions.cs" />
+    <Compile Include="DataHolders\ErrorHandler.cs" />
     <Compile Include="Menus\CivLauncher\CivLauncher.cs">
       <SubType>Form</SubType>
     </Compile>

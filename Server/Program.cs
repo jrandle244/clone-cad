@@ -2,15 +2,7 @@
 using CloneCAD.Server.DataHolders;
 using CloneCAD.Server.DataHolders.Static;
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading;
 
 namespace CloneCAD.Server
 {
@@ -28,7 +20,7 @@ namespace CloneCAD.Server
                 config = new Config(CONFIG_PATH);
             else
             {
-                Functions.Error("No \"" + CONFIG_PATH + "\" file exists. Check the README.md on GitHub to get a default \"" + CONFIG_PATH + "\".", 1);
+                ServerFunctions.Error("No \"" + CONFIG_PATH + "\" file exists. Check the README.md on GitHub to get a default \"" + CONFIG_PATH + "\".", 1);
                 return; //Have to put this here so 'server' initialization didn't throw an error saying 'config' might not be initialized.
             }
 
@@ -44,7 +36,7 @@ namespace CloneCAD.Server
                     config = new Config(CONFIG_PATH);
                 else
                 {
-                    Functions.Error("No \"" + CONFIG_PATH + "\" file exists. Check the README.md on GitHub to get a default \"" + CONFIG_PATH + "\".", 1);
+                    ServerFunctions.Error("No \"" + CONFIG_PATH + "\" file exists. Check the README.md on GitHub to get a default \"" + CONFIG_PATH + "\".", 1);
                     return; //Have to put this here so 'server' initialization didn't throw an error saying 'config' might not be initialized.
                 }
 
@@ -53,7 +45,7 @@ namespace CloneCAD.Server
             }
             catch (Exception e)
             {
-                Functions.Error("An exception went unhandled.", e, 3);
+                ServerFunctions.Error("An exception went unhandled.", e, 3);
             }
 #endif
         }

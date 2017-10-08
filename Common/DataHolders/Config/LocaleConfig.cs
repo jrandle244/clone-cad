@@ -1,36 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace CloneCAD.Common.DataHolders
 {
     public class LocaleConfig : GenericConfig
     {
-        private readonly Dictionary<string, string> configCache;
+        private readonly Dictionary<string, string> ConfigCache;
 
         public LocaleConfig() : base()
         {
-            configCache = new Dictionary<string, string>();
+            ConfigCache = new Dictionary<string, string>();
         }
 
-        public LocaleConfig(string File) : base(File)
+        public LocaleConfig(string file) : base(file)
         {
-            configCache = new Dictionary<string, string>();
+            ConfigCache = new Dictionary<string, string>();
         }
 
-        public LocaleConfig(List<string> RequiredKeys) : base(RequiredKeys)
+        public LocaleConfig(List<string> requiredKeys) : base(requiredKeys)
         {
-            configCache = new Dictionary<string, string>();
+            ConfigCache = new Dictionary<string, string>();
         }
 
-        public LocaleConfig(List<string> RequiredKeys, string Path) : base(RequiredKeys, Path)
+        public LocaleConfig(List<string> requiredKeys, string path) : base(requiredKeys, path)
         {
-            configCache = new Dictionary<string, string>();
+            ConfigCache = new Dictionary<string, string>();
         }
 
         public new void Load()
         {
             base.Load();
-            configCache.Clear();
+            ConfigCache.Clear();
         }
 
         public new string this[string key]
@@ -38,13 +37,28 @@ namespace CloneCAD.Common.DataHolders
             get
             {
                 if (!Contains(key))
-                    return "LOCALE ERROR";
+                    return "LOCALE ERROR (" + key + ")";
 
-                if (configCache.ContainsKey(key))
-                    return configCache[key];
+                if (ConfigCache.ContainsKey(key))
+                    return ConfigCache[key];
 
-                configCache.Add(key, base[key].Replace("\\n", "\n"));
-                return configCache[key];
+                ConfigCache.Add(key, base[key].Replace("\\n", "\n"));
+                return ConfigCache[key];
+            }
+        }
+
+        public string this[string key, params object[] objs]
+        {
+            get
+            {
+                if (!Contains(key))
+                    return "LOCALE ERROR (" + key + ")";
+
+                if (ConfigCache.ContainsKey(key))
+                    return string.Format(ConfigCache[key], objs);
+
+                ConfigCache.Add(key, base[key].Replace("\\n", "\n"));
+                return string.Format(ConfigCache[key], objs);
             }
         }
     }

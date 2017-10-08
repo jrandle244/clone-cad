@@ -1,19 +1,21 @@
-﻿using System;
+﻿using System;using System.Runtime.CompilerServices;
 
 namespace CloneCAD.Common.DataHolders
 {
+    public enum TicketType { Fixit, Warning, Citation, Ticket }
+
     [Serializable]
     public class Ticket
     {
         public ushort Price { get; }
-        public string Type { get; }
+        public TicketType Type { get; }
         public string Description { get; }
 
-        public Ticket(ushort Price, string Type, string Description)
+        public Ticket(ushort price, TicketType type, string description)
         {
-            this.Price = Price;
-            this.Type = Type;
-            this.Description = Description;
+            Price = price;
+            Type = type;
+            Description = description;
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
@@ -37,9 +36,10 @@ namespace CloneCAD.Server
 
         public Server(Config config, CivilianDictionary civilians)
         {
+            Config = config;
+
             Console.Title = "CloneCAD Server";
 
-            Config = config;
             Civilians = new StorableValue<CivilianDictionary>(civilians)
             {
                 FilePath = Program.CIV_EXPORT_PATH
@@ -58,10 +58,10 @@ namespace CloneCAD.Server
             }
             catch (SocketException)
             {
-                Functions.Error(Config.Locale, "PortInUse", 1);
+                ServerFunctions.Error(Config.Locale, "PortInUse", 1, Config.Port);
             }
 
-            Log.WriteLine("Listening for connections...");
+            Config.Log.WriteLine("ServerListening");
 
             while (true)
                 ThreadPool.QueueUserWorkItem(Connect, Listener.AcceptSocket());
@@ -96,11 +96,11 @@ namespace CloneCAD.Server
 
             if (Civilians.Value.ContainsKey(civilianID))
             {
-                Log.WriteLine("Retrieved civilian (" + civilianID.ToSplitID() + ")", handler.IP, Log.Status.Succeeded);
+                Config.Log.WriteLine("RetrievedCivilian", handler.IP, Log.Status.Succeeded, civilianID.ToSplitID());
                 return Civilians.Value[civilianID];
             }
 
-            Log.WriteLine("Retrieved civilian (" + civilianID.ToSplitID() + ")", handler.IP, Log.Status.Failed);
+            Config.Log.WriteLine("RetrievedCivilian", handler.IP, Log.Status.Failed, civilianID.ToSplitID());
 
             await Task.FromResult(0);
             return null;
@@ -114,7 +114,7 @@ namespace CloneCAD.Server
             Civilian civilian = new Civilian(GetRandomID());
             Civilians.Value.Add(civilian);
 
-            Log.WriteLine("Reserved civilian (" + civilian.ID.ToSplitID() + ")", handler.IP);
+            Config.Log.WriteLine("ReservedCivilian", handler.IP, civilian);
 
             await Task.FromResult(0);
             return civilian;
@@ -133,11 +133,11 @@ namespace CloneCAD.Server
                 Ticket ticket = (Ticket)objs[1];
 
                 civilian.Tickets.Add(ticket);
-                Log.WriteLine("Ticketed civilian (" + civilian.ID.ToSplitID() + ")", handler.IP, Log.Status.Succeeded);
+                Config.Log.WriteLine("TicketedCivilian", handler.IP, Log.Status.Succeeded, civilianID.ToSplitID());
                 return true;
             }
 
-            Log.WriteLine("Ticketed civilian (" + civilianID.ToSplitID() + ")", handler.IP, Log.Status.Failed);
+            Config.Log.WriteLine("TicketedCivilian", handler.IP, Log.Status.Failed, civilianID.ToSplitID());
 
             await Task.FromResult(0);
             return false;
@@ -147,20 +147,18 @@ namespace CloneCAD.Server
         {
             if (!Config.HasPerm(handler.IP, Permission.Civ))
                 return false;
-
-            uint id = (uint)objs[0];
-
+            
             uint civilianID = (uint)objs[0];
 
             if (Civilians.Value.ContainsKey(civilianID))
             {
                 Civilians.Value.Remove(civilianID);
 
-                Log.WriteLine("Deleted civilian (" + id.ToSplitID() + ")", handler.IP, Log.Status.Succeeded);
+                Config.Log.WriteLine("DeletedCivilian", handler.IP, Log.Status.Succeeded, civilianID.ToSplitID());
                 return true;
             }
 
-            Log.WriteLine("Deleted civilian (" + id.ToSplitID() + ")", handler.IP, Log.Status.Failed);
+            Config.Log.WriteLine("DeletedCivilian", handler.IP, Log.Status.Failed, civilianID.ToSplitID());
 
             await Task.FromResult(0);
             return false;
@@ -173,20 +171,22 @@ namespace CloneCAD.Server
 
             Civilian civilian = (Civilian) objs[0];
 
-            if (Civilians.Value.ContainsKey(civilian.ID))
+            if (civilian == null)
+                Config.Log.WriteLine("UpdatedCivilian", handler.IP, Log.Status.Failed, "null Civilian");
+            else if (Civilians.Value.ContainsKey(civilian.ID))
             {
                 List<Ticket> tickets = Civilians.Value[civilian.ID].Tickets;
 
                 Civilians.Value[civilian.ID] = civilian;
                 Civilians.Value[civilian.ID].Tickets = tickets;
 
-                Log.WriteLine("Updated civilian (" + civilian.ID.ToSplitID() + ")", handler.IP, Log.Status.Succeeded);
+                Config.Log.WriteLine("UpdatedCivilian", handler.IP, Log.Status.Succeeded, civilian);
             }
             else
             {
                 Civilians.Value.Add(civilian);
 
-                Log.WriteLine("Saved civilian (" + civilian.ID.ToSplitID() + ")", handler.IP, Log.Status.Succeeded);
+                Config.Log.WriteLine("SavedCivilian", handler.IP, Log.Status.Succeeded, civilian);
             }
 
             await Task.FromResult(0);
@@ -201,11 +201,11 @@ namespace CloneCAD.Server
 
             if (Civilians.Value.ContainsPlate(plate))
             {
-                Log.WriteLine("Plate (" + plate + ") checked", handler.IP, Log.Status.Succeeded);
+                Config.Log.WriteLine("PlateChecked", handler.IP, Log.Status.Succeeded, plate);
                 return Civilians.Value.GetFromPlate(plate).ID;
             }
 
-            Log.WriteLine("Plate (" + plate + ") checked", handler.IP, Log.Status.Failed);
+            Config.Log.WriteLine("PlateChecked", handler.IP, Log.Status.Failed, plate);
 
             await Task.FromResult(0);
             return 0;
@@ -220,11 +220,11 @@ namespace CloneCAD.Server
 
             if (Civilians.Value.ContainsName(name))
             {
-                Log.WriteLine("Name (" + name + ") checked", handler.IP, Log.Status.Succeeded);
+                Config.Log.WriteLine("NameChecked", handler.IP, Log.Status.Succeeded, name);
                 return Civilians.Value[name].ID;
             }
 
-            Log.WriteLine("Name (" + name + ") checked", handler.IP, Log.Status.Failed);
+            Config.Log.WriteLine("NameChecked", handler.IP, Log.Status.Failed, name);
 
             await Task.FromResult(0);
             return 0;

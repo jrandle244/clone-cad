@@ -67,7 +67,7 @@ namespace CloneCAD.Common.DataHolders
 
             while (!reader.EndOfStream)
             {
-                string raw = reader.ReadLine();
+                string raw = reader.ReadLine()?.Trim();
 
                 if (string.IsNullOrWhiteSpace(raw) || raw.StartsWith(";"))
                     continue;

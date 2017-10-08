@@ -30,7 +30,7 @@ namespace CloneCAD.Server.DataHolders
                 string[] vals = element.Split(':').Select(x => x.Trim()).ToArray();
 
                 if (vals.Length != 2)
-                    Functions.Error(Locale, "InvalidAlias", 1);
+                    ServerFunctions.Error(Locale, "InvalidAlias", 1);
 
                 Add(vals[0], vals[1]);
             }

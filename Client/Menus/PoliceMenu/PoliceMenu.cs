@@ -17,14 +17,15 @@ namespace CloneCAD.Client.Menus
     public partial class PopoMenu : MaterialForm
     {
         private readonly Config Config;
-        private Socket S;
+        private readonly ErrorHandler Handler;
 
         public PopoMenu(Config config)
         {
             Config = config;
-            S = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            Handler = new ErrorHandler(config.Locale);
 
             InitializeComponent();
+            LoadLocale(config.Locale);
             
             SkinManager.Theme = MaterialSkinManager.Themes.LIGHT;
             SkinManager.ColorScheme = new ColorScheme(Primary.LightBlue500, Primary.LightBlue900, Primary.LightBlue300, Accent.Blue700, TextShade.WHITE);
@@ -32,41 +33,42 @@ namespace CloneCAD.Client.Menus
 
         private void SendTicket(uint id, Ticket ticket)
         {
+            Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
             try
             {
-                S.Connect(Config.IP, Config.Port);
+                s.Connect(Config.IP, Config.Port);
             }
             catch
             {
-                if (MessageBox.Show("Couldn't connect to the server to give the client the ticket.", "CloneCAD", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error) == DialogResult.Retry)
+                if (MessageBox.Show(Config.Locale["CouldntConnectMsg"], @"CloneCAD", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error) == DialogResult.Retry)
                     SendTicket(id, ticket);
 
                 return;
             }
 
-            NetRequestHandler handler = new NetRequestHandler(S);
+            NetRequestHandler handler = new NetRequestHandler(s);
 
             Tuple<NetRequestResult, bool> tryGetResult = handler.TryTriggerNetFunction<bool>("TicketCivilian", id, ticket).GetAwaiter().GetResult();
 
-            S.Shutdown(SocketShutdown.Both);
-            S.Close();
-            S = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            s.Shutdown(SocketShutdown.Both);
+            s.Close();
 
-            Functions.GetFailTest(tryGetResult.Item1);
+            Handler.GetFailTest(tryGetResult.Item1);
 
             if (tryGetResult.Item2)
-                MessageBox.Show("The civilian has been given the ticket.", "CloneCAD", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(Config.Locale["TicketGivenMsg"], @"CloneCAD", MessageBoxButtons.OK, MessageBoxIcon.Information);
             else
-                MessageBox.Show("The civilian was not found.", "CloneCAD", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Handler.Error("TicketEmptyMsg");
         }
 
-        private void ID_KeyPress(object sender, KeyPressEventArgs e)
+        private void IDBox_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && e.KeyChar != '-')
                 e.Handled = true;
         }
 
-        private void Price_KeyPress(object sender, KeyPressEventArgs e)
+        private void PriceBox_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
                 e.Handled = true;
@@ -74,12 +76,13 @@ namespace CloneCAD.Client.Menus
 
         private Ticket PrepTicket()
         {
-            string type = FixItMode.Checked ? "Fix-it" : "";
-            type = WarningMode.Checked ? "Warning" : type;
-            type = CitationMode.Checked ? "Citation" : type;
-            type = TicketMode.Checked ? "Ticket" : type;
+            TicketType type = default(TicketType);
+            type = FixItRadial.Checked ? TicketType.Fixit : type;
+            type = WarningRadial.Checked ? TicketType.Warning : type;
+            type = CitationRadial.Checked ? TicketType.Citation : type;
+            type = TicketRadial.Checked ? TicketType.Ticket : type;
 
-            return new Ticket(ushort.Parse(Price.Text), type, Context.Text);
+            return new Ticket(ushort.Parse(PriceBox.Text), type, DescriptionBox.Text);
         }
 
         private new void KeyDown(object sender, KeyEventArgs e)
@@ -87,23 +90,40 @@ namespace CloneCAD.Client.Menus
             if (e.KeyCode == Keys.Enter)
                 ThreadPool.QueueUserWorkItem(x =>
                 {
-                    if (uint.TryParse(ID.Text, out uint parsedID))
+                    if (!IDBox.Text.TryToRawID(out uint parsedID))
                     {
-                        try
-                        {
-                            parsedID = ID.Text.ToRawID();
-                        }
-                        catch
-                        {
-                            MessageBox.Show("ID was unable to be converted to an unsigned integer.", "CloneCAD");
-                        }
+                        Handler.Error("UnableToConvertIDMsg");
+                        return;
                     }
 
                     SendTicket(parsedID, PrepTicket());
                 });
         }
 
-        private void GiveTicket_Click(object sender, EventArgs e) =>
-            ThreadPool.QueueUserWorkItem(x => SendTicket(uint.Parse(ID.Text), PrepTicket()));
+        private void GiveTicketBtn_Click(object sender, EventArgs e) =>
+            ThreadPool.QueueUserWorkItem(x =>
+            {
+                if (!IDBox.Text.TryToRawID(out uint parsedID))
+                {
+                    Handler.Error("UnableToConvertIDMsg");
+                    return;
+                }
+
+                SendTicket(parsedID, PrepTicket());
+            });
+
+        private void LoadLocale(LocaleConfig locale)
+        {
+            Text = locale["PoliceText"];
+
+            FixItRadial.Text = locale["FixItTicket"];
+            WarningRadial.Text = locale["WarningTicket"];
+            CitationRadial.Text = locale["CitationTicket"];
+            TicketRadial.Text = locale["TicketTicket"];
+
+            IDBox.Hint = locale["CivilianIDHint"];
+            PriceBox.Hint = locale["TicketPriceHint"];
+            DescriptionBox.Hint = locale["TicketDescriptionHint"];
+        }
     }
 }

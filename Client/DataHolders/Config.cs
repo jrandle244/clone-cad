@@ -30,7 +30,7 @@ namespace CloneCAD.Client.DataHolders
 
             if (!Contains("Locale"))
             {
-                MessageBox.Show("There is no locale value. You must set it to something.", "CloneCAD", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(@"There is no locale value. You must set it to something.", @"CloneCAD", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Environment.Exit(1);
             }
 
@@ -38,13 +38,13 @@ namespace CloneCAD.Client.DataHolders
 
             if (this["IP"] == "changeme")
             {
-                MessageBox.Show(Locale["ChangeMeIP"], "CloneCAD", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(Locale["ChangeMeIP"], @"CloneCAD", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Environment.Exit(1);
             }
 
             if (!int.TryParse(this["Port"], out int port) || port < 1024 || port > 65536)
             {
-                MessageBox.Show(Locale["InvalidPort"], "CloneCAD", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(Locale["InvalidPort"], @"CloneCAD", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Environment.Exit(1);
             }
             else

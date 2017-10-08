@@ -29,170 +29,170 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PopoMenu));
-            this.Price = new MaterialSkin.Controls.MaterialSingleLineTextField();
-            this.Context = new MaterialSkin.Controls.MaterialSingleLineTextField();
-            this.ID = new MaterialSkin.Controls.MaterialSingleLineTextField();
-            this.WarningMode = new MaterialSkin.Controls.MaterialRadioButton();
-            this.TicketMode = new MaterialSkin.Controls.MaterialRadioButton();
-            this.CitationMode = new MaterialSkin.Controls.MaterialRadioButton();
-            this.FixItMode = new MaterialSkin.Controls.MaterialRadioButton();
-            this.GiveTicket = new MaterialSkin.Controls.MaterialRaisedButton();
+            this.PriceBox = new MaterialSkin.Controls.MaterialSingleLineTextField();
+            this.DescriptionBox = new MaterialSkin.Controls.MaterialSingleLineTextField();
+            this.IDBox = new MaterialSkin.Controls.MaterialSingleLineTextField();
+            this.WarningRadial = new MaterialSkin.Controls.MaterialRadioButton();
+            this.TicketRadial = new MaterialSkin.Controls.MaterialRadioButton();
+            this.CitationRadial = new MaterialSkin.Controls.MaterialRadioButton();
+            this.FixItRadial = new MaterialSkin.Controls.MaterialRadioButton();
+            this.GiveTicketBtn = new MaterialSkin.Controls.MaterialRaisedButton();
             this.SuspendLayout();
             // 
-            // Price
+            // PriceBox
             // 
-            this.Price.Depth = 0;
-            this.Price.Hint = "Ticket price";
-            this.Price.Location = new System.Drawing.Point(128, 154);
-            this.Price.MaxLength = 4;
-            this.Price.MouseState = MaterialSkin.MouseState.HOVER;
-            this.Price.Name = "Price";
-            this.Price.PasswordChar = '\0';
-            this.Price.SelectedText = "";
-            this.Price.SelectionLength = 0;
-            this.Price.SelectionStart = 0;
-            this.Price.Size = new System.Drawing.Size(110, 23);
-            this.Price.TabIndex = 1;
-            this.Price.TabStop = false;
-            this.Price.UseSystemPasswordChar = false;
-            this.Price.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyDown);
-            this.Price.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Price_KeyPress);
+            this.PriceBox.Depth = 0;
+            this.PriceBox.Hint = "Ticket price";
+            this.PriceBox.Location = new System.Drawing.Point(128, 154);
+            this.PriceBox.MaxLength = 4;
+            this.PriceBox.MouseState = MaterialSkin.MouseState.HOVER;
+            this.PriceBox.Name = "PriceBox";
+            this.PriceBox.PasswordChar = '\0';
+            this.PriceBox.SelectedText = "";
+            this.PriceBox.SelectionLength = 0;
+            this.PriceBox.SelectionStart = 0;
+            this.PriceBox.Size = new System.Drawing.Size(110, 23);
+            this.PriceBox.TabIndex = 1;
+            this.PriceBox.TabStop = false;
+            this.PriceBox.UseSystemPasswordChar = false;
+            this.PriceBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyDown);
+            this.PriceBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.PriceBox_KeyPress);
             // 
-            // Context
+            // DescriptionBox
             // 
-            this.Context.Depth = 0;
-            this.Context.Hint = "Ticket description";
-            this.Context.Location = new System.Drawing.Point(12, 183);
-            this.Context.MaxLength = 30;
-            this.Context.MouseState = MaterialSkin.MouseState.HOVER;
-            this.Context.Name = "Context";
-            this.Context.PasswordChar = '\0';
-            this.Context.SelectedText = "";
-            this.Context.SelectionLength = 0;
-            this.Context.SelectionStart = 0;
-            this.Context.Size = new System.Drawing.Size(226, 23);
-            this.Context.TabIndex = 2;
-            this.Context.TabStop = false;
-            this.Context.UseSystemPasswordChar = false;
-            this.Context.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyDown);
+            this.DescriptionBox.Depth = 0;
+            this.DescriptionBox.Hint = "Ticket description";
+            this.DescriptionBox.Location = new System.Drawing.Point(12, 183);
+            this.DescriptionBox.MaxLength = 30;
+            this.DescriptionBox.MouseState = MaterialSkin.MouseState.HOVER;
+            this.DescriptionBox.Name = "DescriptionBox";
+            this.DescriptionBox.PasswordChar = '\0';
+            this.DescriptionBox.SelectedText = "";
+            this.DescriptionBox.SelectionLength = 0;
+            this.DescriptionBox.SelectionStart = 0;
+            this.DescriptionBox.Size = new System.Drawing.Size(226, 23);
+            this.DescriptionBox.TabIndex = 2;
+            this.DescriptionBox.TabStop = false;
+            this.DescriptionBox.UseSystemPasswordChar = false;
+            this.DescriptionBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyDown);
             // 
-            // ID
+            // IDBox
             // 
-            this.ID.Depth = 0;
-            this.ID.Hint = "Civilian ID";
-            this.ID.Location = new System.Drawing.Point(12, 154);
-            this.ID.MaxLength = 11;
-            this.ID.MouseState = MaterialSkin.MouseState.HOVER;
-            this.ID.Name = "ID";
-            this.ID.PasswordChar = '\0';
-            this.ID.SelectedText = "";
-            this.ID.SelectionLength = 0;
-            this.ID.SelectionStart = 0;
-            this.ID.Size = new System.Drawing.Size(110, 23);
-            this.ID.TabIndex = 0;
-            this.ID.TabStop = false;
-            this.ID.UseSystemPasswordChar = false;
-            this.ID.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyDown);
-            this.ID.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ID_KeyPress);
+            this.IDBox.Depth = 0;
+            this.IDBox.Hint = "Civilian ID";
+            this.IDBox.Location = new System.Drawing.Point(12, 154);
+            this.IDBox.MaxLength = 11;
+            this.IDBox.MouseState = MaterialSkin.MouseState.HOVER;
+            this.IDBox.Name = "IDBox";
+            this.IDBox.PasswordChar = '\0';
+            this.IDBox.SelectedText = "";
+            this.IDBox.SelectionLength = 0;
+            this.IDBox.SelectionStart = 0;
+            this.IDBox.Size = new System.Drawing.Size(110, 23);
+            this.IDBox.TabIndex = 0;
+            this.IDBox.TabStop = false;
+            this.IDBox.UseSystemPasswordChar = false;
+            this.IDBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyDown);
+            this.IDBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.IDBox_KeyPress);
             // 
-            // WarningMode
+            // WarningRadial
             // 
-            this.WarningMode.AutoSize = true;
-            this.WarningMode.Checked = true;
-            this.WarningMode.Depth = 0;
-            this.WarningMode.Font = new System.Drawing.Font("Roboto", 10F);
-            this.WarningMode.Location = new System.Drawing.Point(9, 74);
-            this.WarningMode.Margin = new System.Windows.Forms.Padding(0);
-            this.WarningMode.MouseLocation = new System.Drawing.Point(-1, -1);
-            this.WarningMode.MouseState = MaterialSkin.MouseState.HOVER;
-            this.WarningMode.Name = "WarningMode";
-            this.WarningMode.Ripple = true;
-            this.WarningMode.Size = new System.Drawing.Size(80, 30);
-            this.WarningMode.TabIndex = 3;
-            this.WarningMode.TabStop = true;
-            this.WarningMode.Text = "Warning";
-            this.WarningMode.UseVisualStyleBackColor = true;
+            this.WarningRadial.AutoSize = true;
+            this.WarningRadial.Checked = true;
+            this.WarningRadial.Depth = 0;
+            this.WarningRadial.Font = new System.Drawing.Font("Roboto", 10F);
+            this.WarningRadial.Location = new System.Drawing.Point(9, 74);
+            this.WarningRadial.Margin = new System.Windows.Forms.Padding(0);
+            this.WarningRadial.MouseLocation = new System.Drawing.Point(-1, -1);
+            this.WarningRadial.MouseState = MaterialSkin.MouseState.HOVER;
+            this.WarningRadial.Name = "WarningRadial";
+            this.WarningRadial.Ripple = true;
+            this.WarningRadial.Size = new System.Drawing.Size(80, 30);
+            this.WarningRadial.TabIndex = 3;
+            this.WarningRadial.TabStop = true;
+            this.WarningRadial.Text = "Warning";
+            this.WarningRadial.UseVisualStyleBackColor = true;
             // 
-            // TicketMode
+            // TicketRadial
             // 
-            this.TicketMode.AutoSize = true;
-            this.TicketMode.Depth = 0;
-            this.TicketMode.Font = new System.Drawing.Font("Roboto", 10F);
-            this.TicketMode.Location = new System.Drawing.Point(164, 104);
-            this.TicketMode.Margin = new System.Windows.Forms.Padding(0);
-            this.TicketMode.MouseLocation = new System.Drawing.Point(-1, -1);
-            this.TicketMode.MouseState = MaterialSkin.MouseState.HOVER;
-            this.TicketMode.Name = "TicketMode";
-            this.TicketMode.Ripple = true;
-            this.TicketMode.Size = new System.Drawing.Size(67, 30);
-            this.TicketMode.TabIndex = 4;
-            this.TicketMode.Text = "Ticket";
-            this.TicketMode.UseVisualStyleBackColor = true;
+            this.TicketRadial.AutoSize = true;
+            this.TicketRadial.Depth = 0;
+            this.TicketRadial.Font = new System.Drawing.Font("Roboto", 10F);
+            this.TicketRadial.Location = new System.Drawing.Point(164, 104);
+            this.TicketRadial.Margin = new System.Windows.Forms.Padding(0);
+            this.TicketRadial.MouseLocation = new System.Drawing.Point(-1, -1);
+            this.TicketRadial.MouseState = MaterialSkin.MouseState.HOVER;
+            this.TicketRadial.Name = "TicketRadial";
+            this.TicketRadial.Ripple = true;
+            this.TicketRadial.Size = new System.Drawing.Size(67, 30);
+            this.TicketRadial.TabIndex = 4;
+            this.TicketRadial.Text = "Ticket";
+            this.TicketRadial.UseVisualStyleBackColor = true;
             // 
-            // CitationMode
+            // CitationRadial
             // 
-            this.CitationMode.AutoSize = true;
-            this.CitationMode.Depth = 0;
-            this.CitationMode.Font = new System.Drawing.Font("Roboto", 10F);
-            this.CitationMode.Location = new System.Drawing.Point(164, 74);
-            this.CitationMode.Margin = new System.Windows.Forms.Padding(0);
-            this.CitationMode.MouseLocation = new System.Drawing.Point(-1, -1);
-            this.CitationMode.MouseState = MaterialSkin.MouseState.HOVER;
-            this.CitationMode.Name = "CitationMode";
-            this.CitationMode.Ripple = true;
-            this.CitationMode.Size = new System.Drawing.Size(77, 30);
-            this.CitationMode.TabIndex = 5;
-            this.CitationMode.Text = "Citation";
-            this.CitationMode.UseVisualStyleBackColor = true;
+            this.CitationRadial.AutoSize = true;
+            this.CitationRadial.Depth = 0;
+            this.CitationRadial.Font = new System.Drawing.Font("Roboto", 10F);
+            this.CitationRadial.Location = new System.Drawing.Point(164, 74);
+            this.CitationRadial.Margin = new System.Windows.Forms.Padding(0);
+            this.CitationRadial.MouseLocation = new System.Drawing.Point(-1, -1);
+            this.CitationRadial.MouseState = MaterialSkin.MouseState.HOVER;
+            this.CitationRadial.Name = "CitationRadial";
+            this.CitationRadial.Ripple = true;
+            this.CitationRadial.Size = new System.Drawing.Size(77, 30);
+            this.CitationRadial.TabIndex = 5;
+            this.CitationRadial.Text = "Citation";
+            this.CitationRadial.UseVisualStyleBackColor = true;
             // 
-            // FixItMode
+            // FixItRadial
             // 
-            this.FixItMode.AutoSize = true;
-            this.FixItMode.Depth = 0;
-            this.FixItMode.Font = new System.Drawing.Font("Roboto", 10F);
-            this.FixItMode.Location = new System.Drawing.Point(9, 104);
-            this.FixItMode.Margin = new System.Windows.Forms.Padding(0);
-            this.FixItMode.MouseLocation = new System.Drawing.Point(-1, -1);
-            this.FixItMode.MouseState = MaterialSkin.MouseState.HOVER;
-            this.FixItMode.Name = "FixItMode";
-            this.FixItMode.Ripple = true;
-            this.FixItMode.Size = new System.Drawing.Size(59, 30);
-            this.FixItMode.TabIndex = 6;
-            this.FixItMode.Text = "Fix-it";
-            this.FixItMode.UseVisualStyleBackColor = true;
+            this.FixItRadial.AutoSize = true;
+            this.FixItRadial.Depth = 0;
+            this.FixItRadial.Font = new System.Drawing.Font("Roboto", 10F);
+            this.FixItRadial.Location = new System.Drawing.Point(9, 104);
+            this.FixItRadial.Margin = new System.Windows.Forms.Padding(0);
+            this.FixItRadial.MouseLocation = new System.Drawing.Point(-1, -1);
+            this.FixItRadial.MouseState = MaterialSkin.MouseState.HOVER;
+            this.FixItRadial.Name = "FixItRadial";
+            this.FixItRadial.Ripple = true;
+            this.FixItRadial.Size = new System.Drawing.Size(59, 30);
+            this.FixItRadial.TabIndex = 6;
+            this.FixItRadial.Text = "Fix-it";
+            this.FixItRadial.UseVisualStyleBackColor = true;
             // 
-            // GiveTicket
+            // GiveTicketBtn
             // 
-            this.GiveTicket.AutoSize = true;
-            this.GiveTicket.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.GiveTicket.Depth = 0;
-            this.GiveTicket.Icon = null;
-            this.GiveTicket.Location = new System.Drawing.Point(12, 212);
-            this.GiveTicket.MouseState = MaterialSkin.MouseState.HOVER;
-            this.GiveTicket.Name = "GiveTicket";
-            this.GiveTicket.Primary = true;
-            this.GiveTicket.Size = new System.Drawing.Size(100, 36);
-            this.GiveTicket.TabIndex = 7;
-            this.GiveTicket.Text = "Give ticket";
-            this.GiveTicket.UseVisualStyleBackColor = true;
-            this.GiveTicket.Click += new System.EventHandler(this.GiveTicket_Click);
+            this.GiveTicketBtn.AutoSize = true;
+            this.GiveTicketBtn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.GiveTicketBtn.Depth = 0;
+            this.GiveTicketBtn.Icon = null;
+            this.GiveTicketBtn.Location = new System.Drawing.Point(12, 212);
+            this.GiveTicketBtn.MouseState = MaterialSkin.MouseState.HOVER;
+            this.GiveTicketBtn.Name = "GiveTicketBtn";
+            this.GiveTicketBtn.Primary = true;
+            this.GiveTicketBtn.Size = new System.Drawing.Size(100, 36);
+            this.GiveTicketBtn.TabIndex = 7;
+            this.GiveTicketBtn.Text = "Give ticket";
+            this.GiveTicketBtn.UseVisualStyleBackColor = true;
+            this.GiveTicketBtn.Click += new System.EventHandler(this.GiveTicketBtn_Click);
             // 
             // PopoMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(250, 260);
-            this.Controls.Add(this.GiveTicket);
-            this.Controls.Add(this.FixItMode);
-            this.Controls.Add(this.CitationMode);
-            this.Controls.Add(this.TicketMode);
-            this.Controls.Add(this.WarningMode);
-            this.Controls.Add(this.ID);
-            this.Controls.Add(this.Context);
-            this.Controls.Add(this.Price);
+            this.Controls.Add(this.GiveTicketBtn);
+            this.Controls.Add(this.FixItRadial);
+            this.Controls.Add(this.CitationRadial);
+            this.Controls.Add(this.TicketRadial);
+            this.Controls.Add(this.WarningRadial);
+            this.Controls.Add(this.IDBox);
+            this.Controls.Add(this.DescriptionBox);
+            this.Controls.Add(this.PriceBox);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.Name = "PoliceMenu";
+            this.Name = "PopoMenu";
             this.Text = "Police";
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -201,13 +201,13 @@
 
         #endregion
 
-        private MaterialSkin.Controls.MaterialSingleLineTextField Price;
-        private MaterialSkin.Controls.MaterialSingleLineTextField Context;
-        private MaterialSkin.Controls.MaterialSingleLineTextField ID;
-        private MaterialSkin.Controls.MaterialRadioButton WarningMode;
-        private MaterialSkin.Controls.MaterialRadioButton TicketMode;
-        private MaterialSkin.Controls.MaterialRadioButton CitationMode;
-        private MaterialSkin.Controls.MaterialRadioButton FixItMode;
-        private MaterialSkin.Controls.MaterialRaisedButton GiveTicket;
+        private MaterialSkin.Controls.MaterialSingleLineTextField PriceBox;
+        private MaterialSkin.Controls.MaterialSingleLineTextField DescriptionBox;
+        private MaterialSkin.Controls.MaterialSingleLineTextField IDBox;
+        private MaterialSkin.Controls.MaterialRadioButton WarningRadial;
+        private MaterialSkin.Controls.MaterialRadioButton TicketRadial;
+        private MaterialSkin.Controls.MaterialRadioButton CitationRadial;
+        private MaterialSkin.Controls.MaterialRadioButton FixItRadial;
+        private MaterialSkin.Controls.MaterialRaisedButton GiveTicketBtn;
     }
 }

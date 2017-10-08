@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Windows.Forms;
 using CloneCAD.Common;
+using CloneCAD.Common.DataHolders;
 using CloneCAD.Common.NetCode;
 
 #pragma warning disable IDE1006
@@ -16,20 +17,21 @@ namespace CloneCAD.Client.Menus
     public partial class DispatchMenu : MaterialForm
     {
         private readonly Config Config;
-        private Socket S;
+        private readonly ErrorHandler Handler;
 
         public DispatchMenu(Config config)
         {
             Config = config;
-            S = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            Handler = new ErrorHandler(config.Locale);
 
             InitializeComponent();
+            LoadLocale(config.Locale);
 
             SkinManager.Theme = MaterialSkinManager.Themes.LIGHT;
             SkinManager.ColorScheme = new ColorScheme(Primary.Red700, Primary.Red500, Primary.Red900, Accent.Red100, TextShade.WHITE);
         }
 
-        private void launch_Click(object sender, EventArgs ev) =>
+        private void LaunchBtn_Click(object sender, EventArgs ev) =>
             ThreadPool.QueueUserWorkItem(x => Launch(IDBox.Text, NameBox.Text, PlateBox.Text));
 
         private void Launch(string id, string name, string plate)
@@ -38,33 +40,34 @@ namespace CloneCAD.Client.Menus
 
             if (string.IsNullOrWhiteSpace(id))
             {
+                Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
                 try
                 {
-                    S.Connect(Config.IP, Config.Port);
+                    s.Connect(Config.IP, Config.Port);
                 }
                 catch (SocketException)
                 {
-                    if (MessageBox.Show("Couldn't connect to the server to get the civilian ID.", "CloneCAD",
+                    if (MessageBox.Show(Config.Locale["CouldntConnectMsg"], @"CloneCAD",
                             MessageBoxButtons.RetryCancel, MessageBoxIcon.Error) == DialogResult.Retry)
                         Launch(id, name, plate);
 
                     return;
                 }
 
-                NetRequestHandler handler = new NetRequestHandler(S);
+                NetRequestHandler handler = new NetRequestHandler(s);
 
                 if (!string.IsNullOrWhiteSpace(plate))
                 {
                     Tuple<NetRequestResult, uint> tryGetResult =
                         handler.TryTriggerNetFunction<uint>("CheckPlate", plate).GetAwaiter().GetResult();
 
-                    S.Shutdown(SocketShutdown.Both);
-                    S.Close();
-                    S = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                    s.Shutdown(SocketShutdown.Both);
+                    s.Close();
 
-                    Functions.GetFailTest(tryGetResult.Item1);
+                    Handler.GetFailTest(tryGetResult.Item1);
 
-                    if (tryGetResult.Item2 == 0 && MessageBox.Show("Plate was not able to be found.", "CloneCAD",
+                    if (tryGetResult.Item2 == 0 && MessageBox.Show(Config.Locale["PlateCheckEmptyMsg"], @"CloneCAD",
                             MessageBoxButtons.RetryCancel, MessageBoxIcon.Information,
                             MessageBoxDefaultButton.Button2) == DialogResult.Retry)
                     {
@@ -79,13 +82,12 @@ namespace CloneCAD.Client.Menus
                     Tuple<NetRequestResult, uint> tryGetResult = handler.TryTriggerNetFunction<uint>("CheckName", plate)
                         .GetAwaiter().GetResult();
 
-                    S.Shutdown(SocketShutdown.Both);
-                    S.Close();
-                    S = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                    s.Shutdown(SocketShutdown.Both);
+                    s.Close();
 
-                    Functions.GetFailTest(tryGetResult.Item1);
+                    Handler.GetFailTest(tryGetResult.Item1);
 
-                    if (tryGetResult.Item2 == 0 && MessageBox.Show("Name was not able to be found.", "CloneCAD",
+                    if (tryGetResult.Item2 == 0 && MessageBox.Show(Config.Locale["NameCheckEmptyMsg"], @"CloneCAD",
                             MessageBoxButtons.RetryCancel, MessageBoxIcon.Information,
                             MessageBoxDefaultButton.Button2) ==
                         DialogResult.Retry)
@@ -97,20 +99,11 @@ namespace CloneCAD.Client.Menus
                     receivedID = tryGetResult.Item2;
                 }
             }
-            else
-            {
-                if (!uint.TryParse(IDBox.Text, out receivedID))
+            else if (!IDBox.Text.TryToRawID(out receivedID))
                 {
-                    try
-                    {
-                        receivedID = IDBox.Text.ToRawID();
-                    }
-                    catch
-                    {
-                        MessageBox.Show("ID was unable to be converted to an unsigned integer.", "CloneCAD");
-                    }
+                    Handler.Error("UnableToConvertIDMsg");
+                    return;
                 }
-            }
 
             Invoke((MethodInvoker)delegate
             {
@@ -164,6 +157,17 @@ namespace CloneCAD.Client.Menus
                 IDBox.Text = "";
                 PlateBox.Text = "";
             }
+        }
+
+        private void LoadLocale(LocaleConfig locale)
+        {
+            Text = locale["DispatchText"];
+
+            IDBox.Hint = locale["CivilianIDHint"];
+            PlateBox.Hint = locale["LicensePlateHint"];
+            NameBox.Hint = locale["FullNameHint"];
+
+            LaunchBtn.Text = locale["ViewCivilianButton"];
         }
     }
 }

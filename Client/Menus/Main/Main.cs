@@ -17,13 +17,14 @@ namespace CloneCAD.Client.Menus
         private readonly ColorScheme Scheme;
         private readonly MaterialSkinManager.Themes Theme;
 
-        public Main()
+        public Main(Config config)
         {
-            Config = new Config("settings.ini");
+            Config = config;
             Scheme = SkinManager.ColorScheme;
             Theme = SkinManager.Theme;
 
             InitializeComponent();
+            LoadLocale(config.Locale);
         }
 
         private void Launch_Click(object sender, EventArgs e)
@@ -97,6 +98,19 @@ namespace CloneCAD.Client.Menus
 
                 dispatchMenu.Show();
             }
+        }
+
+        private void LoadLocale(LocaleConfig locale)
+        {
+            Text = locale["MainMenuText"];
+
+            LaunchBtn.Text = locale["LaunchButton"];
+
+            CloseCheckbox.Text = locale["CloseOnLaunchCheckbox"];
+
+            CivilianRadial.Text = locale["CivilianSelectorText"];
+            PoliceRadial.Text = locale["PoliceText"];
+            DispatchRadial.Text = locale["DispatchText"];
         }
     }
 }

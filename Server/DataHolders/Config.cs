@@ -49,13 +49,13 @@ namespace CloneCAD.Server.DataHolders
 
 
             if (!int.TryParse(base["Port"], out int port) || port < 1024 || port > 65536)
-                Functions.Error(Locale, "InvalidPort", 1);
+                ServerFunctions.Error(Locale, "InvalidPort", 1);
 
             Port = port;
 
 
             if (!int.TryParse(base["Filter"], out int filter) || filter < 0 || filter > 2)
-                Functions.Error(Locale, "InvalidFilterType", 1);
+                ServerFunctions.Error(Locale, "InvalidFilterType", 1);
 
             Filter = (FilterType)filter;
             

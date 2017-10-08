@@ -18,16 +18,17 @@ namespace CloneCAD.Client.Menus
     public partial class CivLauncher : MaterialForm
     {
         private readonly Config Config;
-        private Socket S;
+        private readonly ErrorHandler Handler;
         
         public CivilianDictionary Civilians { get; set; }
 
         public CivLauncher(Config config)
         {
             Config = config;
-            S = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            Handler = new ErrorHandler(config.Locale);
 
             InitializeComponent();
+            LoadLocale(config.Locale);
             Civilians = new CivilianDictionary();
 
             SkinManager.Theme = MaterialSkinManager.Themes.LIGHT;
@@ -36,9 +37,11 @@ namespace CloneCAD.Client.Menus
 
         private bool RefreshCiv(uint id, out Civilian civ)
         {
+            Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
             try
             {
-                S.Connect(Config.IP, Config.Port);
+                s.Connect(Config.IP, Config.Port);
             }
             catch (SocketException)
             {
@@ -46,15 +49,14 @@ namespace CloneCAD.Client.Menus
                 return false;
             }
 
-            NetRequestHandler handler = new NetRequestHandler(S);
+            NetRequestHandler handler = new NetRequestHandler(s);
 
             Tuple<NetRequestResult, Civilian> tryTriggerResult = handler.TryTriggerNetFunction<Civilian>("GetCivilian", id).GetAwaiter().GetResult();
 
-            S.Shutdown(SocketShutdown.Both);
-            S.Close();
-            S = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            s.Shutdown(SocketShutdown.Both);
+            s.Close();
 
-            Functions.GetFailTest(tryTriggerResult.Item1);
+            Handler.GetFailTest(tryTriggerResult.Item1);
 
             civ = tryTriggerResult.Item2;
             return true;
@@ -140,32 +142,48 @@ namespace CloneCAD.Client.Menus
             if (civs.SelectedItems.Count == 0)
                 return;
 
+            Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
             try
             {
-                S.Connect(Config.IP, Config.Port);
+                s.Connect(Config.IP, Config.Port);
             }
             catch (SocketException)
             {
+                if (MessageBox.Show(Config.Locale["CouldntConnectMsg"], @"CloneCAD",
+                        MessageBoxButtons.RetryCancel, MessageBoxIcon.Error) == DialogResult.Retry)
+                    Delete_Click(sender, ev);
+
                 return;
             }
 
-            NetRequestHandler handler = new NetRequestHandler(S);
+            NetRequestHandler handler = new NetRequestHandler(s);
 
             Tuple<NetRequestResult, bool> tryTriggerResult = handler.TryTriggerNetFunction<bool>("DeleteCivilian", civs.SelectedItems[0].SubItems[0].Text.ToRawID()).GetAwaiter().GetResult();
 
-            S.Shutdown(SocketShutdown.Both);
-            S.Close();
-            S = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            s.Shutdown(SocketShutdown.Both);
+            s.Close();
             
-            Functions.GetFailTest(tryTriggerResult.Item1);
+            Handler.GetFailTest(tryTriggerResult.Item1);
 
             if (tryTriggerResult.Item2)
                 Sync(Civilians.Select(x => x.Key).ToArray());
             else
-                MessageBox.Show("Your civilian was not able to be deleted. This is most likely an error in reserving civs.", "CloneCAD", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Handler.Error(Config.Locale["CivilianNotDeletedMsg"]);
 
             Civilians.Remove(uint.Parse(civs.SelectedItems[0].SubItems[0].Text));
             civs.Items.RemoveAt(civs.SelectedItems[0].Index);
+        }
+
+        private void LoadLocale(LocaleConfig locale)
+        {
+            Text = locale["CivilianSelectorText"];
+
+            columnHeader1.Text = locale["IDColumn"];
+            columnHeader2.Text = locale["NameColumn"];
+
+            create.Text = locale["CreateButton"];
+            delete.Text = locale["DeleteButton"];
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using CloneCAD.Common.DataHolders;
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 
 namespace CloneCAD.Server.DataHolders
@@ -10,57 +9,59 @@ namespace CloneCAD.Server.DataHolders
     {
         public enum Status { Succeeded, Failed }
 
-        private static StreamWriter writer;
+        private readonly StreamWriter Writer;
 
-        public static AliasDictionary Aliases { get; set; }
+        public AliasDictionary Aliases { get; set; }
+        public LocaleConfig Locale { get; set; }
 
-        public Log(string FileName, LocaleConfig Locale, AliasDictionary _Aliases)
+        public Log(string fileName, LocaleConfig locale, AliasDictionary aliases)
         {
-            Aliases = _Aliases;
+            Aliases = aliases;
+            Locale = locale;
 
             try
             {
-                writer = new StreamWriter(FileName)
+                Writer = new StreamWriter(fileName)
                 {
                     AutoFlush = true
                 };
             }
             catch (IOException)
             {
-                Functions.Error(Locale, "LogFileInUse", 1);
+                ServerFunctions.Error(locale, "LogFileInUse", 1);
             }
         }
 
-        public static void WriteLine(string text)
+        public void WriteLine(string text)
         {
-            string formatted = "[" + DateTime.Now + "]: " + text + (text.EndsWith(".") ? "" : ".");
+            string formatted = "[" + DateTime.Now + "]: " + Locale[text];
 
             Console.WriteLine(formatted);
-            writer.WriteLine(formatted);
+            Writer.WriteLine(formatted);
         }
 
-        public static void WriteLine(string text, Status status)
+        public void WriteLine(string text, Status status, params object[] objs)
         {
-            string formatted = "[" + DateTime.Now + "]: " + (text.EndsWith(".") ? text.Substring(0, text.Length - 1) : text) + " [" + status + "].";
+            string formatted = "[" + DateTime.Now + "]: " + Locale[text, objs] + " [" + (status == Status.Succeeded ? Locale["SucceededStatus"] : Locale["FailedStatus"]) + "]";
 
             Console.WriteLine(formatted);
-            writer.WriteLine(formatted);
+            Writer.WriteLine(formatted);
         }
 
-        public static void WriteLine(string text, string ip)
+        public void WriteLine(string text, string ip, params object[] objs)
         {
-            string formatted = "[" + DateTime.Now + "] [" + Aliases[ip] + "]: " + text + (text.EndsWith(".") ? "" : ".");
+            string formatted = "[" + DateTime.Now + "] [" + Aliases[ip] + "]: " + Locale[text, objs];
 
             Console.WriteLine(formatted);
-            writer.WriteLine(formatted);
+            Writer.WriteLine(formatted);
         }
 
-        public static void WriteLine(string text, string ip, Status status)
+        public void WriteLine(string text, string ip, Status status, params object[] objs)
         {
-            string formatted = "[" + DateTime.Now + "] [" + Aliases[ip] + "]: " + (text.EndsWith(".") ? text.Substring(0, text.Length - 1) : text) + " [" + status + "].";
+            string formatted = "[" + DateTime.Now + "] [" + Aliases[ip] + "]: " + Locale[text, objs] + " [" + (status == Status.Succeeded ? Locale["SucceededStatus"] : Locale["FailedStatus"]) + "]";
 
             Console.WriteLine(formatted);
-            writer.WriteLine(formatted);
+            Writer.WriteLine(formatted);
         }
     }
 }

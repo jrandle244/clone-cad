@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Windows.Forms;
-using CloneCAD.Client;
+using CloneCAD.Client.DataHolders;
 using CloneCAD.Client.Menus;
 
-namespace Client
+namespace CloneCAD.Client
 {
     static class Program
     {
@@ -13,22 +13,29 @@ namespace Client
         [STAThread]
         static void Main()
         {
+            Config config = null;
+
 #if !DEBUG
             try
             {
+                config = new Config("settings.ini");
+
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
-                Application.Run(new Main());
+                Application.Run(new Main(config));
             }
             catch (Exception e)
             {
-                Functions.ExceptionHandler(e, 4);
+                new ErrorHandler(config?.Locale).ExceptionHandler(e, 4);
             }
 #endif
 #if DEBUG
+
+            config = new Config("settings.ini");
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Main());
+            Application.Run(new Main(config));
 #endif
         }
     }

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace CloneCAD.Common.DataHolders
 {
@@ -16,15 +14,18 @@ namespace CloneCAD.Common.DataHolders
         public List<Ticket> Tickets { get; set; }
         public string AssociatedBusiness { get; set; }
 
-        public Civilian(uint ID, string Name = null, string RegisteredPlate = null, List<string> RegisteredWeapons = null, List<Ticket> Tickets = null, string AssociatedBusiness = null)
+        public Civilian(uint id, string name = null, string registeredPlate = null, List<string> registeredWeapons = null, List<Ticket> tickets = null, string associatedBusiness = null)
         {
-            this.Name = Name;
+            Name = name;
 
-            this.RegisteredPlate = RegisteredPlate;
-            this.RegisteredWeapons = RegisteredWeapons ?? new List<string>();
-            this.Tickets = Tickets ?? new List<Ticket>();
-            this.AssociatedBusiness = AssociatedBusiness;
-            this.ID = ID;
+            RegisteredPlate = registeredPlate;
+            RegisteredWeapons = registeredWeapons ?? new List<string>();
+            Tickets = tickets ?? new List<Ticket>();
+            AssociatedBusiness = associatedBusiness;
+            ID = id;
         }
+
+        public override string ToString() =>
+            ID.ToSplitID();
     }
 }

@@ -30,7 +30,6 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DispatchMenu));
             this.IDBox = new MaterialSkin.Controls.MaterialSingleLineTextField();
-            this.materialLabel1 = new MaterialSkin.Controls.MaterialLabel();
             this.PlateBox = new MaterialSkin.Controls.MaterialSingleLineTextField();
             this.NameBox = new MaterialSkin.Controls.MaterialSingleLineTextField();
             this.LaunchBtn = new MaterialSkin.Controls.MaterialRaisedButton();
@@ -40,7 +39,7 @@
             // 
             this.IDBox.Depth = 0;
             this.IDBox.Hint = "Civilian ID";
-            this.IDBox.Location = new System.Drawing.Point(12, 109);
+            this.IDBox.Location = new System.Drawing.Point(12, 77);
             this.IDBox.MaxLength = 11;
             this.IDBox.MouseState = MaterialSkin.MouseState.HOVER;
             this.IDBox.Name = "IDBox";
@@ -55,24 +54,11 @@
             this.IDBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyDown);
             this.IDBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.IDBox_KeyPress);
             // 
-            // materialLabel1
-            // 
-            this.materialLabel1.AutoSize = true;
-            this.materialLabel1.Depth = 0;
-            this.materialLabel1.Font = new System.Drawing.Font("Roboto", 11F);
-            this.materialLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.materialLabel1.Location = new System.Drawing.Point(12, 77);
-            this.materialLabel1.MouseState = MaterialSkin.MouseState.HOVER;
-            this.materialLabel1.Name = "materialLabel1";
-            this.materialLabel1.Size = new System.Drawing.Size(97, 19);
-            this.materialLabel1.TabIndex = 3;
-            this.materialLabel1.Text = "View civilian:";
-            // 
             // PlateBox
             // 
             this.PlateBox.Depth = 0;
             this.PlateBox.Hint = "License plate";
-            this.PlateBox.Location = new System.Drawing.Point(115, 109);
+            this.PlateBox.Location = new System.Drawing.Point(115, 77);
             this.PlateBox.MaxLength = 8;
             this.PlateBox.MouseState = MaterialSkin.MouseState.HOVER;
             this.PlateBox.Name = "PlateBox";
@@ -91,7 +77,7 @@
             // 
             this.NameBox.Depth = 0;
             this.NameBox.Hint = "Name";
-            this.NameBox.Location = new System.Drawing.Point(12, 138);
+            this.NameBox.Location = new System.Drawing.Point(12, 106);
             this.NameBox.MaxLength = 30;
             this.NameBox.MouseState = MaterialSkin.MouseState.HOVER;
             this.NameBox.Name = "NameBox";
@@ -112,7 +98,7 @@
             this.LaunchBtn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.LaunchBtn.Depth = 0;
             this.LaunchBtn.Icon = null;
-            this.LaunchBtn.Location = new System.Drawing.Point(12, 167);
+            this.LaunchBtn.Location = new System.Drawing.Point(12, 135);
             this.LaunchBtn.MouseState = MaterialSkin.MouseState.HOVER;
             this.LaunchBtn.Name = "LaunchBtn";
             this.LaunchBtn.Primary = true;
@@ -120,17 +106,16 @@
             this.LaunchBtn.TabIndex = 5;
             this.LaunchBtn.Text = "View civilian";
             this.LaunchBtn.UseVisualStyleBackColor = true;
-            this.LaunchBtn.Click += new System.EventHandler(this.launch_Click);
+            this.LaunchBtn.Click += new System.EventHandler(this.LaunchBtn_Click);
             // 
             // DispatchMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(224, 215);
+            this.ClientSize = new System.Drawing.Size(224, 183);
             this.Controls.Add(this.LaunchBtn);
             this.Controls.Add(this.NameBox);
             this.Controls.Add(this.PlateBox);
-            this.Controls.Add(this.materialLabel1);
             this.Controls.Add(this.IDBox);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
@@ -144,7 +129,6 @@
         #endregion
 
         private MaterialSkin.Controls.MaterialSingleLineTextField IDBox;
-        private MaterialSkin.Controls.MaterialLabel materialLabel1;
         private MaterialSkin.Controls.MaterialSingleLineTextField PlateBox;
         private MaterialSkin.Controls.MaterialSingleLineTextField NameBox;
         private MaterialSkin.Controls.MaterialRaisedButton LaunchBtn;

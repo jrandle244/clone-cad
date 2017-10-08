@@ -5,7 +5,9 @@ using CloneCAD.Client.DataHolders;
 using System;
 using System.Linq;
 using System.Net.Sockets;
+using System.Security.Cryptography;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using CloneCAD.Common;
 using CloneCAD.Common.NetCode;
@@ -17,6 +19,7 @@ namespace CloneCAD.Client.Menus
     public partial class CivMenu : MaterialForm
     {
         private readonly Config Config;
+        private readonly ErrorHandler Handler;
         private byte DownloadedTimeout;
 
         public Civilian LocalCivilian { get; private set; }
@@ -25,16 +28,18 @@ namespace CloneCAD.Client.Menus
         public CivMenu(Config config, uint startingID)
         {
             Config = config;
+            Handler = new ErrorHandler(config.Locale);
 
             StartingID = startingID;
             DownloadedTimeout = 0;
 
             InitializeComponent();
+            LoadLocale(config.Locale);
         }
 
         private void AddWepBtn_Click(object sender, EventArgs e)
         {
-            RegWeaponMenu menu = new RegWeaponMenu();
+            RegWeaponMenu menu = new RegWeaponMenu(Config.Locale);
 
             menu.ShowDialog();
 
@@ -70,7 +75,7 @@ namespace CloneCAD.Client.Menus
 
             Tuple<NetRequestResult, Civilian> tryGetResult = handler.TryTriggerNetFunction<Civilian>("GetCivilian", LocalCivilian?.ID ?? StartingID).GetAwaiter().GetResult();
 
-            Functions.GetFailTest(tryGetResult.Item1);
+            Handler.GetFailTest(tryGetResult.Item1);
 
             s.Shutdown(SocketShutdown.Both);
             s.Close();
@@ -86,14 +91,19 @@ namespace CloneCAD.Client.Menus
                 Sync();
             else
             {
-                if (LocalCivilian == null && DownloadedTimeout == 1)
+                switch (LocalCivilian)
                 {
-                    Reserve();
+                    case null when DownloadedTimeout == 1:
+                        Reserve();
+                        break;
+                    case null:
+                        DownloadedTimeout++;
+                        break;
+                    default:
+                        if (SyncCheck.Checked)
+                            ThreadPool.QueueUserWorkItem(x => Download().Wait());
+                        break;
                 }
-                else if (LocalCivilian == null)
-                    DownloadedTimeout++;
-                else if (SyncCheck.Checked)
-                    Download();
             }
         }
 
@@ -122,16 +132,19 @@ namespace CloneCAD.Client.Menus
             if (LocalCivilian != null)
             {
                 if (!SyncCheck.Checked)
-                    Upload();
+                    ThreadPool.QueueUserWorkItem(x =>
+                    {
+                        Upload().Wait();
 
-                Thread.Sleep(1000);
-
-                Download();
+                        Download().Wait();
+                    });
+                else
+                    ThreadPool.QueueUserWorkItem(x => Download().Wait());
             }
             else if (StartingID == 0)
                 Reserve();
             else
-                Download();
+                ThreadPool.QueueUserWorkItem(x => Download().Wait());
         }
 
         public void Reserve()
@@ -140,7 +153,14 @@ namespace CloneCAD.Client.Menus
             {
                 Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-                s.Connect(Config.IP, Config.Port);
+                try
+                {
+                    s.Connect(Config.IP, Config.Port);
+                }
+                catch (SocketException)
+                {
+                    return;
+                }
 
                 NetRequestHandler handler = new NetRequestHandler(s);
 
@@ -149,81 +169,80 @@ namespace CloneCAD.Client.Menus
                 s.Shutdown(SocketShutdown.Both);
                 s.Close();
 
-                Functions.GetFailTest(tryGetResult.Item1);
+                Handler.GetFailTest(tryGetResult.Item1);
 
                 LocalCivilian = tryGetResult.Item2;
             });
         }
 
-        public void Download()
+        public async Task Download()
         {
-            ThreadPool.QueueUserWorkItem(z =>
+            RefreshCiv();
+
+            Invoke((MethodInvoker)delegate
             {
-                RefreshCiv();
+                IDLabel.Text = Config.Locale["IDTextExec", LocalCivilian.ID.ToSplitID()];
 
-                Invoke((MethodInvoker)delegate
                 {
-                    IDLabel.Text = "Your civilian ID:\n" + LocalCivilian.ID.ToSplitID();
+                    int[] nameS = { NameBox.SelectionStart, NameBox.SelectionLength };
 
+                    NameBox.Text = LocalCivilian.Name;
+                    if (NameBox.Text.Length != 0)
                     {
-                        int[] nameS = { NameBox.SelectionStart, NameBox.SelectionLength };
-
-                        NameBox.Text = LocalCivilian.Name;
-                        if (NameBox.Text.Length != 0)
-                        {
-                            NameBox.SelectionStart = nameS[0];
-                            NameBox.SelectionLength = nameS[1];
-                        }
+                        NameBox.SelectionStart = nameS[0];
+                        NameBox.SelectionLength = nameS[1];
                     }
+                }
 
+                {
+                    int[] plateS = { PlateBox.SelectionStart, PlateBox.SelectionLength };
+
+                    PlateBox.Text = LocalCivilian.RegisteredPlate;
+                    if (PlateBox.Text.Length != 0)
                     {
-                        int[] plateS = { PlateBox.SelectionStart, PlateBox.SelectionLength };
-
-                        PlateBox.Text = LocalCivilian.RegisteredPlate;
-                        if (PlateBox.Text.Length != 0)
-                        {
-                            PlateBox.SelectionStart = plateS[0];
-                            PlateBox.SelectionLength = plateS[1];
-                        }
+                        PlateBox.SelectionStart = plateS[0];
+                        PlateBox.SelectionLength = plateS[1];
                     }
+                }
 
+                {
+                    int[] businessS = { BusinessBox.SelectionStart, BusinessBox.SelectionLength };
+
+                    BusinessBox.Text = LocalCivilian.AssociatedBusiness;
+                    if (BusinessBox.Text.Length != 0)
                     {
-                        int[] businessS = { BusinessBox.SelectionStart, BusinessBox.SelectionLength };
-
-                        BusinessBox.Text = LocalCivilian.AssociatedBusiness;
-                        if (BusinessBox.Text.Length != 0)
-                        {
-                            BusinessBox.SelectionStart = businessS[0];
-                            BusinessBox.SelectionLength = businessS[1];
-                        }
+                        BusinessBox.SelectionStart = businessS[0];
+                        BusinessBox.SelectionLength = businessS[1];
                     }
+                }
 
-                    {
-                        int[] weaponS = (from ListViewItem item in RegisteredWepList.SelectedItems select item.Index)
-                            .ToArray();
+                {
+                    int[] weaponS = (from ListViewItem item in RegisteredWepList.SelectedItems select item.Index)
+                        .ToArray();
 
-                        RegisteredWepList.Items.Clear();
-                        LocalCivilian.RegisteredWeapons.ForEach(x => RegisteredWepList.Items.Add(x));
+                    RegisteredWepList.Items.Clear();
+                    LocalCivilian.RegisteredWeapons.ForEach(x => RegisteredWepList.Items.Add(x));
 
-                        if (RegisteredWepList.Items.Count != 0)
-                            foreach (int i in weaponS)
-                                RegisteredWepList.Items[i].Selected = true;
-                    }
+                    if (RegisteredWepList.Items.Count != 0)
+                        foreach (int i in weaponS)
+                            RegisteredWepList.Items[i].Selected = true;
+                }
 
-                    {
-                        int ticketS = TicketList.SelectedItems.Count > 0 ? TicketList.SelectedItems[0].Index : -1;
+                {
+                    int ticketS = TicketList.SelectedItems.Count > 0 ? TicketList.SelectedItems[0].Index : -1;
 
-                        TicketList.Items.Clear();
-                        LocalCivilian.Tickets.ForEach(x =>
-                            TicketList.Items.Add(new ListViewItem(new[] { x.Price.ToString(), x.Type, x.Description })));
+                    TicketList.Items.Clear();
+                    LocalCivilian.Tickets.ForEach(x =>
+                        TicketList.Items.Add(new ListViewItem(new[] { x.Price.ToString(), x.Type.ToString(), x.Description })));
 
-                        if (TicketList.Items.Count != 0 && ticketS != -1)
-                            TicketList.Items[ticketS].Selected = true;
-                    }
+                    if (TicketList.Items.Count != 0 && ticketS != -1)
+                        TicketList.Items[ticketS].Selected = true;
+                }
 
-                    SyncCheck.Checked = true;
-                });
+                SyncCheck.Checked = true;
             });
+
+            await Task.FromResult(0);
         }
 
         private bool UpdateCiv()
@@ -255,25 +274,26 @@ namespace CloneCAD.Client.Menus
             return true;
         }
 
-        public void Upload() =>
-            ThreadPool.QueueUserWorkItem(z =>
+        public async Task Upload()
+        {
+            Invoke((MethodInvoker)delegate
             {
-                Invoke((MethodInvoker)delegate
-                {
-                    LocalCivilian.Name = NameBox.Text;
-                    LocalCivilian.RegisteredPlate = PlateBox.Text;
-                    LocalCivilian.AssociatedBusiness = BusinessBox.Text;
-                    
-                    LocalCivilian.RegisteredWeapons =
-                        (from ListViewItem wep in RegisteredWepList.Items select wep.Text).ToList();
-                });
+                LocalCivilian.Name = NameBox.Text;
+                LocalCivilian.RegisteredPlate = PlateBox.Text;
+                LocalCivilian.AssociatedBusiness = BusinessBox.Text;
 
-                UpdateCiv();
+                LocalCivilian.RegisteredWeapons =
+                    (from ListViewItem wep in RegisteredWepList.Items select wep.Text).ToList();
             });
+
+            UpdateCiv();
+
+            await Task.FromResult(0);
+        }
 
         private void CivMenu_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (!SyncCheck.Checked && MessageBox.Show("Your civilian is not synced to the server.\nIf you exit your civilian will not be saved!", "CloneCAD", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1) == DialogResult.Cancel)
+            if (!SyncCheck.Checked && MessageBox.Show(Config.Locale["CivilianNotSyncedMsg"], @"CloneCAD", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == DialogResult.Cancel)
                 e.Cancel = true;
         }
 
@@ -290,6 +310,28 @@ namespace CloneCAD.Client.Menus
         {
             if (!char.IsControl(e.KeyChar) && !char.IsLetter(e.KeyChar) && e.KeyChar != ' ')
                 e.Handled = true;
+        }
+
+        private void LoadLocale(LocaleConfig locale)
+        {
+            Text = locale["CivilianRecordText"];
+
+            IDLabel.Text = locale["IDTextExec", ""];
+
+            NameBox.Hint = locale["FullNameHint"];
+            BusinessBox.Hint = locale["AssociatedBusinessHint"];
+            PlateBox.Hint = locale["LicensePlateHint"];
+
+            SyncBtn.Text = locale["SyncButton"];
+            AddWepBtn.Text = locale["AddWeaponButton"];
+            RemWepBtn.Text = locale["RemoveWeaponButton"];
+
+            SyncCheck.Text = locale["SyncedCheckbox"];
+
+            columnHeader1.Text = locale["PriceColumn"];
+            columnHeader2.Text = locale["TypeColumn"];
+            columnHeader3.Text = locale["IDColumn"];
+            columnHeader4.Text = locale["DescriptionColumn"];
         }
     }
 }

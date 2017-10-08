@@ -32,7 +32,7 @@
             this.CivilianRadial = new MaterialSkin.Controls.MaterialRadioButton();
             this.PoliceRadial = new MaterialSkin.Controls.MaterialRadioButton();
             this.DispatchRadial = new MaterialSkin.Controls.MaterialRadioButton();
-            this.Launch = new MaterialSkin.Controls.MaterialRaisedButton();
+            this.LaunchBtn = new MaterialSkin.Controls.MaterialRaisedButton();
             this.CloseCheckbox = new MaterialSkin.Controls.MaterialCheckBox();
             this.SuspendLayout();
             // 
@@ -47,10 +47,10 @@
             this.CivilianRadial.MouseState = MaterialSkin.MouseState.HOVER;
             this.CivilianRadial.Name = "CivilianRadial";
             this.CivilianRadial.Ripple = true;
-            this.CivilianRadial.Size = new System.Drawing.Size(74, 30);
+            this.CivilianRadial.Size = new System.Drawing.Size(128, 30);
             this.CivilianRadial.TabIndex = 0;
             this.CivilianRadial.TabStop = true;
-            this.CivilianRadial.Text = "Civilian";
+            this.CivilianRadial.Text = "Civilian Selector";
             this.CivilianRadial.UseVisualStyleBackColor = true;
             // 
             // PoliceRadial
@@ -87,21 +87,21 @@
             this.DispatchRadial.Text = "Dispatch";
             this.DispatchRadial.UseVisualStyleBackColor = true;
             // 
-            // Launch
+            // LaunchBtn
             // 
-            this.Launch.AutoSize = true;
-            this.Launch.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.Launch.Depth = 0;
-            this.Launch.Icon = null;
-            this.Launch.Location = new System.Drawing.Point(12, 240);
-            this.Launch.MouseState = MaterialSkin.MouseState.HOVER;
-            this.Launch.Name = "Launch";
-            this.Launch.Primary = true;
-            this.Launch.Size = new System.Drawing.Size(75, 36);
-            this.Launch.TabIndex = 3;
-            this.Launch.Text = "launch";
-            this.Launch.UseVisualStyleBackColor = true;
-            this.Launch.Click += new System.EventHandler(this.Launch_Click);
+            this.LaunchBtn.AutoSize = true;
+            this.LaunchBtn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.LaunchBtn.Depth = 0;
+            this.LaunchBtn.Icon = null;
+            this.LaunchBtn.Location = new System.Drawing.Point(12, 240);
+            this.LaunchBtn.MouseState = MaterialSkin.MouseState.HOVER;
+            this.LaunchBtn.Name = "LaunchBtn";
+            this.LaunchBtn.Primary = true;
+            this.LaunchBtn.Size = new System.Drawing.Size(75, 36);
+            this.LaunchBtn.TabIndex = 3;
+            this.LaunchBtn.Text = "Launch";
+            this.LaunchBtn.UseVisualStyleBackColor = true;
+            this.LaunchBtn.Click += new System.EventHandler(this.Launch_Click);
             // 
             // CloseCheckbox
             // 
@@ -127,7 +127,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(190, 288);
             this.Controls.Add(this.CloseCheckbox);
-            this.Controls.Add(this.Launch);
+            this.Controls.Add(this.LaunchBtn);
             this.Controls.Add(this.DispatchRadial);
             this.Controls.Add(this.PoliceRadial);
             this.Controls.Add(this.CivilianRadial);
@@ -145,7 +145,7 @@
         private MaterialSkin.Controls.MaterialRadioButton CivilianRadial;
         private MaterialSkin.Controls.MaterialRadioButton PoliceRadial;
         private MaterialSkin.Controls.MaterialRadioButton DispatchRadial;
-        private MaterialSkin.Controls.MaterialRaisedButton Launch;
+        private MaterialSkin.Controls.MaterialRaisedButton LaunchBtn;
         private MaterialSkin.Controls.MaterialCheckBox CloseCheckbox;
     }
 }
