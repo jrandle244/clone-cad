@@ -29,15 +29,15 @@ namespace CloneCAD.Server
             server.Start();
 #endif
 #if !DEBUG
+            Config config = null;
+
             try 
             {
-                Config config;
-
                 if (File.Exists(CONFIG_PATH))
                     config = new Config(CONFIG_PATH);
                 else
                 {
-                    ServerFunctions.Error("No \"" + CONFIG_PATH + "\" file exists. Check the README.md on GitHub to get a default \"" + CONFIG_PATH + "\".", 1);
+                    new ErrorHandler(null).Error("No \"" + CONFIG_PATH + "\" file exists. Check the README.md on GitHub to get a default \"" + CONFIG_PATH + "\".", 1);
                     return; //Have to put this here so 'server' initialization didn't throw an error saying 'config' might not be initialized.
                 }
 
@@ -46,7 +46,7 @@ namespace CloneCAD.Server
             }
             catch (Exception e)
             {
-                ServerFunctions.Error("An exception went unhandled.", e, 3);
+                new ErrorHandler(config?.Locale).Error("An exception went unhandled.", 3, e);
             }
 #endif
         }

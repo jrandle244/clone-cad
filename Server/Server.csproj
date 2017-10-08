@@ -74,7 +74,7 @@
     <Compile Include="DataHolders\AliasDictionary.cs" />
     <Compile Include="DataHolders\Config.cs" />
     <Compile Include="DataHolders\Log.cs" />
-    <Compile Include="ServerFunctions.cs" />
+    <Compile Include="DataHolders\ErrorHandler.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Server.cs" />

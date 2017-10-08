@@ -32,11 +32,13 @@ namespace CloneCAD.Server
         private readonly TcpListener Listener;
         private readonly StorableValue<CivilianDictionary> Civilians;
 
-        public Config Config;
+        public Config Config { get; set; }
+        public ErrorHandler Handler { get; set; }
 
         public Server(Config config, CivilianDictionary civilians)
         {
             Config = config;
+            Handler = new ErrorHandler(config.Locale);
 
             Console.Title = "CloneCAD Server";
 
@@ -58,7 +60,7 @@ namespace CloneCAD.Server
             }
             catch (SocketException)
             {
-                ServerFunctions.Error(Config.Locale, "PortInUse", 1, Config.Port);
+                Handler.Error("PortInUse", 1, Config.Port);
             }
 
             Config.Log.WriteLine("ServerListening");

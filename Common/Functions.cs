@@ -7,12 +7,14 @@ namespace CloneCAD.Common
     {
         public static string ExceptionHandlerBackend(this Exception e)
         {
-            string errorFile = "error0.dump";
+            string errorFile = "error0.log";
             
             ushort reiteration = 0;
 
             while (File.Exists(errorFile))
-                errorFile = "error" + ++reiteration + ".dump";
+                errorFile = "error" + ++reiteration + ".log";
+
+            File.WriteAllText(errorFile, e.ToString());
 
             return errorFile;
         }

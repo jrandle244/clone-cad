@@ -13,11 +13,13 @@ namespace CloneCAD.Server.DataHolders
 
         public AliasDictionary Aliases { get; set; }
         public LocaleConfig Locale { get; set; }
+        public ErrorHandler Handler { get; set; }
 
         public Log(string fileName, LocaleConfig locale, AliasDictionary aliases)
         {
             Aliases = aliases;
             Locale = locale;
+            Handler = new ErrorHandler(locale);
 
             try
             {
@@ -28,7 +30,7 @@ namespace CloneCAD.Server.DataHolders
             }
             catch (IOException)
             {
-                ServerFunctions.Error(locale, "LogFileInUse", 1);
+                Handler.Error("LogFileInUse", 1);
             }
         }
 

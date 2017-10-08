@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Media;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using CloneCAD.Common;
 using CloneCAD.Common.DataHolders;
 using CloneCAD.Common.NetCode;
 
-namespace CloneCAD.Client.DataHolders
+namespace CloneCAD.Server.DataHolders
 {
     public class ErrorHandler
     {
@@ -21,42 +22,37 @@ namespace CloneCAD.Client.DataHolders
                 case NetRequestResult.Completed:
                     return;
                 case NetRequestResult.Invalid:
-                    Error("TryGetInvalid", caller, lineNumber, filePath);
+                    Error("TryGetInvalid", 5, caller, lineNumber, filePath);
                     break;
                 case NetRequestResult.Incompleted:
-                    Error("TryGetIncomplete", caller, lineNumber, filePath);
+                    Error("TryGetIncomplete", 5, caller, lineNumber, filePath);
                     break;
             }
 
             Environment.Exit(4);
         }
 
-        public void Error(string localeKey) =>
-            MessageBox.Show(Locale?[localeKey] ?? localeKey, @"CloneCAD", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-        public void Error(string localeKey, params object[] objs) =>
-            MessageBox.Show(Locale?[localeKey, objs] ?? string.Format(localeKey, objs), @"CloneCAD", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
         public void Error(string localeKey, int exitCode)
         {
-            Error(localeKey);
+            Console.WriteLine(Locale?[localeKey] ?? localeKey);
+            Console.ReadKey();
             Environment.Exit(exitCode);
         }
 
         public void Error(string localeKey, int exitCode, params object[] objs)
         {
-            Error(localeKey, objs);
+            Console.WriteLine(Locale?[localeKey, objs] ?? string.Format(localeKey, objs));
             Environment.Exit(exitCode);
         }
 
         public void ExceptionHandler(Exception e, int exitCode)
         {
             if (Locale == null)
-                MessageBox.Show(@"The error has been saved to a log (" + e.ExceptionHandlerBackend() + @").\nPlease post an issue on GitHub and put the contents of the log in a code block.", @"CloneCAD", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Console.WriteLine(@"The error has been saved to a log (" + e.ExceptionHandlerBackend() + @").\nPlease upload the error log to the Discord server or post it to GitHub.");
             else
                 MessageBox.Show(Locale["UnexpectedError"].StartsWith("LOCALE ERROR (")
-                    ? "The error has been saved to a log (" + e.ExceptionHandlerBackend() + ").\nPlease post an issue on GitHub and put the contents of the log in a code block."
-                    : Locale["UnexpectedError", e.ExceptionHandlerBackend()], @"CloneCAD", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    ? @"The error has been saved to a log (" + e.ExceptionHandlerBackend() + @").\nPlease upload the error log to the Discord server or post it to GitHub."
+                    : Locale["UnexpectedError", e.ExceptionHandlerBackend()]);
 
             Environment.Exit(exitCode);
         }
