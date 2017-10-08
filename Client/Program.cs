@@ -7,6 +7,9 @@ namespace CloneCAD.Client
 {
     static class Program
     {
+        public const string CONFIG_PATH = "settings.ini";
+        public const string ID_PATH = "IDs.odf";
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -18,7 +21,7 @@ namespace CloneCAD.Client
 #if !DEBUG
             try
             {
-                config = new Config("settings.ini");
+                config = new Config(CONFIG_PATH);
 
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
@@ -31,7 +34,7 @@ namespace CloneCAD.Client
 #endif
 #if DEBUG
 
-            config = new Config("settings.ini");
+            config = new Config(CONFIG_PATH);
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

@@ -10,7 +10,7 @@ namespace CloneCAD.Server
     static class Program
     {
         public const string CIV_EXPORT_PATH = "Civilians.odf";
-        public const string CONFIG_PATH = "server-settings.ini";
+        public const string CONFIG_PATH = "settings.ini";
 
         static void Main(string[] args)
         {

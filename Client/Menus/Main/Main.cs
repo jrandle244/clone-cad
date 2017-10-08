@@ -39,7 +39,7 @@ namespace CloneCAD.Client.Menus
                 {
                     StorableValue<uint[]> ids = new StorableValue<uint[]>
                     {
-                        FilePath = "IDs.odf",
+                        FilePath = Program.ID_PATH,
                         Value = civLauncher.Civilians.Keys.ToArray()
                     };
 
@@ -57,9 +57,9 @@ namespace CloneCAD.Client.Menus
 
                 civLauncher.Show();
 
-                if (File.Exists("IDs.odf"))
+                if (File.Exists(Program.ID_PATH))
                 {
-                    StorableValue<uint[]> ids = new StorableValue<uint[]>("IDs.odf");
+                    StorableValue<uint[]> ids = new StorableValue<uint[]>(Program.ID_PATH);
 
                     civLauncher.Sync(ids.Value);
                 }
