@@ -350,8 +350,7 @@ namespace CloneCAD.Common.NetCode
 
         public async Task<T> TriggerNetFunction<T>(string netFunctionName, params object[] parameters)
         {
-            S.Send(new StorableValue<NetRequest>(
-                new NetRequest(NetRequestMetadata.FunctionRequest, netFunctionName, parameters)).Bytes);
+            S.Send(new StorableValue<NetRequest>(new NetRequest(NetRequestMetadata.FunctionRequest, netFunctionName, parameters)).Bytes);
 
             while (!CachedNetFunctions.ContainsKey(netFunctionName))
                 await Task.Delay(10);

@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Windows.Forms;
 using CloneCAD.Client.DataHolders;
+using CloneCAD.Common;
 using CloneCAD.Common.NetCode;
 
 #pragma warning disable IDE1006
@@ -61,7 +62,7 @@ namespace CloneCAD.Client.Menus
 
         private void ID_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && e.KeyChar != '-')
                 e.Handled = true;
         }
 
@@ -84,10 +85,25 @@ namespace CloneCAD.Client.Menus
         private new void KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
-                ThreadPool.QueueUserWorkItem(x => SendTicket(uint.Parse(ID.Text), PrepTicket()));
+                ThreadPool.QueueUserWorkItem(x =>
+                {
+                    if (uint.TryParse(ID.Text, out uint parsedID))
+                    {
+                        try
+                        {
+                            parsedID = ID.Text.ToRawID();
+                        }
+                        catch
+                        {
+                            MessageBox.Show("ID was unable to be converted to an unsigned integer.", "CloneCAD");
+                        }
+                    }
+
+                    SendTicket(parsedID, PrepTicket());
+                });
         }
 
-        private void giveTicket_Click(object sender, EventArgs e) =>
+        private void GiveTicket_Click(object sender, EventArgs e) =>
             ThreadPool.QueueUserWorkItem(x => SendTicket(uint.Parse(ID.Text), PrepTicket()));
     }
 }

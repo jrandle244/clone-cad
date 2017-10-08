@@ -48,7 +48,7 @@ namespace CloneCAD.Server
                     return; //Have to put this here so 'server' initialization didn't throw an error saying 'config' might not be initialized.
                 }
 
-                Server server = new Server(config, (File.Exists(CIV_EXPORT_PATH) ? new StorableValue<CivilianDictionary>(CIV_EXPORT_PATH) : new StorableValue<CivilianDictionary>()).Value);
+                Server server = new Server(config, File.Exists(CIV_EXPORT_PATH) ? new StorableValue<CivilianDictionary>(CIV_EXPORT_PATH).Value : new CivilianDictionary());
                 server.Start();
             }
             catch (Exception e)

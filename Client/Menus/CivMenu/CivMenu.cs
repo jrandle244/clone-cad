@@ -38,7 +38,11 @@ namespace CloneCAD.Client.Menus
 
             menu.ShowDialog();
 
-            RegisteredWepList.Items.Add(menu.WeaponName.Text);
+            if (!string.IsNullOrWhiteSpace(menu.WeaponName.Text))
+            {
+                RegisteredWepList.Items.Add(menu.WeaponName.Text);
+                SyncCheck.Checked = false;
+            }
         }
 
         private void RemWepBtn_Click(object sender, EventArgs e)
@@ -117,13 +121,15 @@ namespace CloneCAD.Client.Menus
         {
             if (LocalCivilian != null)
             {
-                Upload();
+                if (!SyncCheck.Checked)
+                    Upload();
+
+                Thread.Sleep(1000);
+
                 Download();
             }
             else if (StartingID == 0)
-            {
                 Reserve();
-            }
             else
                 Download();
         }

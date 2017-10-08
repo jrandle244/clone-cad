@@ -32,7 +32,6 @@ namespace CloneCAD.Server
 
         private readonly TcpListener Listener;
         private readonly StorableValue<CivilianDictionary> Civilians;
-        private Dictionary<string, object> NetValueCivilians => Civilians.Value.Values.ToDictionary<Civilian, string, object>(civilian => "Civilian:" + civilian.ID, civilian => civilian);
 
         public Config Config;
 
@@ -72,10 +71,7 @@ namespace CloneCAD.Server
         {
             Socket socket = (Socket)socketO;
 
-            NetRequestHandler handler = new NetRequestHandler(socket, false)
-            {
-                NetValues = NetValueCivilians
-            };
+            NetRequestHandler handler = new NetRequestHandler(socket, false);
 
             handler.NetFunctions.Add("GetCivilian", new NetFunction(GetCivilian));
             handler.NetFunctions.Add("ReserveCivilian", new NetFunction(ReserveCivilian));

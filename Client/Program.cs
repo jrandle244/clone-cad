@@ -20,7 +20,7 @@ namespace Client
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.Run(new Main());
             }
-            catch
+            catch (Exception e)
             {
                 Functions.ExceptionHandler(e, 4);
             }

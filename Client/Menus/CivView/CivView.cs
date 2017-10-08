@@ -18,10 +18,9 @@ namespace CloneCAD.Client.Menus
     {
         private readonly Config Config;
         private Socket S;
-        private bool Downloaded;
 
         public Civilian LocalCivilian { get; private set; }
-        public uint StartingID { get; private set; }
+        public uint StartingID { get; }
 
         public CivView(Config config, uint startingID)
         {
@@ -29,7 +28,6 @@ namespace CloneCAD.Client.Menus
             S = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
             StartingID = startingID;
-            Downloaded = false;
 
             InitializeComponent();
         }
@@ -62,12 +60,6 @@ namespace CloneCAD.Client.Menus
 
         private void SyncBtn_Click(object sender, EventArgs e)
         {
-            if (!Downloaded)
-            {
-                Downloaded = true;
-                StartingID = 0;
-            }
-
             Download();
         }
 
@@ -140,10 +132,16 @@ namespace CloneCAD.Client.Menus
                 });
             });
 
-        private new void KeyPress(KeyPressEventArgs e) =>
-            e.Handled = true;
-
         private void Timer_Tick(object sender, EventArgs e) =>
             Download();
+
+        private void NameBox_KeyPress(object sender, KeyPressEventArgs e) =>
+            e.Handled = true;
+
+        private void BusinessBox_KeyPress(object sender, KeyPressEventArgs e) =>
+            e.Handled = true;
+
+        private void PlateBox_KeyPress(object sender, KeyPressEventArgs e) =>
+            e.Handled = true;
     }
 }

@@ -85,10 +85,27 @@ namespace CloneCAD.Client.Menus
 
         private void Civs_DoubleClick(object sender, EventArgs e)
         {
-            CivMenu civ = new CivMenu(Config, uint.Parse(civs.Items[civs.SelectedItems[0].Index].SubItems[0].Text));
+            CivMenu civ = new CivMenu(Config, civs.Items[civs.SelectedItems[0].Index].SubItems[0].Text.ToRawID());
 
             civ.Show();
             civ.Sync();
+
+            bool open = true;
+
+            civ.FormClosed += delegate { open = false; };
+
+            ThreadPool.QueueUserWorkItem(x =>
+            {
+                while (open)
+                {
+                    Invoke((MethodInvoker) delegate
+                    {
+                        if (civ.LocalCivilian != null)
+                            civs.Items[civs.SelectedItems[0].Index].SubItems[1].Text = civ.LocalCivilian.Name;
+                    });
+                    Thread.Sleep(5000);
+                }
+            });
         }
 
         private void Create_Click(object sender, EventArgs e)

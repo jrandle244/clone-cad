@@ -11,18 +11,25 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csp
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Beta|Any CPU = Beta|Any CPU
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4790065C-4180-4D98-B30F-34EED78D7569}.Beta|Any CPU.ActiveCfg = Beta|Any CPU
+		{4790065C-4180-4D98-B30F-34EED78D7569}.Beta|Any CPU.Build.0 = Beta|Any CPU
 		{4790065C-4180-4D98-B30F-34EED78D7569}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4790065C-4180-4D98-B30F-34EED78D7569}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4790065C-4180-4D98-B30F-34EED78D7569}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4790065C-4180-4D98-B30F-34EED78D7569}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16972081-D018-432C-8ECB-575298203A64}.Beta|Any CPU.ActiveCfg = Beta|Any CPU
+		{16972081-D018-432C-8ECB-575298203A64}.Beta|Any CPU.Build.0 = Beta|Any CPU
 		{16972081-D018-432C-8ECB-575298203A64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{16972081-D018-432C-8ECB-575298203A64}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{16972081-D018-432C-8ECB-575298203A64}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{16972081-D018-432C-8ECB-575298203A64}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54D00D8F-487B-4B7C-A6BC-D55535BEE778}.Beta|Any CPU.ActiveCfg = Beta|Any CPU
+		{54D00D8F-487B-4B7C-A6BC-D55535BEE778}.Beta|Any CPU.Build.0 = Beta|Any CPU
 		{54D00D8F-487B-4B7C-A6BC-D55535BEE778}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{54D00D8F-487B-4B7C-A6BC-D55535BEE778}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{54D00D8F-487B-4B7C-A6BC-D55535BEE778}.Release|Any CPU.ActiveCfg = Release|Any CPU

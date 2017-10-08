@@ -65,6 +65,7 @@
             this.NameBox.TabIndex = 0;
             this.NameBox.TabStop = false;
             this.NameBox.UseSystemPasswordChar = false;
+            this.NameBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NameBox_KeyPress);
             // 
             // BusinessBox
             // 
@@ -82,6 +83,7 @@
             this.BusinessBox.TabIndex = 1;
             this.BusinessBox.TabStop = false;
             this.BusinessBox.UseSystemPasswordChar = false;
+            this.BusinessBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.BusinessBox_KeyPress);
             // 
             // PlateBox
             // 
@@ -99,6 +101,7 @@
             this.PlateBox.TabIndex = 2;
             this.PlateBox.TabStop = false;
             this.PlateBox.UseSystemPasswordChar = false;
+            this.PlateBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.PlateBox_KeyPress);
             // 
             // TicketList
             // 

@@ -6,6 +6,7 @@ using System;
 using System.Net.Sockets;
 using System.Threading;
 using System.Windows.Forms;
+using CloneCAD.Common;
 using CloneCAD.Common.NetCode;
 
 #pragma warning disable IDE1006
@@ -43,7 +44,8 @@ namespace CloneCAD.Client.Menus
                 }
                 catch (SocketException)
                 {
-                    if (MessageBox.Show("Couldn't connect to the server to get the civilian ID.", "CloneCAD", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error) == DialogResult.Retry)
+                    if (MessageBox.Show("Couldn't connect to the server to get the civilian ID.", "CloneCAD",
+                            MessageBoxButtons.RetryCancel, MessageBoxIcon.Error) == DialogResult.Retry)
                         Launch(id, name, plate);
 
                     return;
@@ -53,7 +55,8 @@ namespace CloneCAD.Client.Menus
 
                 if (!string.IsNullOrWhiteSpace(plate))
                 {
-                    Tuple<NetRequestResult, uint> tryGetResult = handler.TryTriggerNetFunction<uint>("CheckPlate", plate).GetAwaiter().GetResult();
+                    Tuple<NetRequestResult, uint> tryGetResult =
+                        handler.TryTriggerNetFunction<uint>("CheckPlate", plate).GetAwaiter().GetResult();
 
                     S.Shutdown(SocketShutdown.Both);
                     S.Close();
@@ -61,7 +64,9 @@ namespace CloneCAD.Client.Menus
 
                     Functions.GetFailTest(tryGetResult.Item1);
 
-                    if (tryGetResult.Item2 == 0 && MessageBox.Show("Plate was not able to be found.", "CloneCAD", MessageBoxButtons.RetryCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button2) == DialogResult.Retry)
+                    if (tryGetResult.Item2 == 0 && MessageBox.Show("Plate was not able to be found.", "CloneCAD",
+                            MessageBoxButtons.RetryCancel, MessageBoxIcon.Information,
+                            MessageBoxDefaultButton.Button2) == DialogResult.Retry)
                     {
                         Launch(id, name, plate);
                         return;
@@ -71,7 +76,8 @@ namespace CloneCAD.Client.Menus
                 }
                 else if (!string.IsNullOrWhiteSpace(name))
                 {
-                    Tuple<NetRequestResult, uint> tryGetResult = handler.TryTriggerNetFunction<uint>("CheckName", plate).GetAwaiter().GetResult();
+                    Tuple<NetRequestResult, uint> tryGetResult = handler.TryTriggerNetFunction<uint>("CheckName", plate)
+                        .GetAwaiter().GetResult();
 
                     S.Shutdown(SocketShutdown.Both);
                     S.Close();
@@ -80,18 +86,31 @@ namespace CloneCAD.Client.Menus
                     Functions.GetFailTest(tryGetResult.Item1);
 
                     if (tryGetResult.Item2 == 0 && MessageBox.Show("Name was not able to be found.", "CloneCAD",
-                            MessageBoxButtons.RetryCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button2) ==
+                            MessageBoxButtons.RetryCancel, MessageBoxIcon.Information,
+                            MessageBoxDefaultButton.Button2) ==
                         DialogResult.Retry)
                     {
                         Launch(id, name, plate);
                         return;
                     }
 
-
+                    receivedID = tryGetResult.Item2;
                 }
             }
             else
-                receivedID = uint.Parse(id);
+            {
+                if (!uint.TryParse(IDBox.Text, out receivedID))
+                {
+                    try
+                    {
+                        receivedID = IDBox.Text.ToRawID();
+                    }
+                    catch
+                    {
+                        MessageBox.Show("ID was unable to be converted to an unsigned integer.", "CloneCAD");
+                    }
+                }
+            }
 
             Invoke((MethodInvoker)delegate
             {
@@ -110,7 +129,7 @@ namespace CloneCAD.Client.Menus
 
         private void IDBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && e.KeyChar != '-')
                 e.Handled = true;
             else if (!string.IsNullOrEmpty(NameBox.Text) || !string.IsNullOrEmpty(PlateBox.Text))
             {

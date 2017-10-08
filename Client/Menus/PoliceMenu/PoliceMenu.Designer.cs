@@ -81,7 +81,7 @@
             this.ID.Depth = 0;
             this.ID.Hint = "Civilian ID";
             this.ID.Location = new System.Drawing.Point(12, 154);
-            this.ID.MaxLength = 9;
+            this.ID.MaxLength = 11;
             this.ID.MouseState = MaterialSkin.MouseState.HOVER;
             this.ID.Name = "ID";
             this.ID.PasswordChar = '\0';
@@ -175,7 +175,7 @@
             this.GiveTicket.TabIndex = 7;
             this.GiveTicket.Text = "Give ticket";
             this.GiveTicket.UseVisualStyleBackColor = true;
-            this.GiveTicket.Click += new System.EventHandler(this.giveTicket_Click);
+            this.GiveTicket.Click += new System.EventHandler(this.GiveTicket_Click);
             // 
             // PopoMenu
             // 
@@ -192,7 +192,7 @@
             this.Controls.Add(this.Price);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.Name = "PopoMenu";
+            this.Name = "PoliceMenu";
             this.Text = "Police";
             this.ResumeLayout(false);
             this.PerformLayout();
