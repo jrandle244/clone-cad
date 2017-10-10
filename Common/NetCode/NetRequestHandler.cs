@@ -12,11 +12,10 @@ namespace CloneCAD.Common.NetCode
     public class NetRequestHandler
     {
         private readonly Socket S;
-        private readonly Thread listenThread;
         private readonly Dictionary<string, NetRequestResult> CachedNetEvents;
         private readonly Dictionary<string, Tuple<NetRequestResult, object>> CachedNetFunctions;
         private readonly Dictionary<string, Tuple<bool, object>> CachedNetValues;
-        private readonly Dictionary<int, Thread> Threads;
+        private bool Sending;
 
         public Dictionary<string, NetEvent> NetEvents { get; set; }
         public Dictionary<string, NetFunction> NetFunctions { get; set; }
@@ -24,7 +23,7 @@ namespace CloneCAD.Common.NetCode
         public string IP { get; }
         public int Port { get; }
 
-        public NetRequestHandler(Socket socket, bool autostart = true)
+        public NetRequestHandler(Socket socket)
         {
             string[] vals = socket.RemoteEndPoint.ToString().Split(':');
             IP = vals[0];
@@ -39,20 +38,9 @@ namespace CloneCAD.Common.NetCode
             CachedNetEvents = new Dictionary<string, NetRequestResult>();
 
             S = socket;
-            Threads = new Dictionary<int, Thread>();
-            listenThread = new Thread(Receiver);
-
-            if (autostart)
-                listenThread.Start();
         }
 
-        public void Receive()
-        {
-            if (!listenThread.IsAlive)
-                listenThread.Start();
-        }
-
-        private void Receiver()
+        public async Task Receive()
         {
             byte[] buffer = new byte[5000];
             int end;
@@ -77,7 +65,7 @@ namespace CloneCAD.Common.NetCode
                 case NetRequestMetadata.InvocationRequest:
                     try
                     {
-                        HandleInvocationRequest(netRequest).GetAwaiter().GetResult();
+                        await HandleInvocationRequest(netRequest);
                     }
                     catch
                     {
@@ -87,21 +75,21 @@ namespace CloneCAD.Common.NetCode
                     break;
 
                 case NetRequestMetadata.InvocationReturn:
-                    HandleInvocationReturn(netRequest).GetAwaiter().GetResult();
+                    await HandleInvocationReturn(netRequest);
                     break;
 
                 case NetRequestMetadata.ValueRequest:
-                    HandleValueRequest(netRequest).GetAwaiter().GetResult();
+                    await HandleValueRequest(netRequest);
                     break;
 
                 case NetRequestMetadata.ValueReturn:
-                    HandleValueReturn(netRequest).GetAwaiter().GetResult();
+                    await HandleValueReturn(netRequest);
                     break;
 
                 case NetRequestMetadata.FunctionRequest:
                     try
                     {
-                        HandleFunctionRequest(netRequest).GetAwaiter().GetResult();
+                        await HandleFunctionRequest(netRequest);
                     }
                     catch
                     {
@@ -111,7 +99,7 @@ namespace CloneCAD.Common.NetCode
                     break;
 
                 case NetRequestMetadata.FunctionReturn:
-                    HandleFunctionReturn(netRequest).GetAwaiter().GetResult();
+                    await HandleFunctionReturn(netRequest);
                     break;
 #pragma warning restore 4014
             }
@@ -306,8 +294,15 @@ namespace CloneCAD.Common.NetCode
 
         public async Task<NetRequestResult> TryTriggerNetEvent(string netEventName, params object[] parameters)
         {
+            while (Sending)
+                await Task.Delay(10);
+
+            Sending = true;
+
             S.Send(new StorableValue<NetRequest>(new NetRequest(NetRequestMetadata.InvocationRequest, netEventName,
                 parameters)).Bytes);
+
+            Sending = false;
 
             while (!CachedNetEvents.ContainsKey(netEventName))
                 await Task.Delay(10);
@@ -320,8 +315,15 @@ namespace CloneCAD.Common.NetCode
 
         public async Task<T> GetNetValue<T>(string netValueName)
         {
+            while (Sending)
+                await Task.Delay(10);
+
+            Sending = true;
+
             S.Send(new StorableValue<NetRequest>(new NetRequest(NetRequestMetadata.ValueRequest, netValueName))
                 .Bytes);
+
+            Sending = false;
 
             while (!CachedNetValues.ContainsKey(netValueName))
                 await Task.Delay(10);
@@ -337,8 +339,15 @@ namespace CloneCAD.Common.NetCode
 
         public async Task<Tuple<bool, T>> TryGetNetValue<T>(string netValueName)
         {
+            while (Sending)
+                await Task.Delay(10);
+
+            Sending = true;
+
             S.Send(new StorableValue<NetRequest>(new NetRequest(NetRequestMetadata.ValueRequest, netValueName))
                 .Bytes);
+
+            Sending = false;
 
             while (!CachedNetValues.ContainsKey(netValueName))
                 await Task.Delay(10);
@@ -350,7 +359,14 @@ namespace CloneCAD.Common.NetCode
 
         public async Task<T> TriggerNetFunction<T>(string netFunctionName, params object[] parameters)
         {
+            while (Sending)
+                await Task.Delay(10);
+
+            Sending = true;
+
             S.Send(new StorableValue<NetRequest>(new NetRequest(NetRequestMetadata.FunctionRequest, netFunctionName, parameters)).Bytes);
+
+            Sending = false;
 
             while (!CachedNetFunctions.ContainsKey(netFunctionName))
                 await Task.Delay(10);
@@ -371,8 +387,15 @@ namespace CloneCAD.Common.NetCode
 
         public async Task<Tuple<NetRequestResult, T>> TryTriggerNetFunction<T>(string netFunctionName, params object[] parameters)
         {
+            while (Sending)
+                await Task.Delay(10);
+
+            Sending = true;
+
             S.Send(new StorableValue<NetRequest>(
                 new NetRequest(NetRequestMetadata.FunctionRequest, netFunctionName, parameters)).Bytes);
+
+            Sending = false;
 
             while (!CachedNetFunctions.ContainsKey(netFunctionName))
                 await Task.Delay(10);

@@ -5,7 +5,6 @@ using CloneCAD.Client.DataHolders;
 using System;
 using System.Linq;
 using System.Net.Sockets;
-using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -23,6 +22,7 @@ namespace CloneCAD.Client.Menus
         private byte DownloadedTimeout;
 
         public Civilian LocalCivilian { get; private set; }
+        public event EventHandler CivilianDownloaded;
         public uint StartingID { get; }
 
         public CivMenu(Config config, uint startingID)
@@ -58,7 +58,7 @@ namespace CloneCAD.Client.Menus
             SyncCheck.Checked = false;
         }
 
-        private bool RefreshCiv()
+        private async Task RefreshCiv()
         {
             Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
@@ -68,33 +68,34 @@ namespace CloneCAD.Client.Menus
             }
             catch (SocketException)
             {
-                return false;
+                return;
             }
 
             NetRequestHandler handler = new NetRequestHandler(s);
 
-            Tuple<NetRequestResult, Civilian> tryGetResult = handler.TryTriggerNetFunction<Civilian>("GetCivilian", LocalCivilian?.ID ?? StartingID).GetAwaiter().GetResult();
+            Task<Tuple<NetRequestResult, Civilian>> tryTriggerResult = handler.TryTriggerNetFunction<Civilian>("GetCivilian", LocalCivilian?.ID ?? StartingID);
 
-            Handler.GetFailTest(tryGetResult.Item1);
+            await handler.Receive();
+            await tryTriggerResult;
+
+            Handler.GetFailTest(tryTriggerResult.Result.Item1);
 
             s.Shutdown(SocketShutdown.Both);
             s.Close();
 
-            LocalCivilian = tryGetResult.Item2;
-
-            return true;
+            LocalCivilian = tryTriggerResult.Result.Item2;
         }
 
-        private void Timer_Tick(object sender, EventArgs e)
+        private async void Timer_Tick(object sender, EventArgs e)
         {
             if (!SyncCheck.Checked && LocalCivilian != null)
-                Sync();
+                await Sync();
             else
             {
                 switch (LocalCivilian)
                 {
                     case null when DownloadedTimeout == 1:
-                        Reserve();
+                        await Reserve();
                         break;
                     case null:
                         DownloadedTimeout++;
@@ -116,68 +117,74 @@ namespace CloneCAD.Client.Menus
         private void PlateBox_TextChanged(object sender, EventArgs e) =>
             SyncCheck.Checked = false;
 
-        private void SyncBtn_Click(object sender, EventArgs e)
+        private async void SyncBtn_Click(object sender, EventArgs e)
         {
             if (LocalCivilian == null)
             {
-                Reserve();
+                await Reserve();
                 return;
             }
 
-            Sync();
+            await Sync();
         }
 
-        public void Sync()
+        public async Task Sync()
         {
             if (LocalCivilian != null)
             {
                 if (!SyncCheck.Checked)
-                    ThreadPool.QueueUserWorkItem(x =>
-                    {
-                        Upload().Wait();
-
-                        Download().Wait();
-                    });
+                {
+                    await Upload();
+                    await Download();
+                }
                 else
-                    ThreadPool.QueueUserWorkItem(x => Download().Wait());
+                    await Download();
             }
             else if (StartingID == 0)
-                Reserve();
+            {
+                if (await Reserve())
+                    CivilianDownloaded?.Invoke(this, EventArgs.Empty);
+            }
             else
-                ThreadPool.QueueUserWorkItem(x => Download().Wait());
+                await Download();
         }
 
-        public void Reserve()
+        public async Task<bool> Reserve()
         {
-            ThreadPool.QueueUserWorkItem(z =>
+            Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
+            try
             {
-                Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                s.Connect(Config.IP, Config.Port);
+            }
+            catch (SocketException)
+            {
+                return false;
+            }
 
-                try
-                {
-                    s.Connect(Config.IP, Config.Port);
-                }
-                catch (SocketException)
-                {
-                    return;
-                }
+            NetRequestHandler handler = new NetRequestHandler(s);
 
-                NetRequestHandler handler = new NetRequestHandler(s);
+            Task<Tuple<NetRequestResult, Civilian>> tryTriggerResult = handler.TryTriggerNetFunction<Civilian>("ReserveCivilian");
+                
+            await handler.Receive();
+            await tryTriggerResult;
 
-                Tuple<NetRequestResult, Civilian> tryGetResult = handler.TryTriggerNetFunction<Civilian>("ReserveCivilian").GetAwaiter().GetResult();
+            LocalCivilian = tryTriggerResult.Result.Item2;
 
-                s.Shutdown(SocketShutdown.Both);
-                s.Close();
 
-                Handler.GetFailTest(tryGetResult.Item1);
+            s.Shutdown(SocketShutdown.Both);
+            s.Close();
 
-                LocalCivilian = tryGetResult.Item2;
-            });
+            Handler.GetFailTest(tryTriggerResult.Result.Item1);
+
+            LocalCivilian = tryTriggerResult.Result.Item2;
+
+            return true;
         }
 
         public async Task Download()
         {
-            RefreshCiv();
+            await RefreshCiv();
 
             Invoke((MethodInvoker)delegate
             {
@@ -245,7 +252,7 @@ namespace CloneCAD.Client.Menus
             await Task.FromResult(0);
         }
 
-        private bool UpdateCiv()
+        private async Task UpdateCiv()
         {
             Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
@@ -255,23 +262,18 @@ namespace CloneCAD.Client.Menus
             }
             catch (SocketException)
             {
-                return false;
+                return;
             }
 
             NetRequestHandler handler = new NetRequestHandler(s);
 
-            if (handler.TryTriggerNetEvent("UpdateCivilian", LocalCivilian).GetAwaiter().GetResult() != NetRequestResult.Completed)
-            {
-                s.Shutdown(SocketShutdown.Both);
-                s.Close();
+            Task netEvent = handler.TryTriggerNetEvent("UpdateCivilian", LocalCivilian);
 
-                return false;
-            }
+            await handler.Receive();
+            await netEvent;
 
             s.Shutdown(SocketShutdown.Both);
             s.Close();
-
-            return true;
         }
 
         public async Task Upload()
@@ -286,7 +288,7 @@ namespace CloneCAD.Client.Menus
                     (from ListViewItem wep in RegisteredWepList.Items select wep.Text).ToList();
             });
 
-            UpdateCiv();
+            await UpdateCiv();
 
             await Task.FromResult(0);
         }

@@ -21,24 +21,18 @@ namespace CloneCAD.Client
 #if !DEBUG
             try
             {
+#endif
                 config = new Config(CONFIG_PATH);
 
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.Run(new Main(config));
+#if !DEBUG
             }
             catch (Exception e)
             {
                 new ErrorHandler(config?.Locale).ExceptionHandler(e, 4);
             }
-#endif
-#if DEBUG
-
-            config = new Config(CONFIG_PATH);
-
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Main(config));
 #endif
         }
     }

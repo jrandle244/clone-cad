@@ -5,6 +5,7 @@ using CloneCAD.Client.DataHolders;
 using System;
 using System.Net.Sockets;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using CloneCAD.Common;
 using CloneCAD.Common.DataHolders;
@@ -31,10 +32,10 @@ namespace CloneCAD.Client.Menus
             SkinManager.ColorScheme = new ColorScheme(Primary.Red700, Primary.Red500, Primary.Red900, Accent.Red100, TextShade.WHITE);
         }
 
-        private void LaunchBtn_Click(object sender, EventArgs ev) =>
-            ThreadPool.QueueUserWorkItem(x => Launch(IDBox.Text, NameBox.Text, PlateBox.Text));
+        private async void LaunchBtn_Click(object sender, EventArgs ev) =>
+            await Launch(IDBox.Text, NameBox.Text, PlateBox.Text);
 
-        private void Launch(string id, string name, string plate)
+        private async Task Launch(string id, string name, string plate)
         {
             uint receivedID = 1;
 
@@ -50,7 +51,7 @@ namespace CloneCAD.Client.Menus
                 {
                     if (MessageBox.Show(Config.Locale["CouldntConnectMsg"], @"CloneCAD",
                             MessageBoxButtons.RetryCancel, MessageBoxIcon.Error) == DialogResult.Retry)
-                        Launch(id, name, plate);
+                        await Launch(id, name, plate);
 
                     return;
                 }
@@ -59,44 +60,50 @@ namespace CloneCAD.Client.Menus
 
                 if (!string.IsNullOrWhiteSpace(plate))
                 {
-                    Tuple<NetRequestResult, uint> tryGetResult =
-                        handler.TryTriggerNetFunction<uint>("CheckPlate", plate).GetAwaiter().GetResult();
+                    Task<Tuple<NetRequestResult, uint>> tryTriggerResult =
+                        handler.TryTriggerNetFunction<uint>("CheckPlate", plate);
+
+                    await handler.Receive();
+                    await tryTriggerResult;
 
                     s.Shutdown(SocketShutdown.Both);
                     s.Close();
 
-                    Handler.GetFailTest(tryGetResult.Item1);
+                    Handler.GetFailTest(tryTriggerResult.Result.Item1);
 
-                    if (tryGetResult.Item2 == 0 && MessageBox.Show(Config.Locale["PlateCheckEmptyMsg"], @"CloneCAD",
+                    if (tryTriggerResult.Result.Item2 == 0 && MessageBox.Show(Config.Locale["PlateCheckEmptyMsg"], @"CloneCAD",
                             MessageBoxButtons.RetryCancel, MessageBoxIcon.Information,
                             MessageBoxDefaultButton.Button2) == DialogResult.Retry)
                     {
-                        Launch(id, name, plate);
+                        await Launch(id, name, plate);
                         return;
                     }
 
-                    receivedID = tryGetResult.Item2;
+                    receivedID = tryTriggerResult.Result.Item2;
                 }
                 else if (!string.IsNullOrWhiteSpace(name))
                 {
-                    Tuple<NetRequestResult, uint> tryGetResult = handler.TryTriggerNetFunction<uint>("CheckName", plate)
-                        .GetAwaiter().GetResult();
+                    Task<Tuple<NetRequestResult, uint>> tryTriggerResult =
+                        handler.TryTriggerNetFunction<uint>("CheckName", name);
+
+                    await handler.Receive();
+                    await tryTriggerResult;
 
                     s.Shutdown(SocketShutdown.Both);
                     s.Close();
 
-                    Handler.GetFailTest(tryGetResult.Item1);
+                    Handler.GetFailTest(tryTriggerResult.Result.Item1);
 
-                    if (tryGetResult.Item2 == 0 && MessageBox.Show(Config.Locale["NameCheckEmptyMsg"], @"CloneCAD",
+                    if (tryTriggerResult.Result.Item2 == 0 && MessageBox.Show(Config.Locale["NameCheckEmptyMsg"], @"CloneCAD",
                             MessageBoxButtons.RetryCancel, MessageBoxIcon.Information,
                             MessageBoxDefaultButton.Button2) ==
                         DialogResult.Retry)
                     {
-                        Launch(id, name, plate);
+                        await Launch(id, name, plate);
                         return;
                     }
 
-                    receivedID = tryGetResult.Item2;
+                    receivedID = tryTriggerResult.Result.Item2;
                 }
             }
             else if (!IDBox.Text.TryToRawID(out receivedID))
@@ -110,14 +117,14 @@ namespace CloneCAD.Client.Menus
                 CivView civ = new CivView(Config, receivedID);
 
                 civ.Show();
-                civ.Download();
+                civ.Download().Wait();
             });
         }
 
-        private new void KeyDown(object sender, KeyEventArgs e)
+        private new async void KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
-                ThreadPool.QueueUserWorkItem(x => Launch(IDBox.Text, NameBox.Text, PlateBox.Text));
+                await Launch(IDBox.Text, NameBox.Text, PlateBox.Text);
         }
 
         private void IDBox_KeyPress(object sender, KeyPressEventArgs e)

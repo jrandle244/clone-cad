@@ -4,10 +4,12 @@ using CloneCAD.Common.DataHolders;
 using CloneCAD.Client.DataHolders;
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using CloneCAD.Common;
 using CloneCAD.Common.NetCode;
@@ -35,7 +37,7 @@ namespace CloneCAD.Client.Menus
             SkinManager.ColorScheme = new ColorScheme(Primary.Green500, Primary.Green700, Primary.Green300, Accent.Green700, TextShade.WHITE);
         }
 
-        private bool RefreshCiv(uint id, out Civilian civ)
+        private async Task<Tuple<bool, Civilian>> RefreshCiv(uint id)
         {
             Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
@@ -45,99 +47,126 @@ namespace CloneCAD.Client.Menus
             }
             catch (SocketException)
             {
-                civ = null;
-                return false;
+                return new Tuple<bool, Civilian>(false, null);
             }
 
             NetRequestHandler handler = new NetRequestHandler(s);
 
-            Tuple<NetRequestResult, Civilian> tryTriggerResult = handler.TryTriggerNetFunction<Civilian>("GetCivilian", id).GetAwaiter().GetResult();
+            Task<Tuple<NetRequestResult, Civilian>> tryTriggerResult = handler.TryTriggerNetFunction<Civilian>("GetCivilian", id);
+
+            await handler.Receive();
+            await tryTriggerResult;
 
             s.Shutdown(SocketShutdown.Both);
             s.Close();
 
-            Handler.GetFailTest(tryTriggerResult.Item1);
-
-            civ = tryTriggerResult.Item2;
-            return true;
+            Handler.GetFailTest(tryTriggerResult.Result.Item1);
+            
+            return new Tuple<bool, Civilian>(tryTriggerResult.Result.Item1 == NetRequestResult.Completed, tryTriggerResult.Result.Item2);
         }
 
-        public void Sync(uint[] ids)
+        public async Task Sync(uint[] ids)
         {
             if (ids == null)
                 return;
 
             Civilians.Clear();
-
-            ThreadPool.QueueUserWorkItem(z =>
+            
+            foreach (uint id in ids)
             {
-                foreach (uint id in ids)
+                Tuple<bool, Civilian> returnVal = await RefreshCiv(id);
+                if (!returnVal.Item1 || returnVal.Item2 == null)
+                    continue;
+
+                Invoke((MethodInvoker)delegate
                 {
-                    if (!RefreshCiv(id, out Civilian civ) || civ == null)
-                        continue;
+                    Civilians.Add(returnVal.Item2);
+                    civs.Items.Add(new ListViewItem(new[] { returnVal.Item2.ID.ToSplitID(), returnVal.Item2.Name }));
+                });
+            }
+        }
+
+        private async void Civs_DoubleClick(object sender, EventArgs e)
+        {
+            int index = civs.SelectedItems[0].Index;
+
+            CivMenu civMenu = new CivMenu(Config, civs.Items[index].SubItems[0].Text.ToRawID());
+
+            civMenu.Closed += delegate
+            {
+                Invoke((MethodInvoker)Close);
+            };
+
+            civMenu.CivilianDownloaded += delegate
+            {
+                ThreadPool.QueueUserWorkItem(x =>
+                {
+                    Invoke((MethodInvoker)delegate
+                    {
+                        Civilians.Add(civMenu.LocalCivilian);
+#pragma warning disable CS1690 // Accessing a member on a field of a marshal-by-reference class may cause a runtime exception
+                        civs.Items.Add(new ListViewItem(new[] { civMenu.LocalCivilian.ID.ToSplitID(), "" }));
+#pragma warning restore CS1690 // Accessing a member on a field of a marshal-by-reference class may cause a runtime exception
+                    });
+
+                    while (true)
+                    {
+                        Invoke((MethodInvoker)delegate
+                        {
+                            civs.Items[index].SubItems[1].Text = civMenu.LocalCivilian.Name;
+                        });
+                        Thread.Sleep(5000);
+                    }
+                });
+            };
+
+            civMenu.Show();
+            await civMenu.Sync();
+        }
+
+        private async void Create_Click(object sender, EventArgs e)
+        {
+            CivMenu civMenu = new CivMenu(Config, 0);
+
+            civMenu.Closed += delegate
+            {
+                Invoke((MethodInvoker)Close);
+            };
+
+            civMenu.CivilianDownloaded += delegate
+            {
+                ThreadPool.QueueUserWorkItem(x =>
+                {
+                    int index = -1;
 
                     Invoke((MethodInvoker)delegate
                     {
-                        Civilians.Add(civ);
-                        civs.Items.Add(new ListViewItem(new[] { civ.ID.ToSplitID(), civ.Name }));
-                    });
-                }
-            });
-        }
+                        Civilians.Add(civMenu.LocalCivilian);
 
-        private void Civs_DoubleClick(object sender, EventArgs e)
-        {
-            CivMenu civ = new CivMenu(Config, civs.Items[civs.SelectedItems[0].Index].SubItems[0].Text.ToRawID());
-
-            civ.Show();
-            civ.Sync();
-
-            bool open = true;
-
-            civ.FormClosed += delegate { open = false; };
-
-            ThreadPool.QueueUserWorkItem(x =>
-            {
-                while (open)
-                {
-                    Invoke((MethodInvoker) delegate
-                    {
-                        if (civ.LocalCivilian != null)
-                            civs.Items[civs.SelectedItems[0].Index].SubItems[1].Text = civ.LocalCivilian.Name;
-                    });
-                    Thread.Sleep(5000);
-                }
-            });
-        }
-
-        private void Create_Click(object sender, EventArgs e)
-        {
-            CivMenu civMenu = new CivMenu(Config, 0);
-            
-            civMenu.Show();
-            civMenu.Sync();
-
-            ThreadPool.QueueUserWorkItem(x =>
-            {
-                while (civMenu.LocalCivilian == null)
-                    Thread.Sleep(1000);
-
-                Invoke((MethodInvoker) delegate
-                {
-                    Civilians.Add(civMenu.LocalCivilian);
+                        ListViewItem item = new ListViewItem(new[] { civMenu.LocalCivilian.ID.ToSplitID(), "" });
 #pragma warning disable CS1690 // Accessing a member on a field of a marshal-by-reference class may cause a runtime exception
-                    civs.Items.Add(new ListViewItem(new[] {civMenu.StartingID.ToString(), ""}));
+                        civs.Items.Add(item);
 #pragma warning restore CS1690 // Accessing a member on a field of a marshal-by-reference class may cause a runtime exception
-                });
+                        index = civs.Items.IndexOf(item);
+                    });
 
-                civMenu.Closed += delegate
-                {
-                    Invoke((MethodInvoker)Close);
-                };
-            });
+                    while (true)
+                    {
+                        Invoke((MethodInvoker)delegate
+                        {
+                            civs.Items[index].SubItems[1].Text = civMenu.LocalCivilian.Name;
+                        });
+
+                        Thread.Sleep(5000);
+                    }
+                });
+            };
+
+            civMenu.Show();
+            await civMenu.Sync();
         }
 
-        private void Delete_Click(object sender, EventArgs ev)
+        private async void Delete_Click(object sender, EventArgs ev)
         {
             if (civs.SelectedItems.Count == 0)
                 return;
@@ -159,15 +188,18 @@ namespace CloneCAD.Client.Menus
 
             NetRequestHandler handler = new NetRequestHandler(s);
 
-            Tuple<NetRequestResult, bool> tryTriggerResult = handler.TryTriggerNetFunction<bool>("DeleteCivilian", civs.SelectedItems[0].SubItems[0].Text.ToRawID()).GetAwaiter().GetResult();
+            Task<Tuple<NetRequestResult, bool>> tryTriggerResult = handler.TryTriggerNetFunction<bool>("DeleteCivilian", civs.SelectedItems[0].SubItems[0].Text.ToRawID());
+
+            await handler.Receive();
+            await tryTriggerResult;
 
             s.Shutdown(SocketShutdown.Both);
             s.Close();
             
-            Handler.GetFailTest(tryTriggerResult.Item1);
+            Handler.GetFailTest(tryTriggerResult.Result.Item1);
 
-            if (tryTriggerResult.Item2)
-                Sync(Civilians.Select(x => x.Key).ToArray());
+            if (tryTriggerResult.Result.Item2)
+                await Sync(Civilians.Select(x => x.Key).ToArray());
             else
                 Handler.Error(Config.Locale["CivilianNotDeletedMsg"]);
 

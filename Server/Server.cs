@@ -69,11 +69,11 @@ namespace CloneCAD.Server
                 ThreadPool.QueueUserWorkItem(Connect, Listener.AcceptSocket());
         }
 
-        private void Connect(object socketO)
+        private async void Connect(object socketO)
         {
             Socket socket = (Socket)socketO;
 
-            NetRequestHandler handler = new NetRequestHandler(socket, false);
+            NetRequestHandler handler = new NetRequestHandler(socket);
 
             handler.NetFunctions.Add("GetCivilian", new NetFunction(GetCivilian));
             handler.NetFunctions.Add("ReserveCivilian", new NetFunction(ReserveCivilian));
@@ -85,7 +85,7 @@ namespace CloneCAD.Server
 
             handler.NetEvents.Add("UpdateCivilian", new NetEvent(UpdateCivilian));
 
-            handler.Receive();
+            await handler.Receive();
         }
 
         #region netfunctions

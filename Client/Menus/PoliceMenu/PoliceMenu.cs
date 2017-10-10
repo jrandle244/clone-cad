@@ -5,6 +5,7 @@ using CloneCAD.Common.DataHolders;
 using System;
 using System.Net.Sockets;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using CloneCAD.Client.DataHolders;
 using CloneCAD.Common;
@@ -26,12 +27,13 @@ namespace CloneCAD.Client.Menus
 
             InitializeComponent();
             LoadLocale(config.Locale);
-            
+
             SkinManager.Theme = MaterialSkinManager.Themes.LIGHT;
-            SkinManager.ColorScheme = new ColorScheme(Primary.LightBlue500, Primary.LightBlue900, Primary.LightBlue300, Accent.Blue700, TextShade.WHITE);
+            SkinManager.ColorScheme = new ColorScheme(Primary.LightBlue500, Primary.LightBlue900, Primary.LightBlue300,
+                Accent.Blue700, TextShade.WHITE);
         }
 
-        private void SendTicket(uint id, Ticket ticket)
+        private async Task SendTicket(uint id, Ticket ticket)
         {
             Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
@@ -41,23 +43,29 @@ namespace CloneCAD.Client.Menus
             }
             catch
             {
-                if (MessageBox.Show(Config.Locale["CouldntConnectMsg"], @"CloneCAD", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error) == DialogResult.Retry)
-                    SendTicket(id, ticket);
+                if (MessageBox.Show(Config.Locale["CouldntConnectMsg"], @"CloneCAD", MessageBoxButtons.RetryCancel,
+                        MessageBoxIcon.Error) == DialogResult.Retry)
+                    await SendTicket(id, ticket);
 
                 return;
             }
 
             NetRequestHandler handler = new NetRequestHandler(s);
 
-            Tuple<NetRequestResult, bool> tryGetResult = handler.TryTriggerNetFunction<bool>("TicketCivilian", id, ticket).GetAwaiter().GetResult();
+            Task<Tuple<NetRequestResult, bool>> tryTriggerResult =
+                handler.TryTriggerNetFunction<bool>("TicketCivilian", id, ticket);
+
+            await handler.Receive();
+            await tryTriggerResult;
 
             s.Shutdown(SocketShutdown.Both);
             s.Close();
 
-            Handler.GetFailTest(tryGetResult.Item1);
+            Handler.GetFailTest(tryTriggerResult.Result.Item1);
 
-            if (tryGetResult.Item2)
-                MessageBox.Show(Config.Locale["TicketGivenMsg"], @"CloneCAD", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if (tryTriggerResult.Result.Item2)
+                MessageBox.Show(Config.Locale["TicketGivenMsg"], @"CloneCAD", MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
             else
                 Handler.Error("TicketEmptyMsg");
         }
@@ -85,32 +93,27 @@ namespace CloneCAD.Client.Menus
             return new Ticket(ushort.Parse(PriceBox.Text), type, DescriptionBox.Text);
         }
 
-        private new void KeyDown(object sender, KeyEventArgs e)
+        private new async void KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
-                ThreadPool.QueueUserWorkItem(x =>
-                {
-                    if (!IDBox.Text.TryToRawID(out uint parsedID))
-                    {
-                        Handler.Error("UnableToConvertIDMsg");
-                        return;
-                    }
-
-                    SendTicket(parsedID, PrepTicket());
-                });
+            {
+                if (IDBox.Text.TryToRawID(out uint parsedID))
+                    await SendTicket(parsedID, PrepTicket());
+                else
+                    Handler.Error("UnableToConvertIDMsg");
+            }
         }
 
-        private void GiveTicketBtn_Click(object sender, EventArgs e) =>
-            ThreadPool.QueueUserWorkItem(x =>
+        private async void GiveTicketBtn_Click(object sender, EventArgs e)
+        {
+            if (!IDBox.Text.TryToRawID(out uint parsedID))
             {
-                if (!IDBox.Text.TryToRawID(out uint parsedID))
-                {
-                    Handler.Error("UnableToConvertIDMsg");
-                    return;
-                }
+                Handler.Error("UnableToConvertIDMsg");
+                return;
+            }
 
-                SendTicket(parsedID, PrepTicket());
-            });
+            await SendTicket(parsedID, PrepTicket());
+        }
 
         private void LoadLocale(LocaleConfig locale)
         {

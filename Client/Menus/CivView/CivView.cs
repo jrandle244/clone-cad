@@ -6,6 +6,7 @@ using System;
 using System.Linq;
 using System.Net.Sockets;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using CloneCAD.Common;
 using CloneCAD.Common.NetCode;
@@ -35,7 +36,7 @@ namespace CloneCAD.Client.Menus
             LoadLocale(config.Locale);
         }
 
-        private bool RefreshCiv()
+        private async Task RefreshCiv()
         {
             try
             {
@@ -43,108 +44,100 @@ namespace CloneCAD.Client.Menus
             }
             catch (SocketException)
             {
-                return false;
+                return;
             }
 
             NetRequestHandler handler = new NetRequestHandler(S);
 
-            Tuple<NetRequestResult, Civilian> tryGetResult = handler.TryTriggerNetFunction<Civilian>("GetCivilian", StartingID).GetAwaiter().GetResult();
+            Task<Tuple<NetRequestResult, Civilian>> tryTriggerResult = handler.TryTriggerNetFunction<Civilian>("GetCivilian", StartingID);
 
-            Handler.GetFailTest(tryGetResult.Item1);
+            await handler.Receive();
+            await tryTriggerResult;
+
+            Handler.GetFailTest(tryTriggerResult.Result.Item1);
 
             S.Shutdown(SocketShutdown.Both);
             S.Close();
             S = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-            LocalCivilian = tryGetResult.Item2;
-
-            return true;
+            LocalCivilian = tryTriggerResult.Result.Item2;
         }
 
-        private void SyncBtn_Click(object sender, EventArgs e)
+        private async void SyncBtn_Click(object sender, EventArgs e) =>
+            await Download();
+
+        public async Task Download()
         {
-            Download();
+            await RefreshCiv();
+
+            Invoke((MethodInvoker)delegate
+            {
+                IDLabel.Text = Config.Locale["IDTextExec", LocalCivilian.ID.ToSplitID()];
+
+                {
+                    int[] nameS = { NameBox.SelectionStart, NameBox.SelectionLength };
+
+                    NameBox.Text = LocalCivilian.Name;
+                    if (NameBox.Text.Length != 0)
+                    {
+                        NameBox.SelectionStart = nameS[0];
+                        NameBox.SelectionLength = nameS[1];
+                    }
+                }
+
+                {
+                    int[] plateS = { PlateBox.SelectionStart, PlateBox.SelectionLength };
+
+                    PlateBox.Text = LocalCivilian.RegisteredPlate;
+                    if (PlateBox.Text.Length != 0)
+                    {
+                        PlateBox.SelectionStart = plateS[0];
+                        PlateBox.SelectionLength = plateS[1];
+                    }
+                }
+
+                {
+                    int[] businessS = { BusinessBox.SelectionStart, BusinessBox.SelectionLength };
+
+                    BusinessBox.Text = LocalCivilian.AssociatedBusiness;
+                    if (BusinessBox.Text.Length != 0)
+                    {
+                        BusinessBox.SelectionStart = businessS[0];
+                        BusinessBox.SelectionLength = businessS[1];
+                    }
+                }
+
+                {
+                    int[] weaponS = (from ListViewItem item in RegisteredWepList.SelectedItems select item.Index)
+                        .ToArray();
+
+                    RegisteredWepList.Items.Clear();
+                    LocalCivilian.RegisteredWeapons.ForEach(x => RegisteredWepList.Items.Add(x));
+
+                    if (RegisteredWepList.Items.Count != 0)
+                        foreach (int i in weaponS)
+                            RegisteredWepList.Items[i].Selected = true;
+                }
+
+                {
+                    int ticketS = TicketList.SelectedItems.Count > 0 ? TicketList.SelectedItems[0].Index : -1;
+
+                    TicketList.Items.Clear();
+                    LocalCivilian.Tickets.ForEach(x =>
+                        TicketList.Items.Add(new ListViewItem(new[] { x.Price.ToString(), x.Type.ToString(), x.Description })));
+
+                    if (TicketList.Items.Count != 0 && ticketS != -1)
+                        TicketList.Items[ticketS].Selected = true;
+                }
+
+                SyncCheck.Checked = true;
+            });
         }
 
-        public void Download() =>
-            ThreadPool.QueueUserWorkItem(z =>
-            {
-                RefreshCiv();
+        private async void Timer_Tick(object sender, EventArgs e) =>
+            await Download();
 
-                Invoke((MethodInvoker)delegate
-                {
-                    IDLabel.Text = Config.Locale["IDText", LocalCivilian.ID.ToSplitID()];
-
-                    {
-                        int[] nameS = { NameBox.SelectionStart, NameBox.SelectionLength };
-
-                        NameBox.Text = LocalCivilian.Name;
-                        if (NameBox.Text.Length != 0)
-                        {
-                            NameBox.SelectionStart = nameS[0];
-                            NameBox.SelectionLength = nameS[1];
-                        }
-                    }
-
-                    {
-                        int[] plateS = { PlateBox.SelectionStart, PlateBox.SelectionLength };
-
-                        PlateBox.Text = LocalCivilian.RegisteredPlate;
-                        if (PlateBox.Text.Length != 0)
-                        {
-                            PlateBox.SelectionStart = plateS[0];
-                            PlateBox.SelectionLength = plateS[1];
-                        }
-                    }
-
-                    {
-                        int[] businessS = { BusinessBox.SelectionStart, BusinessBox.SelectionLength };
-
-                        BusinessBox.Text = LocalCivilian.AssociatedBusiness;
-                        if (BusinessBox.Text.Length != 0)
-                        {
-                            BusinessBox.SelectionStart = businessS[0];
-                            BusinessBox.SelectionLength = businessS[1];
-                        }
-                    }
-
-                    {
-                        int[] weaponS = (from ListViewItem item in RegisteredWepList.SelectedItems select item.Index)
-                            .ToArray();
-
-                        RegisteredWepList.Items.Clear();
-                        LocalCivilian.RegisteredWeapons.ForEach(x => RegisteredWepList.Items.Add(x));
-
-                        if (RegisteredWepList.Items.Count != 0)
-                            foreach (int i in weaponS)
-                                RegisteredWepList.Items[i].Selected = true;
-                    }
-
-                    {
-                        int ticketS = TicketList.SelectedItems.Count > 0 ? TicketList.SelectedItems[0].Index : -1;
-
-                        TicketList.Items.Clear();
-                        LocalCivilian.Tickets.ForEach(x =>
-                            TicketList.Items.Add(new ListViewItem(new[] { x.Price.ToString(), x.Type.ToString(), x.Description })));
-
-                        if (TicketList.Items.Count != 0 && ticketS != -1)
-                            TicketList.Items[ticketS].Selected = true;
-                    }
-
-                    SyncCheck.Checked = true;
-                });
-            });
-
-        private void Timer_Tick(object sender, EventArgs e) =>
-            Download();
-
-        private void NameBox_KeyPress(object sender, KeyPressEventArgs e) =>
-            e.Handled = true;
-
-        private void BusinessBox_KeyPress(object sender, KeyPressEventArgs e) =>
-            e.Handled = true;
-
-        private void PlateBox_KeyPress(object sender, KeyPressEventArgs e) =>
+        private new void KeyPress(object sender, KeyPressEventArgs e) =>
             e.Handled = true;
 
         private void LoadLocale(LocaleConfig locale)
