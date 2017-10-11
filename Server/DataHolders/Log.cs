@@ -30,7 +30,7 @@ namespace CloneCAD.Server.DataHolders
             }
             catch (IOException)
             {
-                Handler.Error("LogFileInUse", 1);
+                Handler.Error("LogFileInUseMsg", 1);
             }
         }
 

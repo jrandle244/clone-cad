@@ -33,7 +33,7 @@ namespace CloneCAD.Server
             }
             catch (Exception e)
             {
-                new ErrorHandler(config?.Locale).Error("An exception went unhandled.", 3, e);
+                new ErrorHandler(config?.Locale).Error("UnexpectedErrorMsg", 3, e);
             }
 #endif
         }

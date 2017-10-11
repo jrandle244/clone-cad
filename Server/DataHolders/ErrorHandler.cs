@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Media;
-using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using CloneCAD.Common;
 using CloneCAD.Common.DataHolders;
-using CloneCAD.Common.NetCode;
 
 namespace CloneCAD.Server.DataHolders
 {
@@ -14,23 +11,6 @@ namespace CloneCAD.Server.DataHolders
 
         public ErrorHandler(LocaleConfig locale) =>
             Locale = locale;
-
-        public void GetFailTest(NetRequestResult tryGetResult, [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string caller = null, [CallerFilePath] string filePath = null)
-        {
-            switch (tryGetResult)
-            {
-                case NetRequestResult.Completed:
-                    return;
-                case NetRequestResult.Invalid:
-                    Error("TryGetInvalid", 5, caller, lineNumber, filePath);
-                    break;
-                case NetRequestResult.Incompleted:
-                    Error("TryGetIncomplete", 5, caller, lineNumber, filePath);
-                    break;
-            }
-
-            Environment.Exit(4);
-        }
 
         public void Error(string localeKey, int exitCode)
         {
@@ -50,9 +30,7 @@ namespace CloneCAD.Server.DataHolders
             if (Locale == null)
                 Console.WriteLine(@"The error has been saved to a log (" + e.ExceptionHandlerBackend() + @").\nPlease upload the error log to the Discord server or post it to GitHub.");
             else
-                MessageBox.Show(Locale["UnexpectedError"].StartsWith("LOCALE ERROR (")
-                    ? @"The error has been saved to a log (" + e.ExceptionHandlerBackend() + @").\nPlease upload the error log to the Discord server or post it to GitHub."
-                    : Locale["UnexpectedError", e.ExceptionHandlerBackend()]);
+                MessageBox.Show(Locale["UnexpectedErrorMsg"].StartsWith("LOCALE ERROR (") ? @"The error has been saved to a log (" + e.ExceptionHandlerBackend() + @").\nPlease upload the error log to the Discord server or post it to GitHub." : Locale["UnexpectedError", e.ExceptionHandlerBackend()]);
 
             Environment.Exit(exitCode);
         }

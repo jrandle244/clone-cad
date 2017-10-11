@@ -2,11 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Net.Sockets;
-using System.Runtime.Remoting.Messaging;
 using System.Runtime.Serialization;
-using System.Threading;
 using System.Threading.Tasks;
 using CloneCAD.Common.DataHolders;
 
@@ -69,7 +66,7 @@ namespace CloneCAD.Common.NetCode
             if (buffer.Length == 0)
                 return;
 
-            NetRequest netRequest = null;
+            NetRequest netRequest;
 
             try
             {
@@ -412,7 +409,7 @@ namespace CloneCAD.Common.NetCode
             while (!CachedNetValues.ContainsKey(netValueName) && !Closed)
                 await Task.Delay(10);
 
-            Tuple<bool, T> tuple = CachedNetValues[netValueName] == null ? new Tuple<bool, T>(CachedNetValues[netValueName].Item1, default(T)) : new Tuple<bool, T>(CachedNetValues[netValueName].Item1, (T)CachedNetValues[netValueName].Item2);
+            Tuple<bool, T> tuple = CachedNetValues[netValueName].Item2 == null ? new Tuple<bool, T>(CachedNetValues[netValueName].Item1, default(T)) : new Tuple<bool, T>(CachedNetValues[netValueName].Item1, (T)CachedNetValues[netValueName].Item2);
             CachedNetValues.Remove(netValueName);
             return tuple;
         }
