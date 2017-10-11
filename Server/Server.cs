@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
@@ -73,17 +74,21 @@ namespace CloneCAD.Server
         {
             Socket socket = (Socket)socketO;
 
-            NetRequestHandler handler = new NetRequestHandler(socket);
+            NetRequestHandler handler = new NetRequestHandler(socket)
+            {
+                Console = Console.Out,
+                Log = Config.Log.Writer
+            };
+            
+            handler.Functions.Add("GetCivilian", new NetFunction(GetCivilian));
+            handler.Functions.Add("ReserveCivilian", new NetFunction(ReserveCivilian));
+            handler.Functions.Add("TicketCivilian", new NetFunction(TicketCivilian));
+            handler.Functions.Add("DeleteCivilian", new NetFunction(DeleteCivilian));
 
-            handler.NetFunctions.Add("GetCivilian", new NetFunction(GetCivilian));
-            handler.NetFunctions.Add("ReserveCivilian", new NetFunction(ReserveCivilian));
-            handler.NetFunctions.Add("TicketCivilian", new NetFunction(TicketCivilian));
-            handler.NetFunctions.Add("DeleteCivilian", new NetFunction(DeleteCivilian));
+            handler.Functions.Add("CheckPlate", new NetFunction(CheckPlate));
+            handler.Functions.Add("CheckName", new NetFunction(CheckName));
 
-            handler.NetFunctions.Add("CheckPlate", new NetFunction(CheckPlate));
-            handler.NetFunctions.Add("CheckName", new NetFunction(CheckName));
-
-            handler.NetEvents.Add("UpdateCivilian", new NetEvent(UpdateCivilian));
+            handler.Events.Add("UpdateCivilian", new NetEvent(UpdateCivilian));
 
             await handler.Receive();
         }
@@ -95,8 +100,9 @@ namespace CloneCAD.Server
                 return null;
             
             uint civilianID = (uint) objs[0];
+            int civilianHashCode = (int) objs[1];
 
-            if (Civilians.Value.ContainsKey(civilianID))
+            if (Civilians.Value.ContainsKey(civilianID) && Civilians.Value[civilianID].GetHashCode() != civilianHashCode)
             {
                 Config.Log.WriteLine("RetrievedCivilian", handler.IP, Log.Status.Succeeded, civilianID.ToSplitID());
                 return Civilians.Value[civilianID];

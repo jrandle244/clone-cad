@@ -27,7 +27,7 @@ namespace CloneCAD.Client.Menus
             LoadLocale(config.Locale);
         }
 
-        private void Launch_Click(object sender, EventArgs e)
+        private async void Launch_Click(object sender, EventArgs e)
         {
             Visible = false;
 
@@ -55,14 +55,14 @@ namespace CloneCAD.Client.Menus
                     }
                 };
 
-                civLauncher.Show();
-
                 if (File.Exists(Program.ID_PATH))
                 {
                     StorableValue<uint[]> ids = new StorableValue<uint[]>(Program.ID_PATH);
 
-                    civLauncher.Sync(ids.Value);
+                    await civLauncher.Sync(ids.Value);
                 }
+
+                civLauncher.ShowDialog();
             }
             else if (PoliceRadial.Checked)
             {
@@ -79,7 +79,7 @@ namespace CloneCAD.Client.Menus
                     }
                 };
 
-                policeMenu.Show();
+                policeMenu.ShowDialog();
             }
             else if (DispatchRadial.Checked)
             {
@@ -96,7 +96,7 @@ namespace CloneCAD.Client.Menus
                     }
                 };
 
-                dispatchMenu.Show();
+                dispatchMenu.ShowDialog();
             }
         }
 

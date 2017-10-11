@@ -332,8 +332,6 @@
         }
 
         #endregion
-
-        private MaterialSkin.Controls.MaterialSingleLineTextField NameBox;
         private MaterialSkin.Controls.MaterialSingleLineTextField BusinessBox;
         private MaterialSkin.Controls.MaterialSingleLineTextField PlateBox;
         private MaterialSkin.Controls.MaterialListView TicketList;
@@ -352,5 +350,6 @@
         private System.Windows.Forms.Timer Timer;
         private MaterialSkin.Controls.MaterialCheckBox SyncCheck;
         private System.Windows.Forms.ColumnHeader columnHeader4;
+        public MaterialSkin.Controls.MaterialSingleLineTextField NameBox;
     }
 }

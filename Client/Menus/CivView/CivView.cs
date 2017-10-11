@@ -19,7 +19,6 @@ namespace CloneCAD.Client.Menus
     {
         private readonly Config Config;
         private readonly ErrorHandler Handler;
-        private Socket S;
 
         public Civilian LocalCivilian { get; private set; }
         public uint StartingID { get; }
@@ -28,7 +27,7 @@ namespace CloneCAD.Client.Menus
         {
             Config = config;
             Handler = new ErrorHandler(config.Locale);
-            S = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
             StartingID = startingID;
 
@@ -38,29 +37,27 @@ namespace CloneCAD.Client.Menus
 
         private async Task RefreshCiv()
         {
+            Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
             try
             {
-                S.Connect(Config.IP, Config.Port);
+                s.Connect(Config.IP, Config.Port);
             }
             catch (SocketException)
             {
                 return;
             }
 
-            NetRequestHandler handler = new NetRequestHandler(S);
+            NetRequestHandler handler = new NetRequestHandler(s);
 
-            Task<Tuple<NetRequestResult, Civilian>> tryTriggerResult = handler.TryTriggerNetFunction<Civilian>("GetCivilian", StartingID);
+            Tuple<NetRequestResult, Civilian> tryTriggerResult = await handler.TryTriggerNetFunction<Civilian>("GetCivilian", LocalCivilian?.ID ?? StartingID, LocalCivilian?.GetHashCode() ?? 0);
 
-            await handler.Receive();
-            await tryTriggerResult;
+            Handler.GetFailTest(tryTriggerResult.Item1);
 
-            Handler.GetFailTest(tryTriggerResult.Result.Item1);
+            s.Shutdown(SocketShutdown.Both);
+            s.Close();
 
-            S.Shutdown(SocketShutdown.Both);
-            S.Close();
-            S = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-
-            LocalCivilian = tryTriggerResult.Result.Item2;
+            LocalCivilian = tryTriggerResult.Item2;
         }
 
         private async void SyncBtn_Click(object sender, EventArgs e) =>

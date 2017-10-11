@@ -9,7 +9,7 @@ namespace CloneCAD.Server.DataHolders
     {
         public enum Status { Succeeded, Failed }
 
-        private readonly StreamWriter Writer;
+        public StreamWriter Writer { get; }
 
         public AliasDictionary Aliases { get; set; }
         public LocaleConfig Locale { get; set; }

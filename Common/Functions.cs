@@ -23,7 +23,13 @@ namespace CloneCAD.Common
         {
             try
             {
-                char[] idC = rawValue.ToString().ToCharArray();
+                string strValue = rawValue.ToString();
+
+                if (strValue.Length < 9)
+                    for (int i = 0; i < 9 - strValue.Length; i++)
+                        strValue = "0" + strValue;
+
+                char[] idC = strValue.ToCharArray();
 
                 return new string(new[]
                 {

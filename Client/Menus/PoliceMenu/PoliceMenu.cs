@@ -29,8 +29,7 @@ namespace CloneCAD.Client.Menus
             LoadLocale(config.Locale);
 
             SkinManager.Theme = MaterialSkinManager.Themes.LIGHT;
-            SkinManager.ColorScheme = new ColorScheme(Primary.LightBlue500, Primary.LightBlue900, Primary.LightBlue300,
-                Accent.Blue700, TextShade.WHITE);
+            SkinManager.ColorScheme = new ColorScheme(Primary.LightBlue500, Primary.LightBlue900, Primary.LightBlue300, Accent.Blue700, TextShade.WHITE);
         }
 
         private async Task SendTicket(uint id, Ticket ticket)
@@ -43,8 +42,7 @@ namespace CloneCAD.Client.Menus
             }
             catch
             {
-                if (MessageBox.Show(Config.Locale["CouldntConnectMsg"], @"CloneCAD", MessageBoxButtons.RetryCancel,
-                        MessageBoxIcon.Error) == DialogResult.Retry)
+                if (MessageBox.Show(Config.Locale["CouldntConnectMsg"], @"CloneCAD", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error) == DialogResult.Retry)
                     await SendTicket(id, ticket);
 
                 return;
@@ -52,11 +50,7 @@ namespace CloneCAD.Client.Menus
 
             NetRequestHandler handler = new NetRequestHandler(s);
 
-            Task<Tuple<NetRequestResult, bool>> tryTriggerResult =
-                handler.TryTriggerNetFunction<bool>("TicketCivilian", id, ticket);
-
-            await handler.Receive();
-            await tryTriggerResult;
+            Task<Tuple<NetRequestResult, bool>> tryTriggerResult = handler.TryTriggerNetFunction<bool>("TicketCivilian", id, ticket);
 
             s.Shutdown(SocketShutdown.Both);
             s.Close();
@@ -64,8 +58,7 @@ namespace CloneCAD.Client.Menus
             Handler.GetFailTest(tryTriggerResult.Result.Item1);
 
             if (tryTriggerResult.Result.Item2)
-                MessageBox.Show(Config.Locale["TicketGivenMsg"], @"CloneCAD", MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
+                MessageBox.Show(Config.Locale["TicketGivenMsg"], @"CloneCAD", MessageBoxButtons.OK, MessageBoxIcon.Information);
             else
                 Handler.Error("TicketEmptyMsg");
         }

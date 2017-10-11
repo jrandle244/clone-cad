@@ -73,17 +73,14 @@ namespace CloneCAD.Client.Menus
 
             NetRequestHandler handler = new NetRequestHandler(s);
 
-            Task<Tuple<NetRequestResult, Civilian>> tryTriggerResult = handler.TryTriggerNetFunction<Civilian>("GetCivilian", LocalCivilian?.ID ?? StartingID);
+            Tuple<NetRequestResult, Civilian> tryTriggerResult = await handler.TryTriggerNetFunction<Civilian>("GetCivilian", LocalCivilian?.ID ?? StartingID, LocalCivilian?.GetHashCode() ?? 0);
 
-            await handler.Receive();
-            await tryTriggerResult;
-
-            Handler.GetFailTest(tryTriggerResult.Result.Item1);
+            Handler.GetFailTest(tryTriggerResult.Item1);
 
             s.Shutdown(SocketShutdown.Both);
             s.Close();
 
-            LocalCivilian = tryTriggerResult.Result.Item2;
+            LocalCivilian = tryTriggerResult.Item2;
         }
 
         private async void Timer_Tick(object sender, EventArgs e)
@@ -164,20 +161,17 @@ namespace CloneCAD.Client.Menus
 
             NetRequestHandler handler = new NetRequestHandler(s);
 
-            Task<Tuple<NetRequestResult, Civilian>> tryTriggerResult = handler.TryTriggerNetFunction<Civilian>("ReserveCivilian");
-                
-            await handler.Receive();
-            await tryTriggerResult;
+            Tuple<NetRequestResult, Civilian> tryTriggerResult = await handler.TryTriggerNetFunction<Civilian>("ReserveCivilian");
 
-            LocalCivilian = tryTriggerResult.Result.Item2;
+            LocalCivilian = tryTriggerResult.Item2;
 
 
             s.Shutdown(SocketShutdown.Both);
             s.Close();
 
-            Handler.GetFailTest(tryTriggerResult.Result.Item1);
+            Handler.GetFailTest(tryTriggerResult.Item1);
 
-            LocalCivilian = tryTriggerResult.Result.Item2;
+            LocalCivilian = tryTriggerResult.Item2;
 
             return true;
         }
@@ -267,10 +261,7 @@ namespace CloneCAD.Client.Menus
 
             NetRequestHandler handler = new NetRequestHandler(s);
 
-            Task netEvent = handler.TryTriggerNetEvent("UpdateCivilian", LocalCivilian);
-
-            await handler.Receive();
-            await netEvent;
+            await handler.TryTriggerNetEvent("UpdateCivilian", LocalCivilian);
 
             s.Shutdown(SocketShutdown.Both);
             s.Close();
@@ -284,8 +275,7 @@ namespace CloneCAD.Client.Menus
                 LocalCivilian.RegisteredPlate = PlateBox.Text;
                 LocalCivilian.AssociatedBusiness = BusinessBox.Text;
 
-                LocalCivilian.RegisteredWeapons =
-                    (from ListViewItem wep in RegisteredWepList.Items select wep.Text).ToList();
+                LocalCivilian.RegisteredWeapons = (from ListViewItem wep in RegisteredWepList.Items select wep.Text).ToList();
             });
 
             await UpdateCiv();

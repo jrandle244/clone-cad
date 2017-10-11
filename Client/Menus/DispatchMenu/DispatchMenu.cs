@@ -49,8 +49,7 @@ namespace CloneCAD.Client.Menus
                 }
                 catch (SocketException)
                 {
-                    if (MessageBox.Show(Config.Locale["CouldntConnectMsg"], @"CloneCAD",
-                            MessageBoxButtons.RetryCancel, MessageBoxIcon.Error) == DialogResult.Retry)
+                    if (MessageBox.Show(Config.Locale["CouldntConnectMsg"], @"CloneCAD", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error) == DialogResult.Retry)
                         await Launch(id, name, plate);
 
                     return;
@@ -60,65 +59,49 @@ namespace CloneCAD.Client.Menus
 
                 if (!string.IsNullOrWhiteSpace(plate))
                 {
-                    Task<Tuple<NetRequestResult, uint>> tryTriggerResult =
-                        handler.TryTriggerNetFunction<uint>("CheckPlate", plate);
-
-                    await handler.Receive();
-                    await tryTriggerResult;
+                    Tuple<NetRequestResult, uint> tryTriggerResult = await handler.TryTriggerNetFunction<uint>("CheckPlate", plate);
 
                     s.Shutdown(SocketShutdown.Both);
                     s.Close();
 
-                    Handler.GetFailTest(tryTriggerResult.Result.Item1);
+                    Handler.GetFailTest(tryTriggerResult.Item1);
 
-                    if (tryTriggerResult.Result.Item2 == 0 && MessageBox.Show(Config.Locale["PlateCheckEmptyMsg"], @"CloneCAD",
-                            MessageBoxButtons.RetryCancel, MessageBoxIcon.Information,
-                            MessageBoxDefaultButton.Button2) == DialogResult.Retry)
-                    {
+                    if (tryTriggerResult.Item2 == 0 && MessageBox.Show(Config.Locale["PlateCheckEmptyMsg"], @"CloneCAD", MessageBoxButtons.RetryCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button2) == DialogResult.Retry)
                         await Launch(id, name, plate);
-                        return;
-                    }
 
-                    receivedID = tryTriggerResult.Result.Item2;
+                    if (tryTriggerResult.Item2 == 0)
+                        return;
+
+                    receivedID = tryTriggerResult.Item2;
                 }
                 else if (!string.IsNullOrWhiteSpace(name))
                 {
-                    Task<Tuple<NetRequestResult, uint>> tryTriggerResult =
-                        handler.TryTriggerNetFunction<uint>("CheckName", name);
-
-                    await handler.Receive();
-                    await tryTriggerResult;
+                    Tuple<NetRequestResult, uint> tryTriggerResult = await handler.TryTriggerNetFunction<uint>("CheckName", name);
 
                     s.Shutdown(SocketShutdown.Both);
                     s.Close();
 
-                    Handler.GetFailTest(tryTriggerResult.Result.Item1);
+                    Handler.GetFailTest(tryTriggerResult.Item1);
 
-                    if (tryTriggerResult.Result.Item2 == 0 && MessageBox.Show(Config.Locale["NameCheckEmptyMsg"], @"CloneCAD",
-                            MessageBoxButtons.RetryCancel, MessageBoxIcon.Information,
-                            MessageBoxDefaultButton.Button2) ==
-                        DialogResult.Retry)
-                    {
+                    if (tryTriggerResult.Item2 == 0 && MessageBox.Show(Config.Locale["NameCheckEmptyMsg"], @"CloneCAD", MessageBoxButtons.RetryCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button2) == DialogResult.Retry)
                         await Launch(id, name, plate);
-                        return;
-                    }
 
-                    receivedID = tryTriggerResult.Result.Item2;
+                    if (tryTriggerResult.Item2 == 0)
+                        return;
+
+                    receivedID = tryTriggerResult.Item2;
                 }
             }
             else if (!IDBox.Text.TryToRawID(out receivedID))
-                {
-                    Handler.Error("UnableToConvertIDMsg");
-                    return;
-                }
-
-            Invoke((MethodInvoker)delegate
             {
-                CivView civ = new CivView(Config, receivedID);
+                Handler.Error("UnableToConvertIDMsg");
+                return;
+            }
+            
+            CivView civ = new CivView(Config, receivedID);
 
-                civ.Show();
-                civ.Download().Wait();
-            });
+            civ.Show();
+            await civ.Download();
         }
 
         private new async void KeyDown(object sender, KeyEventArgs e)
