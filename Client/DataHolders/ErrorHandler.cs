@@ -54,9 +54,7 @@ namespace CloneCAD.Client.DataHolders
             if (Locale == null)
                 MessageBox.Show(@"The error has been saved to a log (" + e.ExceptionHandlerBackend() + @").\nPlease post an issue on GitHub and put the contents of the log in a code block.", @"CloneCAD", MessageBoxButtons.OK, MessageBoxIcon.Error);
             else
-                MessageBox.Show(Locale["UnexpectedError"].StartsWith("LOCALE ERROR (")
-                    ? "The error has been saved to a log (" + e.ExceptionHandlerBackend() + ").\nPlease post an issue on GitHub and put the contents of the log in a code block."
-                    : Locale["UnexpectedError", e.ExceptionHandlerBackend()], @"CloneCAD", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(Locale["UnexpectedError"].StartsWith("LOCALE ERROR (") ? "The error has been saved to a log (" + e.ExceptionHandlerBackend() + ").\nPlease post an issue on GitHub and put the contents of the log in a code block." : Locale["UnexpectedError", e.ExceptionHandlerBackend()], @"CloneCAD", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
             Environment.Exit(exitCode);
         }

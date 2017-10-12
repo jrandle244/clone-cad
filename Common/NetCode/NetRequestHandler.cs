@@ -101,7 +101,8 @@ namespace CloneCAD.Common.NetCode
                         StorableValue<NetRequest> returnNetRequest = new StorableValue<NetRequest>(new NetRequest(NetRequestMetadata.InvocationReturn, netRequest.Data.Value[0], NetRequestResult.Incompleted));
                         S.Send(returnNetRequest.Bytes);
 
-                        Console.WriteLine($"\n[{DateTime.Now}] [ERROR] An exception was caught when executing NetEvent \"{netRequest.Data.Value[0]}\":\n{e}\n");
+                        Console?.WriteLine($"\n[{DateTime.Now}] [ERROR] An exception was caught when executing NetEvent \"{netRequest.Data.Value[0]}\":\n{e}\n");
+                        Log.WriteLine();
                     }
                     break;
 
@@ -127,8 +128,8 @@ namespace CloneCAD.Common.NetCode
                         StorableValue<NetRequest> returnNetRequest = new StorableValue<NetRequest>(new NetRequest(NetRequestMetadata.FunctionReturn, netRequest.Data.Value[0], NetRequestResult.Incompleted));
                         S.Send(returnNetRequest.Bytes);
 
-                        Console.WriteLine($"\n[{DateTime.Now}] [ERROR] An exception was caught when executing NetFunction \"{netRequest.Data.Value[0]}\":\n{e}\n");
-                        Log.WriteLine();
+                        Console?.WriteLine($"\n[{DateTime.Now}] [ERROR] An exception was caught when executing NetFunction \"{netRequest.Data.Value[0]}\":\n{e}\n");
+                        Log?.WriteLine();
                     }
                     break;
 

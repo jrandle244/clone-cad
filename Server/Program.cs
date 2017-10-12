@@ -4,6 +4,7 @@ using CloneCAD.Server.DataHolders;
 using CloneCAD.Server.DataHolders.Static;
 
 using System.IO;
+using System.Windows.Forms;
 
 namespace CloneCAD.Server
 {
@@ -12,6 +13,7 @@ namespace CloneCAD.Server
         public const string CIV_EXPORT_PATH = "Civilians.odf";
         public const string CONFIG_PATH = "settings.ini";
 
+        [STAThread]
         static void Main()
         {
             Config config = null;
@@ -33,7 +35,24 @@ namespace CloneCAD.Server
             }
             catch (Exception e)
             {
-                new ErrorHandler(config?.Locale).Error("UnexpectedErrorMsg", 3, e);
+                try
+                {
+                    new ErrorHandler(config?.Locale).Error("UnexpectedErrorMsg", 3, e);
+                }
+                catch (Exception ee)
+                {
+                    Clipboard.SetText(e.ToString());
+                    Console.WriteLine($"An exception occured when the exception handler was trying to catch an exception! Ironic. The original exception has been copied to your clipboard. Please post an issue on GitHub or Discord in a code block. When you are ready to receive the exception handler exception (you have saved the previous to a file or uploaded it), please click OK.\n\n{e}\n\nONLY PRESS A KEY IF YOU HAVE READ THIS.");
+
+                    Console.ReadKey();
+
+                    Clipboard.SetText(ee.ToString());
+                    Console.WriteLine($"\n\nAn exception occured when the exception handler was trying to catch an exception! Ironic. The exception handler exception has been copied to your clipboard. Please post an issue on GitHub or Discord in a code block. When you are ready to receive the exception handler exception (you have saved the previous to a file or uploaded it), please click OK.\n\n{ee}\n\nONLY PRESS A KEY IF YOU HAVE READ THIS.");
+
+                    Console.ReadKey();
+
+                    Environment.Exit(3);
+                }
             }
 #endif
         }

@@ -5,6 +5,7 @@ using CloneCAD.Client.DataHolders;
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using CloneCAD.Common.DataHolders;
 
 #pragma warning disable IDE1006
@@ -27,7 +28,7 @@ namespace CloneCAD.Client.Menus
             LoadLocale(config.Locale);
         }
 
-        private async void Launch_Click(object sender, EventArgs e)
+        private void Launch_Click(object sender, EventArgs e)
         {
             Visible = false;
 
@@ -59,7 +60,7 @@ namespace CloneCAD.Client.Menus
                 {
                     StorableValue<uint[]> ids = new StorableValue<uint[]>(Program.ID_PATH);
 
-                    await civLauncher.Sync(ids.Value);
+                    ThreadPool.QueueUserWorkItem(async x => await civLauncher.Sync(ids.Value));
                 }
 
                 civLauncher.ShowDialog();

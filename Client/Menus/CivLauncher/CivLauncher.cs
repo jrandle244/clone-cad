@@ -4,8 +4,6 @@ using CloneCAD.Common.DataHolders;
 using CloneCAD.Client.DataHolders;
 
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Threading;
@@ -80,7 +78,7 @@ namespace CloneCAD.Client.Menus
             }
         }
 
-        private async void Civs_DoubleClick(object sender, EventArgs e)
+        private void Civs_DoubleClick(object sender, EventArgs e)
         {
             int index = civs.SelectedItems[0].Index;
 
@@ -98,10 +96,10 @@ namespace CloneCAD.Client.Menus
 
 
             civMenu.Show();
-            await civMenu.Sync();
+            ThreadPool.QueueUserWorkItem(async x => await civMenu.Sync());
         }
 
-        private async void Create_Click(object sender, EventArgs e)
+        private void Create_Click(object sender, EventArgs e)
         {
             CivMenu civMenu = new CivMenu(Config, 0);
 
@@ -129,7 +127,7 @@ namespace CloneCAD.Client.Menus
             };
 
             civMenu.Show();
-            await civMenu.Sync();
+            ThreadPool.QueueUserWorkItem(async x => await civMenu.Sync());
         }
 
         private async void Delete_Click(object sender, EventArgs ev)

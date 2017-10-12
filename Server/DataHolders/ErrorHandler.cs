@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows.Forms;
 using CloneCAD.Common;
 using CloneCAD.Common.DataHolders;
 
@@ -30,7 +29,9 @@ namespace CloneCAD.Server.DataHolders
             if (Locale == null)
                 Console.WriteLine(@"The error has been saved to a log (" + e.ExceptionHandlerBackend() + @").\nPlease upload the error log to the Discord server or post it to GitHub.");
             else
-                MessageBox.Show(Locale["UnexpectedErrorMsg"].StartsWith("LOCALE ERROR (") ? @"The error has been saved to a log (" + e.ExceptionHandlerBackend() + @").\nPlease upload the error log to the Discord server or post it to GitHub." : Locale["UnexpectedError", e.ExceptionHandlerBackend()]);
+                Console.WriteLine(Locale["UnexpectedErrorMsg"].StartsWith("LOCALE ERROR (") ? @"The error has been saved to a log (" + e.ExceptionHandlerBackend() + @").\nPlease upload the error log to the Discord server or post it to GitHub." : Locale["UnexpectedError", e.ExceptionHandlerBackend()]);
+
+            Console.ReadKey();
 
             Environment.Exit(exitCode);
         }
